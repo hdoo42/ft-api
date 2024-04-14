@@ -62,7 +62,6 @@ pub enum TokenError {
     TempTokenNotFound,
     BuildError(String),
 }
-
 impl From<io::Error> for TokenError {
     fn from(err: io::Error) -> Self {
         TokenError::IOError(err)
@@ -154,6 +153,14 @@ mod tests {
     use super::*;
 
     #[tokio::test]
+    async fn auth_fail() {
+        let info = AuthInfo::from_env(String::from("test for fail"), String::from("test for fail"));
+        let res = AccessToken::build(info).await;
+
+        assert!(res.is_err());
+    }
+
+    #[tokio::test]
     async fn auth_success() {
         let info = AuthInfo::from_env(
             config_env_var("FT_API_CLIENT_UID").unwrap(),
@@ -173,13 +180,5 @@ mod tests {
         let res = AccessToken::try_get(info).await;
 
         assert!(res.is_ok());
-    }
-
-    #[tokio::test]
-    async fn auth_fail() {
-        let info = AuthInfo::from_env(String::from("test for fail"), String::from("test for fail"));
-        let res = AccessToken::build(info).await;
-
-        assert!(res.is_err());
     }
 }
