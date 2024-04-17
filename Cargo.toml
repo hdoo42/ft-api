@@ -5,8 +5,14 @@ edition = "2021"
 
 [dependencies]
 util = { path = "../util"}
-serde = { version = "1.0.197", features = ["derive"]}
-serde_json = { version = "1.0.115", features = [ "std"] }
+serde = { version = "1.0.197", features = ["derive" ]}
+serde_with = {version = "3.7.0", features = ["macros"]}
+serde_json = { version = "1.0.115", features = ["std"] }
 reqwest = { version = "0.12.3" , features = ["json"] }
+rvstruct = "0.3.2"
 tokio = { version = "1.37.0", features = ["rt", "macros","rt-multi-thread" ] }
-chrono = "0.4.37"
+chrono = { version = "0.4.37" , features = ["serde"]}
+rsb_derive = "0.5.1"
+url = { version = "2.5", features = ["serde"]}
+futures = "0.3"
+
