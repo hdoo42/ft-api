@@ -1,5 +1,6 @@
 use serde_json::Error as SerdeError;
 use std::{
+    fmt::Display,
     fs::File,
     io::{self, BufReader, Write},
 };
@@ -36,6 +37,12 @@ pub struct AccessToken {
     secret_valid_until: i64,
 }
 
+impl AccessToken {
+    pub fn get_token_value(&self) -> String {
+        format!("{} {}", self.token_type, self.access_token)
+    }
+}
+
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 enum AccessTokenScope {
@@ -51,6 +58,12 @@ enum AccessTokenScope {
 enum AccessTokenType {
     #[serde(rename = "bearer")]
     Bearer,
+}
+
+impl Display for AccessTokenType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self)
+    }
 }
 
 #[derive(Debug)]
@@ -168,7 +181,7 @@ mod tests {
         );
         let res = AccessToken::build(info).await;
 
-        assert!(res.is_ok());
+        assert!(res.is_ok(), "{:?}", res.unwrap().access_token);
     }
 
     #[tokio::test]
