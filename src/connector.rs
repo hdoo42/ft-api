@@ -5,11 +5,11 @@ use reqwest::{
     header::{self, AUTHORIZATION},
     Client, Method, RequestBuilder, StatusCode,
 };
+use url::Url;
 
 use crate::{
-    map_serde_error, AccessToken, ClientResult, FtClientApiError, FtClientError,
-    FtClientHttpApiUri, FtClientHttpConnector, FtClientHttpError, FtEnvelopeMessage,
-    FtRateLimitError, FtReqwestError,
+    map_serde_error, ClientResult, FtApiToken, FtClientApiError, FtClientError, FtClientHttpApiUri,
+    FtClientHttpConnector, FtClientHttpError, FtEnvelopeMessage, FtRateLimitError, FtReqwestError,
 };
 
 pub struct FtClientReqwestConnector {
@@ -112,10 +112,14 @@ impl FtClientReqwestConnector {
 }
 
 impl FtClientHttpConnector for FtClientReqwestConnector {
+    fn create_method_uri_path(&self, method_relative_uri: &str) -> ClientResult<Url> {
+        Ok(format!("{}/{}", self.ft_api_url, method_relative_uri).parse()?)
+    }
+
     fn http_get_uri<'a, RS>(
         &'a self,
         full_uri: url::Url,
-        token: &'a AccessToken,
+        token: &'a FtApiToken,
     ) -> futures::prelude::future::BoxFuture<'a, crate::ClientResult<RS>>
     where
         RS: for<'de> serde::de::Deserialize<'de> + Send + 'a + 'a + Send,
@@ -136,7 +140,7 @@ impl FtClientHttpConnector for FtClientReqwestConnector {
     fn http_post_uri<'a, RQ, RS>(
         &'a self,
         full_uri: url::Url,
-        token: &'a AccessToken,
+        token: &'a FtApiToken,
         request_body: &'a RQ,
     ) -> futures::prelude::future::BoxFuture<'a, crate::ClientResult<RS>>
     where

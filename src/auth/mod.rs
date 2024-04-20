@@ -28,7 +28,7 @@ impl AuthInfo {
 }
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
-pub struct AccessToken {
+pub struct FtApiToken {
     access_token: String,
     token_type: AccessTokenType,
     expires_in: i64,
@@ -37,7 +37,7 @@ pub struct AccessToken {
     secret_valid_until: i64,
 }
 
-impl AccessToken {
+impl FtApiToken {
     pub fn get_token_value(&self) -> String {
         format!("{} {}", self.token_type, self.access_token)
     }
@@ -87,13 +87,13 @@ impl From<SerdeError> for TokenError {
     }
 }
 
-impl AccessToken {
-    pub async fn try_get(info: AuthInfo) -> Result<AccessToken, TokenError> {
+impl FtApiToken {
+    pub async fn try_get(info: AuthInfo) -> Result<FtApiToken, TokenError> {
         let tmpdir = std::env::temp_dir().join(".ft_api_auth_token");
         let temp_token = if tmpdir.is_file() {
             let file = File::open(tmpdir)?;
             let reader = BufReader::new(file);
-            let token: AccessToken = serde_json::from_reader(reader)?;
+            let token: FtApiToken = serde_json::from_reader(reader)?;
 
             let expire_date: DateTime<Utc> = Utc
                 .timestamp_opt(token.created_at + token.expires_in, 0)
@@ -112,7 +112,7 @@ impl AccessToken {
         if temp_token.is_ok() {
             temp_token
         } else {
-            let token = AccessToken::build(info)
+            let token = FtApiToken::build(info)
                 .await
                 .map_err(TokenError::BuildError)?;
 
@@ -133,7 +133,7 @@ impl AccessToken {
         Ok(())
     }
 
-    pub async fn build(info: AuthInfo) -> Result<AccessToken, String> {
+    pub async fn build(info: AuthInfo) -> Result<FtApiToken, String> {
         let params = info.get_params();
 
         let client = reqwest::Client::new();
@@ -147,7 +147,7 @@ impl AccessToken {
 
         match res.status() {
             reqwest::StatusCode::OK => res
-                .json::<AccessToken>()
+                .json::<FtApiToken>()
                 .await
                 .map_err(|e| format!("Error in parsing json: {e}")),
             reqwest::StatusCode::UNAUTHORIZED => {
@@ -168,7 +168,7 @@ mod tests {
     #[tokio::test]
     async fn auth_fail() {
         let info = AuthInfo::from_env(String::from("test for fail"), String::from("test for fail"));
-        let res = AccessToken::build(info).await;
+        let res = FtApiToken::build(info).await;
 
         assert!(res.is_err());
     }
@@ -179,7 +179,7 @@ mod tests {
             config_env_var("FT_API_CLIENT_UID").unwrap(),
             config_env_var("FT_API_CLIENT_SECRET").unwrap(),
         );
-        let res = AccessToken::build(info).await;
+        let res = FtApiToken::build(info).await;
 
         assert!(res.is_ok(), "{:?}", res.unwrap().access_token);
     }
@@ -190,7 +190,7 @@ mod tests {
             config_env_var("FT_API_CLIENT_UID").unwrap(),
             config_env_var("FT_API_CLIENT_SECRET").unwrap(),
         );
-        let res = AccessToken::try_get(info).await;
+        let res = FtApiToken::try_get(info).await;
 
         assert!(res.is_ok());
     }
