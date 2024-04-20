@@ -24,7 +24,7 @@ pub struct FtHost(pub String);
 mod tests {
     use util::config_env_var;
 
-    use crate::{AccessToken, AuthInfo};
+    use crate::{AuthInfo, FtApiToken, FtClient, FtClientReqwestConnector};
 
     use super::*;
     #[tokio::test]
@@ -33,6 +33,14 @@ mod tests {
             config_env_var("FT_API_CLIENT_UID").unwrap(),
             config_env_var("FT_API_CLIENT_SECRET").unwrap(),
         );
-        let token = AccessToken::build(info).await;
+        let token = FtApiToken::build(info).await.unwrap();
+
+        let client = FtClient::new(FtClientReqwestConnector::with_connector(
+            reqwest::Client::new(),
+        ));
+
+        let session = client.open_session(&token);
+        let res = session.campus_gs_locations().await;
+        assert!(res.is_ok());
     }
 }

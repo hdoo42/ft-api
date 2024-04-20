@@ -3,6 +3,9 @@ use std::fmt::Display;
 pub use client::*;
 mod client;
 
+pub use error::*;
+mod error;
+
 use self::Inner::*;
 
 #[derive(Clone, PartialEq, Eq, Hash)]
