@@ -6,10 +6,7 @@ pub use locations::*;
 mod locations;
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct DateTimeSerde {
-    #[serde(with = "chrono::serde::ts_seconds")]
-    datetime: DateTime<Utc>,
-}
+pub struct DateTimeSerde(DateTime<Utc>);
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct FtUser {

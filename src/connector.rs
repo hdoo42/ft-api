@@ -52,29 +52,22 @@ impl FtClientReqwestConnector {
             .await
             .map_err(|error| FtReqwestError { error })?;
         let http_content_is_json = match http_content_type {
-            Some(content_type) => matches!(content_type.to_str(), Ok("application/json")),
+            Some(content_type) => {
+                matches!(content_type.to_str(), Ok("application/json; charset=utf-8"))
+            }
             None => false,
         };
 
+        println!("{:?} {http_content_is_json}", http_content_type);
+
         match http_status {
             StatusCode::OK if http_content_is_json => {
-                let ft_message: FtEnvelopeMessage = serde_json::from_str(http_body_str.as_str())
+                let decoded_body = serde_json::from_str(http_body_str.as_str())
                     .map_err(|err| map_serde_error(err, Some(http_body_str.as_str())))?;
-                match ft_message.error {
-                    None => {
-                        let decoded_body = serde_json::from_str(http_body_str.as_str())
-                            .map_err(|err| map_serde_error(err, Some(http_body_str.as_str())))?;
-                        Ok(decoded_body)
-                    }
-                    Some(ft_error) => Err(FtClientError::ApiError(
-                        FtClientApiError::new(ft_error)
-                            .opt_errors(ft_message.errors)
-                            .opt_warnings(ft_message.warnings)
-                            .with_http_response_body(http_body_str),
-                    )),
-                }
+                Ok(decoded_body)
             }
             StatusCode::OK | StatusCode::NO_CONTENT => {
+                println!("no contents");
                 serde_json::from_str("{}").map_err(|err| map_serde_error(err, Some("{}")))
             }
             StatusCode::TOO_MANY_REQUESTS if http_content_is_json => {

@@ -1,4 +1,4 @@
-use std::fmt::Display;
+use std::fmt::{write, Display};
 
 pub use client::*;
 mod client;
@@ -11,9 +11,9 @@ use self::Inner::*;
 #[derive(Clone, PartialEq, Eq, Hash)]
 pub struct GsInfo(Inner);
 
-#[derive(Clone, PartialEq, Eq, Hash)]
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
 enum Inner {
-    CampusId = 69,
+    CampusId,
 }
 
 impl GsInfo {
@@ -22,12 +22,14 @@ impl GsInfo {
 
 impl Display for GsInfo {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self::CampusId)
+        write!(f, "{}", self.0)
     }
 }
 
 impl Display for Inner {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self::CampusId)
+        match self {
+            CampusId => write!(f, "69"),
+        }
     }
 }

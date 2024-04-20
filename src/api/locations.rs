@@ -1,26 +1,25 @@
 use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
 
-use crate::{
-    ClientResult, FtClientHttpConnector, FtClientHttpSessionApi, FtClientSession, FtLocations,
-    GsInfo,
-};
+use crate::{ClientResult, FtClientHttpConnector, FtClientSession, FtLocation, GsInfo};
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
+#[serde(transparent)]
 pub struct FtApiCampusLocationsResponse {
-    pub usergroups: Vec<FtLocations>,
+    pub location: FtLocation,
 }
 
 impl<'a, FCHC> FtClientSession<'a, FCHC>
 where
     FCHC: FtClientHttpConnector + Send + Sync,
 {
-    pub async fn campus_gs_locations(&self) -> ClientResult<FtApiCampusLocationsResponse> {
+    pub async fn campus_gs_locations(&self) -> ClientResult<Vec<FtApiCampusLocationsResponse>> {
+        println!("campus_gs_locations");
+        let url = &format!("campus/{}/locations", GsInfo::CAMPUS_ID);
+        println!("url: {}", url);
+
         self.http_session_api
-            .http_get(
-                &format!("campus/{}/locations", GsInfo::CAMPUS_ID),
-                &crate::common::FT_HTTP_EMPTY_GET_PARAMS.clone(),
-            )
+            .http_get(url, &crate::common::FT_HTTP_EMPTY_GET_PARAMS.clone())
             .await
     }
 }

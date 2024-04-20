@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 use crate::models::{DateTimeSerde, FtCampusId, FtUser};
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct FtLocations {
+pub struct FtLocation {
     id: FtLocationId,
     begin_at: DateTimeSerde,
     end_at: Option<DateTimeSerde>,
@@ -41,6 +41,6 @@ mod tests {
 
         let session = client.open_session(&token);
         let res = session.campus_gs_locations().await;
-        assert!(res.is_ok());
+        assert!(res.is_ok(), "{:?}", res);
     }
 }

@@ -76,6 +76,7 @@ pub trait FtClientHttpConnector {
             .create_method_uri_path(method_relative_uri)
             .and_then(|url| FtClientHttpApiUri::create_url_with_params(url, params));
 
+        println!("{:?}", full_uri);
         match full_uri {
             Ok(full_uri) => self.http_get_uri(full_uri, token),
             Err(err) => std::future::ready(Err(err)).boxed(),
@@ -213,7 +214,7 @@ lazy_static! {
 }
 
 impl FtClientHttpApiUri {
-    pub const FT_API_URI_STR: &'static str = "https://api.intra.42.fr";
+    pub const FT_API_URI_STR: &'static str = "https://api.intra.42.fr/v2";
 
     pub fn create_method_uri_path(method_relative_uri: &str) -> String {
         format!("{}/{}", Self::FT_API_URI_STR, method_relative_uri)
