@@ -26,7 +26,20 @@ where
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    #[test]
-    fn gs_locations() {}
+    use crate::{AuthInfo, FtApiToken, FtClient, FtClientReqwestConnector};
+
+    #[tokio::test]
+    async fn location_deserialize() {
+        let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
+            .await
+            .unwrap();
+
+        let client = FtClient::new(FtClientReqwestConnector::with_connector(
+            reqwest::Client::new(),
+        ));
+
+        let session = client.open_session(&token);
+        let res = session.campus_gs_locations().await;
+        assert!(res.is_ok(), "{:?}", res);
+    }
 }
