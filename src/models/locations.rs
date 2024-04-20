@@ -22,9 +22,7 @@ pub struct FtHost(pub String);
 
 #[cfg(test)]
 mod tests {
-    use util::config_env_var;
-
-    use crate::{AuthInfo, FtApiToken, FtClient, FtClientReqwestConnector};
+    use crate::{config_env_var, AuthInfo, FtApiToken, FtClient, FtClientReqwestConnector};
 
     use super::*;
     #[tokio::test]

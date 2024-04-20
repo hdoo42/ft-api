@@ -159,10 +159,12 @@ impl FtApiToken {
     }
 }
 
+pub fn config_env_var(name: &str) -> Result<String, String> {
+    std::env::var(name).map_err(|e| format!("{}: {}", name, e))
+}
+
 #[cfg(test)]
 mod tests {
-    use util::config_env_var;
-
     use super::*;
 
     #[tokio::test]
