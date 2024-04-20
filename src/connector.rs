@@ -8,7 +8,7 @@ use reqwest::{
 use url::Url;
 
 use crate::{
-    map_serde_error, ClientResult, FtApiToken, FtClientApiError, FtClientError, FtClientHttpApiUri,
+    map_serde_error, ClientResult, FtApiToken, FtClientError, FtClientHttpApiUri,
     FtClientHttpConnector, FtClientHttpError, FtEnvelopeMessage, FtRateLimitError, FtReqwestError,
 };
 

@@ -1,6 +1,5 @@
 use rsb_derive::Builder;
 use std::error::Error;
-use std::fmt::Display;
 use std::fmt::Formatter;
 use std::time::Duration;
 use url::ParseError;
@@ -17,11 +16,6 @@ pub enum FtClientError {
     SystemError(FtClientSystemError),
     ProtocolError(FtClientProtocolError),
     RateLimitError(FtRateLimitError),
-}
-
-#[derive(Debug)]
-pub struct FtReqwestError {
-    pub error: reqwest::Error,
 }
 
 impl From<FtReqwestError> for FtClientError {
@@ -80,7 +74,7 @@ impl FtClientError {
     }
 }
 
-impl Display for FtClientError {
+impl std::fmt::Display for FtClientError {
     fn fmt(&self, f: &mut Formatter) -> std::fmt::Result {
         match *self {
             FtClientError::ReqwestError(ref err) => err.fmt(f),
@@ -95,13 +89,18 @@ impl Display for FtClientError {
     }
 }
 
-impl Display for FtReqwestError {
+#[derive(Debug)]
+pub struct FtReqwestError {
+    pub error: reqwest::Error,
+}
+
+impl std::fmt::Display for FtReqwestError {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        write!(f, "Reqwest Error: {}", self.error.to_string(),)
+        write!(f, "Reqwest Error: {}", self.error,)
     }
 }
 
-impl Error for FtReqwestError {}
+impl std::error::Error for FtReqwestError {}
 
 #[derive(Debug, Builder)]
 pub struct FtClientApiError {
@@ -111,7 +110,7 @@ pub struct FtClientApiError {
     pub http_response_body: Option<String>,
 }
 
-impl Display for FtClientApiError {
+impl std::fmt::Display for FtClientApiError {
     fn fmt(&self, f: &mut Formatter) -> std::fmt::Result {
         write!(
             f,
@@ -122,7 +121,7 @@ impl Display for FtClientApiError {
     }
 }
 
-impl Error for FtClientApiError {}
+impl std::error::Error for FtClientApiError {}
 
 #[derive(Debug, PartialEq, Eq, Clone, Builder)]
 pub struct FtClientHttpError {
@@ -130,7 +129,7 @@ pub struct FtClientHttpError {
     pub http_response_body: Option<String>,
 }
 
-impl Display for FtClientHttpError {
+impl std::fmt::Display for FtClientHttpError {
     fn fmt(&self, f: &mut Formatter) -> std::fmt::Result {
         write!(
             f,
@@ -148,7 +147,7 @@ pub struct FtClientHttpProtocolError {
     pub cause: Option<Box<dyn std::error::Error + Sync + Send>>,
 }
 
-impl Display for FtClientHttpProtocolError {
+impl std::fmt::Display for FtClientHttpProtocolError {
     fn fmt(&self, f: &mut Formatter) -> std::fmt::Result {
         write!(f, "Ft http protocol error: {:?}", self.cause)
     }
@@ -159,7 +158,7 @@ impl std::error::Error for FtClientHttpProtocolError {}
 #[derive(Debug, PartialEq, Eq, Clone, Builder)]
 pub struct FtClientEndOfStreamError {}
 
-impl Display for FtClientEndOfStreamError {
+impl std::fmt::Display for FtClientEndOfStreamError {
     fn fmt(&self, f: &mut Formatter) -> std::fmt::Result {
         write!(f, "Ft end of stream error")
     }
@@ -173,7 +172,7 @@ pub struct FtClientProtocolError {
     pub json_body: Option<String>,
 }
 
-impl Display for FtClientProtocolError {
+impl std::fmt::Display for FtClientProtocolError {
     fn fmt(&self, f: &mut Formatter) -> std::fmt::Result {
         write!(
             f,
@@ -191,7 +190,7 @@ pub struct FtClientSocketModeProtocolError {
     pub message: String,
 }
 
-impl Display for FtClientSocketModeProtocolError {
+impl std::fmt::Display for FtClientSocketModeProtocolError {
     fn fmt(&self, f: &mut Formatter) -> std::fmt::Result {
         write!(f, "Ft socket mode protocol error: {}", self.message)
     }
@@ -205,7 +204,7 @@ pub struct FtClientSystemError {
     pub cause: Option<Box<dyn std::error::Error + Sync + Send + 'static>>,
 }
 
-impl Display for FtClientSystemError {
+impl std::fmt::Display for FtClientSystemError {
     fn fmt(&self, f: &mut Formatter) -> std::fmt::Result {
         write!(
             f,
@@ -226,7 +225,7 @@ pub struct FtRateLimitError {
     pub http_response_body: Option<String>,
 }
 
-impl Display for FtRateLimitError {
+impl std::fmt::Display for FtRateLimitError {
     fn fmt(&self, f: &mut Formatter) -> std::fmt::Result {
         write!(
             f,
@@ -238,7 +237,7 @@ impl Display for FtRateLimitError {
     }
 }
 
-impl Error for FtRateLimitError {}
+impl std::error::Error for FtRateLimitError {}
 
 impl From<url::ParseError> for FtClientError {
     fn from(url_parse_error: ParseError) -> Self {

@@ -10,15 +10,15 @@ pub struct DateTimeSerde(DateTime<Utc>);
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct FtUser {
-    id: FtUserId,
-    email: FtEmail,
-    login: FtLoginId,
-    first_name: FtFirstName,
-    last_name: FtLastName,
-    url: FtUrl,
-    phone: FtPhone,
-    displayname: FtDisplayName,
-    kind: FtKind,
+    pub id: FtUserId,
+    pub email: FtEmail,
+    pub login: FtLoginId,
+    pub first_name: FtFirstName,
+    pub last_name: FtLastName,
+    pub url: FtUrl,
+    pub phone: FtPhone,
+    pub displayname: FtDisplayName,
+    pub kind: FtKind,
 }
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
@@ -37,7 +37,7 @@ pub struct FtLastName(String);
 pub struct FtUserId(i32);
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
-pub struct FtLoginId(String);
+pub struct FtLoginId(pub String);
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtCampusId(i32);
