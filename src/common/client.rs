@@ -76,6 +76,10 @@ where
 
         FtApiClientHttpSessionApi { token, client }
     }
+
+    pub fn get_token_ref(&self) -> &AccessToken {
+        &self.token
+    }
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Serialize, Deserialize)]

@@ -1,7 +1,7 @@
 use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
 
-use crate::{ClientResult, FtApiClientHttpSessionApi, FtClientHttpConnector, FtLocations};
+use crate::{ClientResult, FtApiClientHttpSessionApi, FtClientHttpConnector, FtLocations, GsInfo};
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
 pub struct FtApiCampusLocationsResponse {
@@ -17,7 +17,8 @@ where
             .http_api
             .connector
             .http_get(
-                "campus/69/locations",
+                format!("campus/{}/locations", GsInfo::CAMPUS_ID).as_str(),
+                self.get_token_ref(),
                 &crate::FT_HTTP_EMPTY_GET_PARAMS.clone(),
             )
             .await
