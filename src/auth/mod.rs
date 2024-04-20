@@ -18,6 +18,13 @@ impl AuthInfo {
         AuthInfo { uid, secret }
     }
 
+    pub fn build_from_env() -> Result<AuthInfo, String> {
+        let uid = config_env_var("FT_API_CLIENT_UID")?;
+        let secret = config_env_var("FT_API_CLIENT_SECRET")?;
+
+        Ok(AuthInfo { uid, secret })
+    }
+
     pub fn get_params(&self) -> [(&str, &str); 3] {
         [
             ("grant_type", "client_credentials"),
