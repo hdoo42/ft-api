@@ -4,9 +4,11 @@ use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 use url::Url;
 
-use crate::{FtApiToken, FtClientError};
+use crate::{FtApiToken, FtClientError, FtClientReqwestConnector};
 
 pub type ClientResult<T> = std::result::Result<T, FtClientError>;
+
+pub type FtReqwestClient = FtClient<FtClientReqwestConnector>;
 
 #[derive(Clone, Debug)]
 pub struct FtClient<FCHC>

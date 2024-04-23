@@ -7,17 +7,23 @@ use reqwest::{
 };
 use url::Url;
 
-use crate::{
-    map_serde_error, ClientResult, FtApiToken, FtClientError, FtClientHttpApiUri,
-    FtClientHttpConnector, FtClientHttpError, FtEnvelopeMessage, FtRateLimitError, FtReqwestError,
-};
+use crate::*;
 
 pub struct FtClientReqwestConnector {
     reqwest_connector: Client,
     ft_api_url: String,
 }
+impl Default for FtClientReqwestConnector {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
 impl FtClientReqwestConnector {
+    pub fn new() -> Self {
+        Self::with_connector(reqwest::Client::new())
+    }
+
     pub fn with_connector(connector: Client) -> Self {
         Self {
             ft_api_url: FtClientHttpApiUri::FT_API_URI_STR.to_string(),
