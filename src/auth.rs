@@ -25,6 +25,7 @@ impl AuthInfo {
         Ok(AuthInfo { uid, secret })
     }
 
+    #[inline]
     pub fn get_params(&self) -> [(&str, &str); 3] {
         [
             ("grant_type", "client_credentials"),
@@ -78,7 +79,7 @@ pub enum TokenError {
     IOError(io::Error),
     SerdeError(SerdeError),
     TokenExpired,
-    TokenLiftTimeParsingFailed,
+    TokenLifeTimeParsingFailed,
     TempTokenNotFound,
     BuildError(String),
 }
@@ -95,42 +96,40 @@ impl From<SerdeError> for TokenError {
 }
 
 impl FtApiToken {
-    pub async fn try_get(info: AuthInfo) -> Result<FtApiToken, TokenError> {
+    fn __try_get() -> Result<FtApiToken, TokenError> {
         let tmpdir = std::env::temp_dir().join(".ft_api_auth_token");
-        let temp_token = if tmpdir.is_file() {
-            let file = File::open(tmpdir)?;
-            let reader = BufReader::new(file);
-            let token: FtApiToken = serde_json::from_reader(reader)?;
 
-            let expire_date: DateTime<Utc> = Utc
-                .timestamp_opt(token.created_at + token.expires_in, 0)
-                .single()
-                .ok_or(TokenError::TokenLiftTimeParsingFailed)?;
-
-            if Utc::now() < expire_date {
-                Ok(token)
-            } else {
-                Err(TokenError::TokenExpired)
-            }
-        } else {
-            Err(TokenError::TempTokenNotFound)
-        };
-
-        if temp_token.is_ok() {
-            temp_token
-        } else {
-            let token = FtApiToken::build(info)
-                .await
-                .map_err(TokenError::BuildError)?;
-
-            match token.save() {
-                Ok(_) => Ok(token),
-                Err(e) => {
-                    println!("WARNING: Failed to save token: {:?}", e);
-                    Ok(token)
-                }
-            }
+        if !tmpdir.is_file() {
+            return Err(TokenError::TempTokenNotFound);
         }
+
+        let file = File::open(tmpdir)?;
+        let reader = BufReader::new(file);
+        let token: FtApiToken = serde_json::from_reader(reader)?;
+
+        let expire_date: DateTime<Utc> = Utc
+            .timestamp_opt(token.created_at + token.expires_in, 0)
+            .single()
+            .ok_or(TokenError::TokenLifeTimeParsingFailed)?;
+
+        match Utc::now() >= expire_date {
+            true => Err(TokenError::TokenExpired),
+            false => Ok(token),
+        }
+    }
+
+    pub async fn try_get(info: AuthInfo) -> Result<FtApiToken, TokenError> {
+        if let Ok(tok) = Self::__try_get() {
+            return Ok(tok);
+        }
+
+        let token = FtApiToken::build(info)
+            .await
+            .map_err(TokenError::BuildError)?;
+
+        token.save()?;
+
+        Ok(token)
     }
 
     pub fn save(&self) -> Result<(), TokenError> {
@@ -149,8 +148,7 @@ impl FtApiToken {
             .form(&params)
             .send()
             .await
-            .map_err(|e| format!("Error: {e}"))
-            .expect("Access token request itself failed");
+            .map_err(|e| format!("Error: {e}"))?;
 
         match res.status() {
             reqwest::StatusCode::OK => res
@@ -161,7 +159,7 @@ impl FtApiToken {
                 Err(format!("Error: {:?}", res.error_for_status()))
             }
             reqwest::StatusCode::NOT_FOUND => Err(format!("Error: {:?}", res.error_for_status())),
-            other => panic!("Uh oh! Something unexpected happened: {:?}", other),
+            other => Err(other.to_string()),
         }
     }
 }
