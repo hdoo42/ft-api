@@ -6,65 +6,32 @@ use url::ParseError;
 
 use reqwest::StatusCode;
 
-#[derive(Debug)]
-pub enum FtClientError {
-    ReqwestError(FtReqwestError),
-    ApiError(FtClientApiError),
-    HttpError(FtClientHttpError),
-    HttpProtocolError(FtClientHttpProtocolError),
-    EndOfStream(FtClientEndOfStreamError),
-    SystemError(FtClientSystemError),
-    ProtocolError(FtClientProtocolError),
-    RateLimitError(FtRateLimitError),
+#[macro_export]
+macro_rules! enum_into {
+	($vis:vis $enum_ty:ident $($enum_item:ident $(,)?)*) => {
+		#[derive(Debug)]
+		$vis enum $enum_ty {
+			$($enum_item(concat_idents!(Ft,$enum_item))),*
+		}
+
+		$(impl From<concat_idents!(Ft,$enum_item)> for $enum_ty {
+			fn from(err: concat_idents!(Ft,$enum_item)) -> Self {
+				$enum_ty::$enum_item(err)
+			}
+		})*
+	};
 }
 
-impl From<FtReqwestError> for FtClientError {
-    fn from(err: FtReqwestError) -> Self {
-        FtClientError::ReqwestError(err)
-    }
-}
-
-impl From<FtClientApiError> for FtClientError {
-    fn from(err: FtClientApiError) -> Self {
-        FtClientError::ApiError(err)
-    }
-}
-
-impl From<FtClientHttpError> for FtClientError {
-    fn from(err: FtClientHttpError) -> Self {
-        FtClientError::HttpError(err)
-    }
-}
-
-impl From<FtClientHttpProtocolError> for FtClientError {
-    fn from(err: FtClientHttpProtocolError) -> Self {
-        FtClientError::HttpProtocolError(err)
-    }
-}
-
-impl From<FtClientEndOfStreamError> for FtClientError {
-    fn from(err: FtClientEndOfStreamError) -> Self {
-        FtClientError::EndOfStream(err)
-    }
-}
-
-impl From<FtClientSystemError> for FtClientError {
-    fn from(err: FtClientSystemError) -> Self {
-        FtClientError::SystemError(err)
-    }
-}
-
-impl From<FtClientProtocolError> for FtClientError {
-    fn from(err: FtClientProtocolError) -> Self {
-        FtClientError::ProtocolError(err)
-    }
-}
-
-impl From<FtRateLimitError> for FtClientError {
-    fn from(err: FtRateLimitError) -> Self {
-        FtClientError::RateLimitError(err)
-    }
-}
+enum_into!(pub FtClientError
+    ReqwestError
+    ApiError
+    HttpError
+    HttpProtocolError
+    EndOfStream
+    SystemError
+    ProtocolError
+    RateLimitError
+);
 
 impl FtClientError {
     fn option_to_string<T: ToString>(value: &Option<T>) -> String {
@@ -103,14 +70,14 @@ impl std::fmt::Display for FtReqwestError {
 impl std::error::Error for FtReqwestError {}
 
 #[derive(Debug, Builder)]
-pub struct FtClientApiError {
+pub struct FtApiError {
     pub code: String,
     pub errors: Option<Vec<String>>,
     pub warnings: Option<Vec<String>>,
     pub http_response_body: Option<String>,
 }
 
-impl std::fmt::Display for FtClientApiError {
+impl std::fmt::Display for FtApiError {
     fn fmt(&self, f: &mut Formatter) -> std::fmt::Result {
         write!(
             f,
@@ -121,15 +88,15 @@ impl std::fmt::Display for FtClientApiError {
     }
 }
 
-impl std::error::Error for FtClientApiError {}
+impl std::error::Error for FtApiError {}
 
 #[derive(Debug, PartialEq, Eq, Clone, Builder)]
-pub struct FtClientHttpError {
+pub struct FtHttpError {
     pub status_code: StatusCode,
     pub http_response_body: Option<String>,
 }
 
-impl std::fmt::Display for FtClientHttpError {
+impl std::fmt::Display for FtHttpError {
     fn fmt(&self, f: &mut Formatter) -> std::fmt::Result {
         write!(
             f,
@@ -140,39 +107,39 @@ impl std::fmt::Display for FtClientHttpError {
     }
 }
 
-impl std::error::Error for FtClientHttpError {}
+impl std::error::Error for FtHttpError {}
 
 #[derive(Debug, Builder)]
-pub struct FtClientHttpProtocolError {
+pub struct FtHttpProtocolError {
     pub cause: Option<Box<dyn std::error::Error + Sync + Send>>,
 }
 
-impl std::fmt::Display for FtClientHttpProtocolError {
+impl std::fmt::Display for FtHttpProtocolError {
     fn fmt(&self, f: &mut Formatter) -> std::fmt::Result {
         write!(f, "Ft http protocol error: {:?}", self.cause)
     }
 }
 
-impl std::error::Error for FtClientHttpProtocolError {}
+impl std::error::Error for FtHttpProtocolError {}
 
 #[derive(Debug, PartialEq, Eq, Clone, Builder)]
-pub struct FtClientEndOfStreamError {}
+pub struct FtEndOfStream {}
 
-impl std::fmt::Display for FtClientEndOfStreamError {
+impl std::fmt::Display for FtEndOfStream {
     fn fmt(&self, f: &mut Formatter) -> std::fmt::Result {
         write!(f, "Ft end of stream error")
     }
 }
 
-impl std::error::Error for FtClientEndOfStreamError {}
+impl std::error::Error for FtEndOfStream {}
 
 #[derive(Debug, Builder)]
-pub struct FtClientProtocolError {
+pub struct FtProtocolError {
     pub json_error: serde_json::Error,
     pub json_body: Option<String>,
 }
 
-impl std::fmt::Display for FtClientProtocolError {
+impl std::fmt::Display for FtProtocolError {
     fn fmt(&self, f: &mut Formatter) -> std::fmt::Result {
         write!(
             f,
@@ -183,7 +150,7 @@ impl std::fmt::Display for FtClientProtocolError {
     }
 }
 
-impl std::error::Error for FtClientProtocolError {}
+impl std::error::Error for FtProtocolError {}
 
 #[derive(Debug, PartialEq, Eq, Clone, Builder)]
 pub struct FtClientSocketModeProtocolError {
@@ -199,12 +166,12 @@ impl std::fmt::Display for FtClientSocketModeProtocolError {
 impl std::error::Error for FtClientSocketModeProtocolError {}
 
 #[derive(Debug, Builder)]
-pub struct FtClientSystemError {
+pub struct FtSystemError {
     pub message: Option<String>,
     pub cause: Option<Box<dyn std::error::Error + Sync + Send + 'static>>,
 }
 
-impl std::fmt::Display for FtClientSystemError {
+impl std::fmt::Display for FtSystemError {
     fn fmt(&self, f: &mut Formatter) -> std::fmt::Result {
         write!(
             f,
@@ -215,7 +182,7 @@ impl std::fmt::Display for FtClientSystemError {
     }
 }
 
-impl std::error::Error for FtClientSystemError {}
+impl std::error::Error for FtSystemError {}
 
 #[derive(Debug, PartialEq, Eq, Clone, Builder)]
 pub struct FtRateLimitError {
@@ -242,19 +209,19 @@ impl std::error::Error for FtRateLimitError {}
 impl From<url::ParseError> for FtClientError {
     fn from(url_parse_error: ParseError) -> Self {
         FtClientError::HttpProtocolError(
-            FtClientHttpProtocolError::new().with_cause(Box::new(url_parse_error)),
+            FtHttpProtocolError::new().with_cause(Box::new(url_parse_error)),
         )
     }
 }
 
 impl From<Box<dyn std::error::Error + Sync + Send>> for FtClientError {
     fn from(err: Box<dyn Error + Sync + Send>) -> Self {
-        FtClientError::SystemError(FtClientSystemError::new().with_cause(err))
+        FtClientError::SystemError(FtSystemError::new().with_cause(err))
     }
 }
 
 pub fn map_serde_error(err: serde_json::Error, tried_to_parse: Option<&str>) -> FtClientError {
     FtClientError::ProtocolError(
-        FtClientProtocolError::new(err).opt_json_body(tried_to_parse.map(|s| s.to_string())),
+        FtProtocolError::new(err).opt_json_body(tried_to_parse.map(|s| s.to_string())),
     )
 }

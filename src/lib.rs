@@ -1,3 +1,5 @@
+#![feature(concat_idents)]
+
 pub use api::*;
 mod api;
 pub use auth::*;

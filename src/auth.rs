@@ -134,7 +134,7 @@ impl FtApiToken {
 
     pub fn save(&self) -> Result<(), TokenError> {
         let tmpdir = std::env::temp_dir().join(".ft_api_auth_token");
-        let mut token = File::create_new(tmpdir).unwrap();
+        let mut token = File::create_new(tmpdir)?;
         token.write_all(serde_json::to_string(self).unwrap().as_bytes())?;
         Ok(())
     }

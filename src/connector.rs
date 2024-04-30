@@ -37,11 +37,6 @@ impl FtClientReqwestConnector {
         }
     }
 
-    ///
-    ///
-    /// # Errors
-    ///
-    /// This function will return an error if .
     async fn send_http_request<'a, RS>(&'a self, reqwest: RequestBuilder) -> ClientResult<RS>
     where
         RS: for<'de> serde::de::Deserialize<'de>,
@@ -104,7 +99,7 @@ impl FtClientReqwestConnector {
                     .with_http_response_body(http_body_str),
             )),
             _ => Err(FtClientError::HttpError(
-                FtClientHttpError::new(http_status).with_http_response_body(http_body_str),
+                FtHttpError::new(http_status).with_http_response_body(http_body_str),
             )),
         }
     }
