@@ -3,6 +3,7 @@ use std::{
     fmt::Display,
     fs::File,
     io::{self, BufReader, Write},
+    path::PathBuf,
 };
 
 use chrono::{DateTime, TimeZone, Utc};
@@ -96,8 +97,12 @@ impl From<SerdeError> for TokenError {
 }
 
 impl FtApiToken {
+    fn __get_tmp_path() -> PathBuf {
+        std::env::temp_dir().join(".ft_api_auth_token")
+    }
+
     fn __try_get() -> Result<FtApiToken, TokenError> {
-        let tmpdir = std::env::temp_dir().join(".ft_api_auth_token");
+        let tmpdir = Self::__get_tmp_path();
 
         if !tmpdir.is_file() {
             return Err(TokenError::TempTokenNotFound);
@@ -119,9 +124,11 @@ impl FtApiToken {
     }
 
     pub async fn try_get(info: AuthInfo) -> Result<FtApiToken, TokenError> {
-        if let Ok(tok) = Self::__try_get() {
-            return Ok(tok);
+        if let Ok(token) = Self::__try_get() {
+            return Ok(token);
         }
+
+        std::fs::remove_file(Self::__get_tmp_path())?;
 
         let token = FtApiToken::build(info)
             .await
@@ -193,10 +200,7 @@ mod tests {
 
     #[tokio::test]
     async fn try_to_get_token() {
-        let info = AuthInfo::from_env(
-            config_env_var("FT_API_CLIENT_UID").unwrap(),
-            config_env_var("FT_API_CLIENT_SECRET").unwrap(),
-        );
+        let info = AuthInfo::build_from_env().unwrap();
         let res = FtApiToken::try_get(info).await;
 
         assert!(res.is_ok());
