@@ -1,7 +1,7 @@
 use rvstruct::ValueStruct;
 use serde::{Deserialize, Serialize};
 
-use crate::{scale::FtScale, *};
+use crate::*;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct FtScaleTeam {
@@ -19,7 +19,7 @@ pub struct FtScaleTeam {
     pub truant: FtUser,
     pub scale: FtScale,
     pub team: FtTeam,
-    pub feedbacks: Vec<FtFeedBack>,
+    pub feedbacks: Vec<FtFeedback>,
 }
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]

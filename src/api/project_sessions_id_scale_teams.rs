@@ -2,8 +2,7 @@ use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    ClientResult, DateTimeSerde, FtClientHttpConnector, FtClientSession, FtProjectSessionId,
-    FtScaleTeam, FtScaleTeamsId,
+    ClientResult, FtClientHttpConnector, FtClientSession, FtProjectSessionId, FtScaleTeam,
 };
 
 #[derive(Debug, Serialize, Deserialize, Builder)]

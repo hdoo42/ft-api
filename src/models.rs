@@ -9,8 +9,12 @@ mod scale_teams;
 pub use project_session::*;
 pub mod flag;
 mod project_session;
-pub mod scale;
-pub mod scale_teams;
+pub use scale::*;
+mod scale;
+pub use feedback::*;
+mod feedback;
+pub use team::*;
+mod team;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct DateTimeSerde(DateTime<Utc>);
