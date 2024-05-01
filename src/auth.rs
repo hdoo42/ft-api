@@ -128,13 +128,13 @@ impl FtApiToken {
             return Ok(token);
         }
 
-        std::fs::remove_file(Self::__get_tmp_path())?;
+        std::fs::remove_file(Self::__get_tmp_path());
 
         let token = FtApiToken::build(info)
             .await
             .map_err(TokenError::BuildError)?;
 
-        token.save()?;
+        token.save();
 
         Ok(token)
     }
