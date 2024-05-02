@@ -1,7 +1,7 @@
 use rvstruct::ValueStruct;
 use serde::{Deserialize, Serialize};
 
-use crate::*;
+use crate::{flag::FtFlag, language::FtLanguage, *};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct FtScale {
@@ -18,6 +18,8 @@ pub struct FtScale {
     pub duration: FtDuration,
     pub manual_subscription: FtManualSubscription,
     pub free: bool,
+    pub flags: Vec<FtFlag>,
+    pub languages: Vec<FtLanguage>,
 }
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]

@@ -14,6 +14,7 @@ mod scale;
 pub use feedback::*;
 mod feedback;
 pub use team::*;
+pub mod language;
 mod team;
 
 #[derive(Serialize, Deserialize, Debug)]

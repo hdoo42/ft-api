@@ -24,7 +24,9 @@ pub struct FtScaleTeam {
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtScaleTeamId(i32);
+
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtScaleTeamComment(pub String);
+
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtScaleTeamFeedback(pub String);

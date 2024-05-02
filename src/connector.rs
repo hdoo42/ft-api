@@ -52,12 +52,11 @@ impl FtClientReqwestConnector {
             .text()
             .await
             .map_err(|error| FtReqwestError { error })?;
-        let http_content_is_json = match http_content_type {
-            Some(content_type) => {
-                matches!(content_type.to_str(), Ok("application/json; charset=utf-8"))
-            }
-            None => false,
-        };
+
+        let http_content_is_json = matches!(
+            http_content_type.map(|content_type| content_type.to_str()),
+            Some(Ok("application/json; charset=utf-8"))
+        );
 
         println!("{:?} {http_content_is_json}", http_content_type);
 
@@ -124,9 +123,7 @@ impl FtClientHttpConnector for FtClientReqwestConnector {
                 .request(Method::GET, full_uri)
                 .header(AUTHORIZATION, token.get_token_value());
 
-            let body = self.send_http_request(request).await?;
-
-            Ok(body)
+            self.send_http_request(request).await
         }
         .boxed()
     }
@@ -151,9 +148,7 @@ impl FtClientHttpConnector for FtClientReqwestConnector {
                 .header(AUTHORIZATION, token.get_token_value())
                 .body(post_json);
 
-            let body = self.send_http_request(request).await?;
-
-            Ok(body)
+            self.send_http_request(request).await
         }
         .boxed()
     }
