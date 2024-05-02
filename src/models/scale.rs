@@ -24,31 +24,31 @@ pub struct FtScale {
 pub struct FtScaleId(i32);
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
-struct FtEvaluationId(i32);
+pub struct FtEvaluationId(i32);
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
-struct FtScaleName(pub String);
+pub struct FtScaleName(pub String);
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
-struct FtComment(pub String);
+pub struct FtComment(pub String);
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
-struct FtIntroductionMd(pub String);
+pub struct FtIntroductionMd(pub String);
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
-struct FtDisclaimerMd(pub String);
+pub struct FtDisclaimerMd(pub String);
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
-struct FtGuidelinesMd(pub String);
+pub struct FtGuidelinesMd(pub String);
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
-struct FtCorrectionNumber(i32);
+pub struct FtCorrectionNumber(i32);
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
-struct FtDuration(i32);
+pub struct FtDuration(i32);
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
-struct FtManualSubscription(bool);
+pub struct FtManualSubscription(bool);
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize)]
 pub struct FtScaleFlag {
