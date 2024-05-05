@@ -2,7 +2,7 @@ use rvstruct::ValueStruct;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
-pub struct FtProjectSessionId(i16);
+pub struct FtProjectSessionId(pub i16);
 
 pub mod ft_project_session_ids {
     pub mod ft_cursus {

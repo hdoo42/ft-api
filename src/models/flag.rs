@@ -45,7 +45,7 @@ impl FromStr for FtFlagName {
             "Outstanding project" => Ok(FtFlagName::OutstandingProject),
             "Concerning situation" => Ok(FtFlagName::ConcerningSituation),
             "Leaks" => Ok(FtFlagName::Leaks),
-            "Forbidden function" => Ok(FtFlagName::ForbiddenFunction),
+            "Forbidden Function" => Ok(FtFlagName::ForbiddenFunction),
             "Can’t support / explain code" => Ok(FtFlagName::CantSupportExplainCode),
             _ => Err(serde_json::error::Error::custom("Flag does not exist")),
         }
@@ -165,7 +165,7 @@ mod tests {
         },
         {
           "id": 13,
-          "name": "Forbidden function",
+          "name": "Forbidden Function",
           "positive": false,
           "icon": "delete-2",
           "created_at": "2018-05-15T12:44:59.600Z",

@@ -23,7 +23,7 @@ where
     pub async fn project_sessions_scale_teams(
         &self,
         reqest: FtApiProjectSessionsScaleTeamsRequest,
-    ) -> ClientResult<Vec<FtApiProjectSessionsScaleTeamsResponse>> {
+    ) -> ClientResult<FtApiProjectSessionsScaleTeamsResponse> {
         let url = &format!("project_sessions/{}/scale_teams", reqest.project_session_id);
 
         self.http_session_api
@@ -32,22 +32,28 @@ where
     }
 }
 
-// #[cfg(test)]
-// mod tests {
-//     use crate::{AuthInfo, FtApiToken, FtClient, FtClientReqwestConnector};
-//
-//     #[tokio::test]
-//     async fn location_deserialize() {
-//         let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
-//             .await
-//             .unwrap();
-//
-//         let client = FtClient::new(FtClientReqwestConnector::with_connector(
-//             reqwest::Client::new(),
-//         ));
-//
-//         let session = client.open_session(&token);
-//         let res = session.campus_gs_locations().await;
-//         assert!(res.is_ok(), "{:?}", res);
-//     }
-// }
+#[cfg(test)]
+mod tests {
+    use crate::{
+        ft_project_session_ids::ft_cursus::inner::LIBFT,
+        project_sessions_id_scale_teams::FtApiProjectSessionsScaleTeamsRequest, AuthInfo,
+        FtApiToken, FtClient, FtClientReqwestConnector, FtProjectSessionId,
+    };
+
+    #[tokio::test]
+    async fn location_deserialize() {
+        let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
+            .await
+            .unwrap();
+
+        let client = FtClient::new(FtClientReqwestConnector::with_connector(
+            reqwest::Client::new(),
+        ));
+
+        let req = FtApiProjectSessionsScaleTeamsRequest::new(FtProjectSessionId::new(LIBFT));
+
+        let session = client.open_session(&token);
+        let res = session.project_sessions_scale_teams(req).await;
+        assert!(res.is_ok(), "{:?}", res);
+    }
+}

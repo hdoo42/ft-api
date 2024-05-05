@@ -1,8 +1,8 @@
 use std::path::Path;
 
 use ft_api::{
-    project_sessions_id_scale_teams::FtApiProjectSessionsScaleTeamsResponse, AuthInfo, FtApiToken,
-    FtClient, FtClientReqwestConnector,
+    map_serde_error, project_sessions_id_scale_teams::FtApiProjectSessionsScaleTeamsResponse,
+    AuthInfo, FtApiToken, FtClient, FtClientReqwestConnector, FtUser,
 };
 
 #[tokio::main]
@@ -25,9 +25,14 @@ async fn main() {
     //     // println!("{}", res.unwrap().location.len());
     //     println!("{:?}", res.unwrap().location);
     // }
-    let path = Path::new("/Users/hdoo/Downloads/gnl_json.json");
-    let b2bfile = std::fs::read_to_string(path);
-    let b2b: Vec<FtApiProjectSessionsScaleTeamsResponse> =
-        serde_json::from_str(http_body_str.as_str())
-            .map_err(|err| map_serde_error(err, Some(http_body_str.as_str())))?;
+    let raw_partial_user = r#"
+      {
+        "id": 183812,
+        "login": "nkanaan",
+        "url": "https://api.intra.42.fr/v2/users/nkanaan"
+      }
+        "#;
+
+    let res: Result<FtUser, serde_json::Error> = serde_json::from_str(raw_partial_user);
+    println!("{:?}", res);
 }
