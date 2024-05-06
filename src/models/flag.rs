@@ -2,7 +2,7 @@ use std::str::FromStr;
 
 use serde::{de::Error, Deserialize, Deserializer, Serialize};
 
-use crate::DateTimeSerde;
+use crate::DateTimeUtc;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct FtFlag {
@@ -10,8 +10,8 @@ pub struct FtFlag {
     pub name: FtFlagName,
     pub positive: bool,
     pub icon: String,
-    pub created_at: DateTimeSerde,
-    pub updated_at: DateTimeSerde,
+    pub created_at: DateTimeUtc,
+    pub updated_at: DateTimeUtc,
 }
 
 #[derive(PartialEq, Serialize, Debug)]

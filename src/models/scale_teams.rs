@@ -8,15 +8,15 @@ pub struct FtScaleTeam {
     pub id: FtScaleTeamId,
     pub scale_id: FtScaleId,
     pub comment: Option<FtScaleTeamComment>,
-    pub created_at: DateTimeSerde,
-    pub updated_at: DateTimeSerde,
+    pub created_at: DateTimeUtc,
+    pub updated_at: DateTimeUtc,
     pub final_mark: Option<FtFinalMark>,
     pub feedback: Option<FtScaleTeamFeedback>,
     pub flag: Option<FtScaleFlag>,
-    pub begin_at: Option<DateTimeSerde>,
+    pub begin_at: Option<DateTimeUtc>,
     pub corrector: FtUser,
     pub correcteds: Vec<FtUser>,
-    pub filled_at: Option<DateTimeSerde>,
+    pub filled_at: Option<DateTimeUtc>,
     pub truant: Option<FtUser>,
     pub scale: Option<FtScale>,
     pub team: Option<FtTeam>,
@@ -25,6 +25,7 @@ pub struct FtScaleTeam {
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtFinalMark(i32);
+
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtScaleTeamId(i32);
 

@@ -1,4 +1,4 @@
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, FixedOffset, Utc};
 use rvstruct::ValueStruct;
 use serde::{Deserialize, Serialize};
 
@@ -19,10 +19,16 @@ mod team;
 pub use language::*;
 mod language;
 pub use image::*;
+use url::Url;
 mod image;
 
+type Seresult<T> = Result<T, serde_json::Error>;
+
 #[derive(Serialize, Deserialize, Debug)]
-pub struct DateTimeSerde(DateTime<Utc>);
+pub struct DateTimeUtc(DateTime<Utc>);
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct DateTimeFixedOffset(DateTime<FixedOffset>);
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct FtUser {
@@ -37,21 +43,41 @@ pub struct FtUser {
     pub kind: Option<FtKind>,
     pub active: Option<bool>,
     pub alumni: Option<bool>,
-    pub alumnized_at: Option<DateTimeSerde>,
-    pub anonymize_date: Option<DateTimeSerde>,
+    pub alumnized_at: Option<DateTimeFixedOffset>,
+    pub anonymize_date: Option<DateTimeFixedOffset>,
     pub correction_point: Option<FtCorrectionPoint>,
-    pub created_at: Option<DateTimeSerde>,
-    pub data_erasure_date: Option<DateTimeSerde>,
+    pub created_at: Option<DateTimeUtc>,
+    pub data_erasure_date: Option<DateTimeUtc>,
     pub image: Option<FtImage>,
     pub location: Option<FtHost>,
-    pub pool_month: Option<DateTimeSerde>,
-    pub pool_year: Option<DateTimeSerde>,
+    pub pool_month: Option<FtPoolMonth>,
+    pub pool_year: Option<FtPoolYear>,
     pub staff: Option<bool>,
-    pub updated_at: Option<DateTimeSerde>,
+    pub updated_at: Option<DateTimeUtc>,
     pub usual_first_name: Option<FtUsualFirstName>,
     pub usual_full_name: Option<FtUsualFullName>,
     pub wallet: Option<FtWallet>,
 }
+
+#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum FtPoolMonth {
+    January,
+    February,
+    March,
+    April,
+    May,
+    June,
+    July,
+    August,
+    September,
+    October,
+    November,
+    December,
+}
+
+#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
+pub struct FtPoolYear(String);
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtEmail(String);
