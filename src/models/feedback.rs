@@ -6,7 +6,7 @@ use crate::{models::Seresult, *};
 #[derive(Debug, Serialize, Deserialize)]
 pub struct FtFeedback {
     pub comment: FtComment,
-    pub created_at: DateTimeUtc,
+    pub created_at: FtDateTimeUtc,
     pub feedbackable_id: FtFeedbackableId,
     pub feedbackable_type: FtFeedbackableType,
     pub id: FtFeedbackId,

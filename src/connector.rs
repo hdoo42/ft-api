@@ -139,14 +139,36 @@ impl FtClientHttpConnector for FtClientReqwestConnector {
         RS: for<'de> serde::de::Deserialize<'de> + Send + 'a + Send + 'a,
     {
         async move {
-            let post_json =
-                serde_json::to_string(&request_body).map_err(|err| map_serde_error(err, None))?;
-
             let request = self
                 .reqwest_connector
                 .post(full_uri)
                 .header(AUTHORIZATION, token.get_token_value())
-                .body(post_json);
+                .json(&request_body);
+
+            self.send_http_request(request).await
+        }
+        .boxed()
+    }
+
+    fn http_patch_uri<'a, RQ, RS>(
+        &'a self,
+        full_uri: Url,
+        token: &'a FtApiToken,
+        request_body: &'a RQ,
+    ) -> futures::prelude::future::BoxFuture<'a, ClientResult<RS>>
+    where
+        RQ: serde::ser::Serialize + Send + Sync,
+        RS: for<'de> serde::de::Deserialize<'de> + Send + 'a + Send + 'a,
+    {
+        async move {
+            let patch_json =
+                serde_json::to_string(&request_body).map_err(|err| map_serde_error(err, None))?;
+
+            let request = self
+                .reqwest_connector
+                .patch(full_uri)
+                .header(AUTHORIZATION, token.get_token_value())
+                .body(patch_json);
 
             self.send_http_request(request).await
         }

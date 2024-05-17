@@ -1,5 +1,4 @@
 use chrono::{DateTime, FixedOffset, Utc};
-use rvstruct::ValueStruct;
 use serde::{Deserialize, Serialize};
 
 pub use locations::*;
@@ -19,117 +18,19 @@ mod team;
 pub use language::*;
 mod language;
 pub use image::*;
-use url::Url;
 mod image;
+pub use user::*;
+mod user;
 
-type Seresult<T> = Result<T, serde_json::Error>;
+mod common;
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct DateTimeUtc(DateTime<Utc>);
+pub struct FtDateTimeUtc(DateTime<Utc>);
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct DateTimeFixedOffset(DateTime<FixedOffset>);
+pub struct FtDateTimeFixedOffset(DateTime<FixedOffset>);
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct FtUser {
-    pub id: Option<FtUserId>,
-    pub email: Option<FtEmail>,
-    pub login: Option<FtLoginId>,
-    pub first_name: Option<FtFirstName>,
-    pub last_name: Option<FtLastName>,
-    pub url: Option<FtUrl>,
-    pub phone: Option<FtPhone>,
-    pub displayname: Option<FtDisplayName>,
-    pub kind: Option<FtKind>,
-    pub active: Option<bool>,
-    pub alumni: Option<bool>,
-    pub alumnized_at: Option<DateTimeFixedOffset>,
-    pub anonymize_date: Option<DateTimeFixedOffset>,
-    pub correction_point: Option<FtCorrectionPoint>,
-    pub created_at: Option<DateTimeUtc>,
-    pub data_erasure_date: Option<DateTimeUtc>,
-    pub image: Option<FtImage>,
-    pub location: Option<FtHost>,
-    pub pool_month: Option<FtPoolMonth>,
-    pub pool_year: Option<FtPoolYear>,
-    pub staff: Option<bool>,
-    pub updated_at: Option<DateTimeUtc>,
-    pub usual_first_name: Option<FtUsualFirstName>,
-    pub usual_full_name: Option<FtUsualFullName>,
-    pub wallet: Option<FtWallet>,
-}
-
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
-pub enum FtPoolMonth {
-    January,
-    February,
-    March,
-    April,
-    May,
-    June,
-    July,
-    August,
-    September,
-    October,
-    November,
-    December,
-}
-
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
-pub struct FtPoolYear(String);
-
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
-pub struct FtEmail(String);
-
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
-pub struct FtUsualFirstName(String);
-
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
-pub struct FtUsualFullName(String);
-
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
-pub struct FtCorrectionPoint(i32);
-
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
-pub struct FtWallet(i32);
-
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
-pub struct FtFirstName(String);
-
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
-pub struct FtDisplayName(String);
-
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
-pub struct FtLastName(String);
-
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
-pub struct FtUserId(i32);
-
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
-pub struct FtLoginId(pub String);
-
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
-pub struct FtCampusId(i32);
-
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
-pub struct FtUrl(String);
-
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
-pub struct FtPhone(pub String);
-
-impl FtPhone {
-    pub fn is_hidden(&self) -> bool {
-        self.0 == "hidden"
-    }
-}
-
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
-pub enum FtKind {
-    Student,
-    Staff,
-}
+pub type Seresult<T> = Result<T, serde_json::Error>;
 
 #[cfg(test)]
 mod tests {

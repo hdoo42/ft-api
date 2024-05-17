@@ -4,14 +4,14 @@ use crate::FtUrl;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct FtImage {
-    pub link: FtUrl,
+    pub link: Option<FtUrl>,
     pub versions: Option<FtVersions>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct FtVersions {
-    large: FtUrl,
-    medium: FtUrl,
-    small: FtUrl,
-    micro: FtUrl,
+    large: Option<FtUrl>,
+    medium: Option<FtUrl>,
+    small: Option<FtUrl>,
+    micro: Option<FtUrl>,
 }

@@ -163,7 +163,7 @@ impl FtApiToken {
                 .await
                 .map_err(|e| format!("Error in parsing json: {e}")),
             reqwest::StatusCode::UNAUTHORIZED => {
-                Err(format!("Error: {:?}", res.error_for_status()))
+                Err(format!("UNAUTHORIZED: {:?}", res.error_for_status()))
             }
             reqwest::StatusCode::NOT_FOUND => Err(format!("Error: {:?}", res.error_for_status())),
             other => Err(other.to_string()),

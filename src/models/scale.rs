@@ -13,7 +13,7 @@ pub struct FtScale {
     pub introduction_md: FtIntroductionMd,
     pub disclaimer_md: FtDisclaimerMd,
     pub guidelines_md: FtGuidelinesMd,
-    pub created_at: DateTimeUtc,
+    pub created_at: FtDateTimeUtc,
     pub correction_number: FtCorrectionNumber,
     pub duration: FtDuration,
     pub manual_subscription: FtManualSubscription,
