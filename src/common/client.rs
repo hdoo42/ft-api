@@ -78,7 +78,6 @@ pub trait FtClientHttpConnector {
             .create_method_uri_path(method_relative_uri)
             .and_then(|url| FtClientHttpApiUri::create_url_with_params(url, params));
 
-        println!("{:?}", full_uri);
         match full_uri {
             Ok(full_uri) => self.http_get_uri(full_uri, token),
             Err(err) => std::future::ready(Err(err)).boxed(),
@@ -239,6 +238,8 @@ where
 
 lazy_static! {
     pub static ref FT_HTTP_EMPTY_GET_PARAMS: Vec<(&'static str, Option<&'static String>)> = vec![];
+    pub static ref FT_HTTP_PAGE_SIZE_100: Vec<(&'static str, Option<&'static str>)> =
+        vec![("page[size]", Some("100"))];
 }
 
 impl FtClientHttpApiUri {

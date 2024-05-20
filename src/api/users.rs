@@ -47,7 +47,7 @@ mod users_tests {
     };
 
     #[test]
-    fn users_id_correction_points_add_request() {
+    fn correction_points_add_request_serde() {
         let req = FtApiUsersIdCorrectionPointsAddRequest {
             id: FtUserId::new(crate::info::TEST_USER_YONDOO06_ID),
             reason: FtCorrectionPointsReason::new("test".to_owned()),
@@ -60,7 +60,7 @@ mod users_tests {
     }
 
     #[tokio::test]
-    async fn users_id_correction_points_add_test() {
+    async fn correction_points_add_test() {
         let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
             .await
             .unwrap();
@@ -72,7 +72,7 @@ mod users_tests {
         let session = client.open_session(&token);
         let res = session
             .users_id_correction_points_add(FtApiUsersIdCorrectionPointsAddRequest {
-                id: FtUserId::new(185472),
+                id: FtUserId::new(crate::info::TEST_USER_YONDOO06_ID),
                 reason: FtCorrectionPointsReason::new("test".to_owned()),
                 amount: FtCorrectionPointsAmount::new(42),
             })

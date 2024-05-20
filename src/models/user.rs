@@ -100,6 +100,7 @@ impl FtPhone {
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum FtKind {
+    Admin,
     Student,
     Staff,
 }

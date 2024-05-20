@@ -5,6 +5,7 @@ use reqwest::{
     header::{self, AUTHORIZATION},
     Client, Method, RequestBuilder, StatusCode,
 };
+use tracing::Span;
 use url::Url;
 
 use crate::*;
@@ -17,6 +18,52 @@ impl Default for FtClientReqwestConnector {
     fn default() -> Self {
         Self::new()
     }
+}
+
+#[derive(Debug, Clone)]
+pub struct FtClientApiCallContext<'a> {
+    pub tracing_span: &'a Span,
+    pub current_page: Option<usize>,
+}
+
+//std::option::Option<std::result::Result<&str, reqwest::header::ToStrError>>
+fn parse_link_contents(
+    link_contents: Option<Result<&str, reqwest::header::ToStrError>>,
+) -> Vec<(&str, i32)> {
+    let mut result = Vec::new();
+    let link_contents = match link_contents {
+        Some(Ok(s)) => s,
+        _ => return result,
+    };
+
+    for part in link_contents.split(", ") {
+        let parts: Vec<&str> = part.split("; ").collect();
+
+        let url_part = parts[0];
+        let rel_part = parts[1];
+
+        let Some(page_str) = url_part
+            .split("page=")
+            .nth(1)
+            .and_then(|s| s.split('&').next())
+        else {
+            continue;
+        };
+        let Ok(page_num) = page_str.parse() else {
+            continue;
+        };
+
+        let Some(rel_type) = rel_part.split('=').nth(1) else {
+            continue;
+        };
+        let rel_type = rel_type.trim_matches('"');
+
+        if rel_type == "next" || rel_type == "prev" || rel_type == "last" {
+            result.push((rel_type, page_num));
+        }
+    }
+
+    result
 }
 
 impl FtClientReqwestConnector {
@@ -48,6 +95,7 @@ impl FtClientReqwestConnector {
         let http_status = http_res.status();
         let http_headers = http_res.headers().clone();
         let http_content_type = http_headers.get(header::CONTENT_TYPE);
+        let http_page_link = http_headers.get(header::LINK);
         let http_body_str = http_res
             .text()
             .await
@@ -58,7 +106,11 @@ impl FtClientReqwestConnector {
             Some(Ok("application/json; charset=utf-8"))
         );
 
-        println!("{:?} {http_content_is_json}", http_content_type);
+        let http_page_link =
+            parse_link_contents(http_page_link.map(|page_link| page_link.to_str()));
+        // TODO: add debug context
+
+        println!("pagination : {:?}", http_page_link);
 
         match http_status {
             StatusCode::OK if http_content_is_json => {

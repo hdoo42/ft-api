@@ -1,6 +1,5 @@
-use std::str::FromStr;
-
 use serde::{de::Error, Deserialize, Deserializer, Serialize};
+use std::str::FromStr;
 
 use crate::FtDateTimeUtc;
 

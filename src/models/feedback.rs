@@ -1,7 +1,7 @@
 use rvstruct::ValueStruct;
 use serde::{Deserialize, Serialize};
 
-use crate::{models::Seresult, *};
+use crate::*;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct FtFeedback {
@@ -42,7 +42,7 @@ fn deser_feedbacks() {
     "comment": "너무 정성드려서 피드백을 해주셔서 정말 감사했어요!!",
     "rating": 5,
     "created_at": "2023-11-27T04:18:08.698Z",
-    "feedback_details": [ 
+    "feedback_details": [
       { "id": 19139610, "rate": 4, "kind": "nice" },
       { "id": 19139609, "rate": 4, "kind": "rigorous" },
       { "id": 19139608, "rate": 4, "kind": "interested" },
@@ -61,7 +61,7 @@ fn deser_feedbacks() {
     "comment": "he is so kind and his explanation has so many details. i want all my evaluator to be alike him.\r\nhe is 10/10 evaluator. okay thank you. 4$",
     "rating": 5,
     "created_at": "2023-11-27T05:56:00.374Z",
-    "feedback_details": [ 
+    "feedback_details": [
       { "id": 19139910, "rate": 4, "kind": "nice" },
       { "id": 19139909, "rate": 4, "kind": "rigorous" },
       { "id": 19139908, "rate": 4, "kind": "interested" },
