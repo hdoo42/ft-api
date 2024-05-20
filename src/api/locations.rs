@@ -98,23 +98,8 @@ mod tests {
         FtClientReqwestConnector, FtLocationFilterField, FtLocationFilterOption, GS_CAMPUS_ID,
     };
 
-    // #[tokio::test]
-    // async fn location_with_params() {
-    //     let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
-    //         .await
-    //         .unwrap();
-    //
-    //     let client = FtClient::new(FtClientReqwestConnector::with_connector(
-    //         reqwest::Client::new(),
-    //     ));
-    //
-    //     let session = client.open_session(&token);
-    //     let res = session.campus_gs_locations_with_param(&params).await;
-    //     assert!(res.is_ok(), "{:?}", res);
-    // }
-
     #[tokio::test]
-    async fn location_deserialize() {
+    async fn location_with_params() {
         let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
             .await
             .unwrap();
@@ -135,12 +120,6 @@ mod tests {
             )
             .await;
 
-        //res to file
-        std::fs::write(
-            "location.json",
-            serde_json::to_string(&res.unwrap()).unwrap(),
-        )
-        .unwrap();
-        // assert!(res.is_ok(), "{:?}", res);
+        assert!(res.is_ok(), "{:?}", res);
     }
 }
