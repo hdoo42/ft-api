@@ -108,9 +108,6 @@ impl FtClientReqwestConnector {
 
         let http_page_link =
             parse_link_contents(http_page_link.map(|page_link| page_link.to_str()));
-        // TODO: add debug context
-
-        println!("pagination : {:?}", http_page_link);
 
         match http_status {
             StatusCode::OK if http_content_is_json => {
