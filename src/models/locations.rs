@@ -23,7 +23,7 @@ pub struct FtHost(pub String);
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
-pub enum FtLocationFilterField {
+pub enum FtFilterField {
     Id,
     UserId,
     BeginAt,
@@ -38,8 +38,8 @@ pub enum FtLocationFilterField {
 }
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, Builder)]
-pub struct FtLocationFilterOption {
-    pub field: FtLocationFilterField,
+pub struct FtFilterOption {
+    pub field: FtFilterField,
     pub value: Vec<String>,
 }
 

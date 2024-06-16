@@ -2,8 +2,8 @@ use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    ClientResult, FtCampusId, FtClientHttpConnector, FtClientSession, FtLocation,
-    FtLocationFilterField, FtLocationFilterOption, FtLocationSortOption, FtUserId,
+    ClientResult, FtCampusId, FtClientHttpConnector, FtClientSession, FtFilterField,
+    FtFilterOption, FtLocation, FtLocationSortOption, FtUserId,
 };
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
@@ -11,7 +11,7 @@ pub struct FtApiCampusLocationsRequest {
     pub user_id: Option<FtUserId>,
     pub campus_id: FtCampusId,
     pub sort: Option<Vec<FtLocationSortOption>>,
-    pub filter: Option<Vec<FtLocationFilterOption>>,
+    pub filter: Option<Vec<FtFilterOption>>,
     pub page: Option<u16>,
     pub per_page: Option<u8>,
 }
@@ -23,24 +23,22 @@ pub struct FtApiCampusLocationsResponse {
 }
 
 // Function to convert Vec<FtLocationFilterOption> to Vec<(&str, Option<String>)>
-fn convert_to_tuples(
-    filter_options: Vec<FtLocationFilterOption>,
-) -> Vec<(&'static str, Option<String>)> {
+fn convert_to_tuples(filter_options: Vec<FtFilterOption>) -> Vec<(&'static str, Option<String>)> {
     filter_options
         .into_iter()
         .map(|option| {
             let field = match option.field {
-                FtLocationFilterField::Id => "filter[id]",
-                FtLocationFilterField::UserId => "filter[user_id]",
-                FtLocationFilterField::BeginAt => "filter[begin_at]",
-                FtLocationFilterField::EndAt => "filter[end_at]",
-                FtLocationFilterField::Primary => "filter[primary]",
-                FtLocationFilterField::Host => "filter[host]",
-                FtLocationFilterField::CampusId => "filter[campus_id]",
-                FtLocationFilterField::Active => "filter[active]",
-                FtLocationFilterField::Inactive => "filter[inactive]",
-                FtLocationFilterField::Future => "filter[future]",
-                FtLocationFilterField::End => "filter[end]",
+                FtFilterField::Id => "filter[id]",
+                FtFilterField::UserId => "filter[user_id]",
+                FtFilterField::BeginAt => "filter[begin_at]",
+                FtFilterField::EndAt => "filter[end_at]",
+                FtFilterField::Primary => "filter[primary]",
+                FtFilterField::Host => "filter[host]",
+                FtFilterField::CampusId => "filter[campus_id]",
+                FtFilterField::Active => "filter[active]",
+                FtFilterField::Inactive => "filter[inactive]",
+                FtFilterField::Future => "filter[future]",
+                FtFilterField::End => "filter[end]",
             };
             let values = if option.value.is_empty() {
                 None
@@ -95,7 +93,7 @@ where
 mod tests {
     use crate::{
         locations::FtApiCampusLocationsRequest, AuthInfo, FtApiToken, FtCampusId, FtClient,
-        FtClientReqwestConnector, FtLocationFilterField, FtLocationFilterOption, GS_CAMPUS_ID,
+        FtClientReqwestConnector, FtFilterField, FtFilterOption, GS_CAMPUS_ID,
     };
 
     #[tokio::test]
@@ -112,10 +110,7 @@ mod tests {
         let res = session
             .campus_id_locations(
                 FtApiCampusLocationsRequest::new(FtCampusId::new(GS_CAMPUS_ID)).with_filter(vec![
-                    FtLocationFilterOption::new(
-                        FtLocationFilterField::Active,
-                        vec!["true".to_string()],
-                    ),
+                    FtFilterOption::new(FtFilterField::Active, vec!["true".to_string()]),
                 ]),
             )
             .await;
