@@ -27,7 +27,7 @@ pub struct FtClientApiCallContext<'a> {
 }
 
 //std::option::Option<std::result::Result<&str, reqwest::header::ToStrError>>
-fn parse_link_contents(
+pub fn parse_link_contents(
     link_contents: Option<Result<&str, reqwest::header::ToStrError>>,
 ) -> Vec<(&str, i32)> {
     let mut result = Vec::new();
@@ -95,7 +95,6 @@ impl FtClientReqwestConnector {
         let http_status = http_res.status();
         let http_headers = http_res.headers().clone();
         let http_content_type = http_headers.get(header::CONTENT_TYPE);
-        let http_page_link = http_headers.get(header::LINK);
         let http_body_str = http_res
             .text()
             .await
@@ -105,9 +104,6 @@ impl FtClientReqwestConnector {
             http_content_type.map(|content_type| content_type.to_str()),
             Some(Ok("application/json; charset=utf-8"))
         );
-
-        let http_page_link =
-            parse_link_contents(http_page_link.map(|page_link| page_link.to_str()));
 
         match http_status {
             StatusCode::OK if http_content_is_json => {
