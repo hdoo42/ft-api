@@ -37,7 +37,7 @@ where
 }
 
 #[cfg(test)]
-mod users_tests {
+mod tests {
     use crate::{
         users::{
             FtApiUsersIdCorrectionPointsAddRequest, FtCorrectionPointsAmount,
