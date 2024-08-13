@@ -9,6 +9,10 @@ pub use flag::*;
 mod flag;
 pub use project_session::*;
 mod project_session;
+pub use project::*;
+mod project;
+pub use projects_users::*;
+mod projects_users;
 pub use scale::*;
 mod scale;
 pub use feedback::*;
@@ -21,10 +25,12 @@ pub use image::*;
 mod image;
 pub use user::*;
 mod user;
+pub use campus::*;
+mod campus;
 
 mod common;
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, PartialEq)]
 pub struct FtDateTimeUtc(DateTime<Utc>);
 
 #[derive(Serialize, Deserialize, Debug)]
