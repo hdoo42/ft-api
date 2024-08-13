@@ -1,7 +1,7 @@
 use rvstruct::ValueStruct;
 use serde::{Deserialize, Serialize};
 
-use crate::{FtFinalMark, FtProjectSessionId, FtScaleTeam, FtUrl, FtUser};
+use crate::{FtFinalMark, FtProjectId, FtProjectSessionId, FtScaleTeam, FtUrl, FtUser};
 
 use super::FtDateTimeUtc;
 
@@ -47,9 +47,6 @@ pub struct FtName(pub String);
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtProjectGitlabPath(pub String);
-
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
-pub struct FtProjectId(pub i32);
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtRepoUuid(pub String);
