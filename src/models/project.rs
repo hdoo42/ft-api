@@ -5,21 +5,21 @@ use crate::{FtCampus, FtDateTimeUtc, FtUrl};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct FtProjects {
-    pub campus: Vec<FtCampus>,
-    pub children: Vec<FtChildProject>,
-    pub created_at: FtDateTimeUtc,
-    pub cursus: Vec<FtCursus>,
+    pub campus: Option<Vec<FtCampus>>,
+    pub children: Option<FtChildProject>,
+    pub created_at: Option<FtDateTimeUtc>,
+    pub cursus: Option<Vec<FtCursus>>,
     pub difficulty: Option<i32>,
-    pub exam: bool,
+    pub exam: Option<bool>,
     pub git_id: Option<i32>,
     pub id: FtProjectId,
     pub name: FtProjectName,
     pub parent: Option<FtParentProject>,
-    pub project_sessions: Vec<FtProjectSession>,
+    pub project_sessions: Option<Vec<FtProjectSession>>,
     pub repository: Option<String>,
     pub slug: FtSlug,
-    pub updated_at: FtDateTimeUtc,
-    pub videos: Vec<FtVideo>,
+    pub updated_at: Option<FtDateTimeUtc>,
+    pub videos: Option<Vec<FtVideo>>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]

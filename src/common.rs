@@ -3,3 +3,6 @@ mod client;
 
 pub use error::*;
 mod error;
+
+pub use param::*;
+mod param;

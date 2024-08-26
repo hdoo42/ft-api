@@ -1,39 +1,27 @@
 use ft_api::{
-    locations::FtApiCampusLocationsRequest, AuthInfo, FtApiToken, FtCampusId, FtClient,
-    FtClientReqwestConnector, GS_CAMPUS_ID,
+    ft_project_session_ids::ft_cursus::inner::LIBFT,
+    project_sessions_id_teams::FtApiProjectSessionsTeamsRequest, AuthInfo, FtApiToken, FtClient,
+    FtClientReqwestConnector, FtFilterField, FtFilterOption, FtProjectSessionId,
 };
 
 #[tokio::main]
 async fn main() {
-    println!("42 Api for Rust");
+    let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
+        .await
+        .unwrap();
 
-    console_subscriber::init();
-    let info = AuthInfo::build_from_env().unwrap();
-    let res = FtApiToken::try_get(info).await;
-    println!("token: {:?}", res);
+    let client = FtClient::new(FtClientReqwestConnector::with_connector(
+        reqwest::Client::new(),
+    ));
 
-    if let Ok(token) = res {
-        println!("token ok");
-        let client = FtClient::new(FtClientReqwestConnector::with_connector(
-            reqwest::Client::new(),
-        ));
+    let req =
+        FtApiProjectSessionsTeamsRequest::new(FtProjectSessionId::new(LIBFT)).with_filter(vec![
+            FtFilterOption::new(FtFilterField::Campus, vec!["69".to_owned()]),
+        ]);
 
-        let session = client.open_session(&token);
-        let mut res = Vec::new();
+    let session = client.open_session(&token);
+    let res = session.project_sessions_id_teams(req).await;
 
-        for page in 216..=218 {
-            let resp = session
-                .campus_id_locations(
-                    FtApiCampusLocationsRequest::new(FtCampusId::new(GS_CAMPUS_ID))
-                        .with_page(page as u16)
-                        .with_per_page(100),
-                )
-                .await;
-            println!("page: {} {:?}", page, resp);
-            if resp.is_err() {
-                break;
-            }
-            res.push(resp);
-        }
-    }
+    assert!(res.is_ok());
+    println!("{:?}", res.unwrap());
 }

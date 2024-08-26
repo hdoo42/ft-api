@@ -14,13 +14,27 @@ pub struct FtScaleTeam {
     pub feedback: Option<FtScaleTeamFeedback>,
     pub flag: Option<FtScaleFlag>,
     pub begin_at: Option<FtDateTimeUtc>,
-    pub corrector: FtUser,
-    pub correcteds: Vec<FtUser>,
+    pub corrector: FtCorrector,
+    pub correcteds: FtCorrecteds,
     pub filled_at: Option<FtDateTimeUtc>,
     pub truant: Option<FtUser>,
     pub scale: Option<FtScale>,
     pub team: Option<FtTeam>,
     pub feedbacks: Option<Vec<FtFeedback>>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum FtCorrector {
+    User(Box<FtUser>),
+    String(String),
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum FtCorrecteds {
+    String(String),
+    Vec(Vec<FtUser>),
 }
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
