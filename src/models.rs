@@ -27,6 +27,8 @@ pub use user::*;
 mod user;
 pub use campus::*;
 mod campus;
+pub use correction_point_history::*;
+mod correction_point_history;
 
 mod common;
 
