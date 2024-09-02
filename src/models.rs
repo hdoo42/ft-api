@@ -33,7 +33,7 @@ mod correction_point_history;
 mod common;
 
 #[derive(Serialize, Deserialize, Debug, PartialEq)]
-pub struct FtDateTimeUtc(DateTime<Utc>);
+pub struct FtDateTimeUtc(pub DateTime<Utc>);
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct FtDateTimeFixedOffset(DateTime<FixedOffset>);
