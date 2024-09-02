@@ -3,6 +3,18 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
+pub enum FtRangeField {
+    Id,
+    UserId,
+    BeginAt,
+    EndAt,
+    Primary,
+    Host,
+    CampusId,
+}
+
+#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
 pub enum FtFilterField {
     Active,
     ActiveCursus,
@@ -46,6 +58,12 @@ pub struct FtSortOption {
 }
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, Builder)]
+pub struct FtRangeOption {
+    pub range: FtRangeField,
+    pub value: Vec<String>,
+}
+
+#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, Builder)]
 pub struct FtFilterOption {
     pub field: FtFilterField,
     pub value: Vec<String>,
@@ -64,7 +82,7 @@ pub enum FtSortField {
 }
 
 // Function to convert Vec<FtFilterOption> to Vec<(&str, Option<String>)>
-pub fn convert_to_tuples(
+pub fn convert_filter_option_to_tuple(
     filter_options: Vec<FtFilterOption>,
 ) -> Vec<(&'static str, Option<String>)> {
     filter_options
@@ -104,6 +122,32 @@ pub fn convert_to_tuples(
                 FtFilterField::UpdatedAt => "filter[updated_at]",
                 FtFilterField::UserId => "filter[user_id]",
                 FtFilterField::WithMark => "filter[with_mark]",
+            };
+            let values = if option.value.is_empty() {
+                None
+            } else {
+                Some(option.value.join(","))
+            };
+            (field, values)
+        })
+        .collect()
+}
+
+// Function to convert Vec<FtFilterOption> to Vec<(&str, Option<String>)>
+pub fn convert_range_option_to_tuple(
+    range_options: Vec<FtRangeOption>,
+) -> Vec<(&'static str, Option<String>)> {
+    range_options
+        .into_iter()
+        .map(|option| {
+            let field = match option.range {
+                FtRangeField::Id => "range[id]",
+                FtRangeField::UserId => "range[user_id]",
+                FtRangeField::BeginAt => "range[begin_at]",
+                FtRangeField::EndAt => "range[end_at]",
+                FtRangeField::Primary => "range[primary]",
+                FtRangeField::Host => "range[host]",
+                FtRangeField::CampusId => "range[campus_id]",
             };
             let values = if option.value.is_empty() {
                 None

@@ -2,8 +2,9 @@ use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    convert_to_tuples, ClientResult, FtCampusId, FtClientHttpConnector, FtClientSession,
-    FtFilterOption, FtLocation, FtSortOption, FtUserId,
+    convert_filter_option_to_tuple, convert_range_option_to_tuple, ClientResult, FtCampusId,
+    FtClientHttpConnector, FtClientSession, FtFilterOption, FtLocation, FtRangeOption,
+    FtSortOption, FtUserId,
 };
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
@@ -11,6 +12,7 @@ pub struct FtApiCampusLocationsRequest {
     pub user_id: Option<FtUserId>,
     pub campus_id: FtCampusId,
     pub sort: Option<Vec<FtSortOption>>,
+    pub range: Option<Vec<FtRangeOption>>,
     pub filter: Option<Vec<FtFilterOption>>,
     pub page: Option<u16>,
     pub per_page: Option<u8>,
@@ -32,7 +34,8 @@ where
     ) -> ClientResult<FtApiCampusLocationsResponse> {
         let url = &format!("campus/{}/locations", req.campus_id);
 
-        let filters = convert_to_tuples(req.filter.unwrap_or_default());
+        let filters = convert_filter_option_to_tuple(req.filter.unwrap_or_default());
+        let range = convert_range_option_to_tuple(req.range.unwrap_or_default());
 
         let params = vec![
             ("page", req.page.as_ref().map(|v| v.to_string())),
@@ -56,7 +59,7 @@ where
         ];
 
         self.http_session_api
-            .http_get(url, &[filters, params].concat())
+            .http_get(url, &[filters, range, params].concat())
             .await
     }
 }

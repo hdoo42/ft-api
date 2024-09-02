@@ -2,8 +2,8 @@ use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    convert_to_tuples, ClientResult, FtClientHttpConnector, FtClientSession, FtFilterOption,
-    FtProjectSessionId, FtSortOption, FtTeam,
+    convert_filter_option_to_tuple, ClientResult, FtClientHttpConnector, FtClientSession,
+    FtFilterOption, FtProjectSessionId, FtSortOption, FtTeam,
 };
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
@@ -31,7 +31,7 @@ where
     ) -> ClientResult<FtApiProjectSessionsTeamsResponse> {
         let url = &format!("project_sessions/{}/teams", reqest.project_session_id);
 
-        let filters = convert_to_tuples(reqest.filter.unwrap_or_default());
+        let filters = convert_filter_option_to_tuple(reqest.filter.unwrap_or_default());
 
         let params = vec![
             ("page", reqest.page.as_ref().map(|v| v.to_string())),
