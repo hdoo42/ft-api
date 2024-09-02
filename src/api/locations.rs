@@ -8,7 +8,7 @@ use crate::{
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
 pub struct FtApiCampusLocationsRequest {
-    pub user_id: Option<Vec<FtUserId>>,
+    pub user_id: Option<FtUserId>,
     pub campus_id: FtCampusId,
     pub sort: Option<Vec<FtSortOption>>,
     pub filter: Option<Vec<FtFilterOption>>,
