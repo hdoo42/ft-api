@@ -38,7 +38,7 @@ pub enum FtCorrecteds {
 }
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
-pub struct FtFinalMark(i32);
+pub struct FtFinalMark(pub i32);
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtScaleTeamId(i32);

@@ -1,15 +1,19 @@
 use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
+use serde_json::Value;
 
 use crate::{
     convert_filter_option_to_tuple, convert_range_option_to_tuple, ClientResult,
-    FtClientHttpConnector, FtClientSession, FtCorrectionPointHistory, FtFilterOption,
-    FtRangeOption, FtSortOption, FtUserId,
+    FtClientHttpConnector, FtClientSession, FtCorrectionPointHistory, FtCursusId, FtFilterOption,
+    FtProjectId, FtProjectSessionId, FtRangeOption, FtSortOption, FtTeam, FtUserId,
 };
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
-pub struct FtApiUsersIdCorrectionPointHistoricsRequest {
+pub struct FtApiUsersIdTeamsRequest {
+    pub cursus_id: Option<FtCursusId>,
     pub user_id: FtUserId,
+    pub project_id: Option<FtProjectId>,
+    pub project_session_id: Option<FtProjectSessionId>,
     pub sort: Option<Vec<FtSortOption>>,
     pub range: Option<Vec<FtRangeOption>>,
     pub filter: Option<Vec<FtFilterOption>>,
@@ -19,24 +23,30 @@ pub struct FtApiUsersIdCorrectionPointHistoricsRequest {
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
 #[serde(transparent)]
-pub struct FtApiUsersIdCorrectionPointHistoricsResponse {
-    pub value: Vec<FtCorrectionPointHistory>,
+pub struct FtApiUsersIdTeamsResponse {
+    pub value: Vec<FtTeam>,
 }
 
 impl<'a, FCHC> FtClientSession<'a, FCHC>
 where
     FCHC: FtClientHttpConnector + Send + Sync,
 {
-    pub async fn users_id_correction_point_historics(
+    pub async fn users_id_teams(
         &self,
-        req: FtApiUsersIdCorrectionPointHistoricsRequest,
-    ) -> ClientResult<FtApiUsersIdCorrectionPointHistoricsResponse> {
-        let url = &format!("users/{}/correction_point_historics", req.user_id);
+        req: FtApiUsersIdTeamsRequest,
+    ) -> ClientResult<FtApiUsersIdTeamsResponse> {
+        let url = &format!("users/{}/teams", req.user_id);
 
         let filters = convert_filter_option_to_tuple(req.filter.unwrap_or_default());
         let range = convert_range_option_to_tuple(req.range.unwrap_or_default());
 
         let params = vec![
+            ("cursus_id", req.cursus_id.as_ref().map(|v| v.to_string())),
+            ("project_id", req.project_id.as_ref().map(|v| v.to_string())),
+            (
+                "project_session_id",
+                req.project_session_id.as_ref().map(|v| v.to_string()),
+            ),
             ("page", req.page.as_ref().map(|v| v.to_string())),
             ("per_page", req.per_page.as_ref().map(|v| v.to_string())),
             (
@@ -70,7 +80,7 @@ mod tests {
     use crate::*;
 
     #[tokio::test]
-    async fn correction_point_historics_basic() {
+    async fn user_id_teams_basic() {
         let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
             .await
             .unwrap();
@@ -81,9 +91,9 @@ mod tests {
 
         let session = client.open_session(&token);
         let res = session
-            .users_id_correction_point_historics(FtApiUsersIdCorrectionPointHistoricsRequest::new(
-                FtUserId::new(TEST_USER_YONDOO06_ID),
-            ))
+            .users_id_teams(FtApiUsersIdTeamsRequest::new(FtUserId::new(
+                TEST_USER_YONDOO06_ID,
+            )))
             .await;
 
         assert!(res.is_ok(), "{:?}", res);
