@@ -4,8 +4,8 @@ use serde_json::Value;
 
 use crate::{
     convert_filter_option_to_tuple, convert_range_option_to_tuple, ClientResult,
-    FtClientHttpConnector, FtClientSession, FtCursusId, FtFilterOption, FtProject, FtProjectId,
-    FtRangeOption, FtSortOption,
+    FtClientHttpConnector, FtClientSession, FtCursusId, FtFilterOption, FtProjectId, FtRangeOption,
+    FtSortOption,
 };
 
 #[derive(Debug, Serialize, Deserialize, Builder)]

@@ -1,7 +1,7 @@
 use rvstruct::ValueStruct;
 use serde::{Deserialize, Serialize};
 
-use crate::{FtDateTimeFixedOffset, FtDateTimeUtc, FtHost, FtImage};
+use crate::{FtDateTimeFixedOffset, FtDateTimeUtc, FtHost, FtImage, FtUrl};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct FtUser {
@@ -81,9 +81,6 @@ pub struct FtUserId(i32);
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtLoginId(pub String);
-
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
-pub struct FtUrl(String);
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtPhone(pub String);

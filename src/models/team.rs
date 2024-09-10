@@ -36,7 +36,7 @@ pub struct FtTeamUpload {
     pub final_mark: FtFinalMark,
     pub comment: String,
     pub created_at: FtDateTimeUtc,
-    pub upload_id: FtUploadId,
+    pub upload_id: FtTeamUploadId,
 }
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
@@ -55,7 +55,7 @@ pub struct FtRepoUuid(pub String);
 pub struct FtStatus(pub String);
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
-pub struct FtUploadId(i32);
+pub struct FtTeamUploadId(i32);
 
 #[test]
 fn test_ft_team_deserialization() {
