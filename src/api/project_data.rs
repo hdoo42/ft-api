@@ -1,16 +1,16 @@
 use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
 
-use crate::convert_filter_option_to_tuple;
 use crate::{
-    convert_range_option_to_tuple, ClientResult, FtClientHttpConnector, FtClientSession,
-    FtCursusId, FtFilterOption, FtProject, FtProjectId, FtRangeOption, FtSortOption,
+    convert_filter_option_to_tuple, convert_range_option_to_tuple, ClientResult,
+    FtClientHttpConnector, FtClientSession, FtCursusId, FtFilterOption, FtProjectData,
+    FtRangeOption, FtSortOption,
 };
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
-pub struct FtApiCursusIdProjectsRequest {
-    pub cursus_id: FtCursusId,
-    pub project_id: Option<FtProjectId>,
+pub struct FtApiProjectDataRequest {
+    pub cursus_id: Option<FtCursusId>,
+    pub project_id: Option<i32>,
     pub sort: Option<Vec<FtSortOption>>,
     pub range: Option<Vec<FtRangeOption>>,
     pub filter: Option<Vec<FtFilterOption>>,
@@ -20,19 +20,19 @@ pub struct FtApiCursusIdProjectsRequest {
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
 #[serde(transparent)]
-pub struct FtApiCursusIdProjectsResponse {
-    pub value: Vec<FtProject>,
+pub struct FtApiProjectDataResponse {
+    pub value: Vec<FtProjectData>,
 }
 
 impl<'a, FCHC> FtClientSession<'a, FCHC>
 where
     FCHC: FtClientHttpConnector + Send + Sync,
 {
-    pub async fn cursus_id_projects(
+    pub async fn project_data(
         &self,
-        req: FtApiCursusIdProjectsRequest,
-    ) -> ClientResult<FtApiCursusIdProjectsResponse> {
-        let url = &format!("cursus/{}/projects", req.cursus_id);
+        req: FtApiProjectDataRequest,
+    ) -> ClientResult<FtApiProjectDataResponse> {
+        let url = "project_data";
 
         let filters = convert_filter_option_to_tuple(req.filter.unwrap_or_default());
         let range = convert_range_option_to_tuple(req.range.unwrap_or_default());
@@ -65,14 +65,12 @@ where
 
 #[cfg(test)]
 mod tests {
-    use std::{fs::File, io::Write, path::PathBuf};
-
     use crate::*;
 
     use super::*;
 
     #[tokio::test]
-    async fn cursus_id_projects_basic() {
+    async fn project_data() {
         let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
             .await
             .unwrap();
@@ -82,28 +80,9 @@ mod tests {
         ));
 
         let session = client.open_session(&token);
-        let res = session
-            .cursus_id_projects(FtApiCursusIdProjectsRequest::new(FtCursusId::new(
-                FT_CURSUS_ID,
-            )))
-            .await;
+
+        let res = session.project_data(FtApiProjectDataRequest::new()).await;
 
         assert!(res.is_ok(), "{:?}", res);
-
-        // Get the system's temp directory
-        let mut temp_dir = PathBuf::new();
-
-        // Create a temporary file path
-        temp_dir.push("cursus_project_into_struct.txt");
-
-        // Create the file
-        let mut temp_file = File::create(&temp_dir).unwrap();
-
-        // Write the data to the file
-        res.unwrap().value.iter().for_each(|v| {
-            temp_file
-                .write_all(format!("{:#}", serde_json::to_string(v).unwrap()).as_bytes())
-                .unwrap()
-        });
     }
 }

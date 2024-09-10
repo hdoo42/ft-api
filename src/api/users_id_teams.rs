@@ -73,7 +73,6 @@ where
 
 #[cfg(test)]
 mod tests {
-    use std::{fs::File, io::Write, path::PathBuf};
 
     use super::*;
     use crate::*;
@@ -95,18 +94,6 @@ mod tests {
             )))
             .await;
 
-        assert!(res.is_ok(), "{:?}", res);
-
-        // Get the system's temp directory
-        let mut temp_dir = PathBuf::new();
-
-        // Create a temporary file path
-        temp_dir.push("my_temp_file.txt");
-
-        // Create the file
-        let mut temp_file = File::create(&temp_dir).unwrap();
-
-        // Write the data to the file
-        let _ = temp_file.write_all(format!("{:?}", res.unwrap()).as_bytes());
+        assert!(res.is_ok());
     }
 }

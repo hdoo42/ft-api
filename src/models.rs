@@ -11,6 +11,8 @@ pub use project_session::*;
 mod project_session;
 pub use project::*;
 mod project;
+pub use project_data::*;
+mod project_data;
 pub use projects_users::*;
 mod projects_users;
 pub use scale::*;
