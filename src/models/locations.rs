@@ -1,10 +1,7 @@
 use rvstruct::ValueStruct;
 use serde::{Deserialize, Serialize};
 
-use crate::{
-    models::{FtCampusId, FtDateTimeUtc, FtUser},
-    FtSortField,
-};
+use crate::models::{FtCampusId, FtDateTimeUtc, FtUser};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct FtLocation {

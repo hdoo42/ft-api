@@ -1,6 +1,65 @@
 use rvstruct::ValueStruct;
 use serde::{Deserialize, Serialize};
 
+use crate::{FtDateTimeUtc, FtProjectId, FtScale};
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct FtProjectSession {
+    pub id: FtProjectSessionId,
+    pub objectives: Option<Vec<String>>,
+    pub description: Option<String>,
+    pub project_id: Option<FtProjectId>,
+    pub created_at: Option<FtDateTimeUtc>,
+    pub updated_at: Option<FtDateTimeUtc>,
+    pub is_subscriptable: Option<bool>,
+    pub scales: Option<Vec<FtScale>>,
+    pub uploads: Option<Vec<FtUpload>>,
+    pub team_behaviour: Option<String>,
+    pub solo: Option<bool>,
+    pub begin_at: Option<FtDateTimeUtc>,
+    pub end_at: Option<FtDateTimeUtc>,
+    pub estimate_time: Option<String>,
+    pub difficulty: Option<i32>,
+    pub duration_days: Option<i32>,
+    pub terminating_after: Option<i32>,
+    pub campus_id: Option<i32>,
+    pub cursus_id: Option<i32>,
+    pub max_people: Option<i32>,
+    pub commit: Option<String>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct FtUpload {
+    pub id: Option<FtUploadId>,
+    pub filename: Option<FtFilename>,
+    pub url: Option<FtUrl>,
+    pub created_at: Option<FtCreatedAt>,
+    pub updated_at: Option<FtUpdatedAt>,
+    pub file_size: Option<FtFileSize>,
+    pub mime_type: Option<FtMimeType>,
+}
+
+#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
+pub struct FtUploadId(u32);
+
+#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
+pub struct FtFilename(String);
+
+#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
+pub struct FtUrl(String);
+
+#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
+pub struct FtCreatedAt(String);
+
+#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
+pub struct FtUpdatedAt(String);
+
+#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
+pub struct FtFileSize(u64);
+
+#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
+pub struct FtMimeType(String);
+
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtProjectSessionId(pub i16);
 

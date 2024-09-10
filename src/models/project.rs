@@ -1,12 +1,12 @@
 use rvstruct::ValueStruct;
 use serde::{Deserialize, Serialize};
 
-use crate::{FtCampus, FtDateTimeUtc, FtUrl};
+use crate::{FtCampus, FtDateTimeUtc, FtProjectSession, FtUrl};
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct FtProjects {
+pub struct FtProject {
     pub campus: Option<Vec<FtCampus>>,
-    pub children: Option<FtChildProject>,
+    pub children: Option<Vec<FtProject>>,
     pub created_at: Option<FtDateTimeUtc>,
     pub cursus: Option<Vec<FtCursus>>,
     pub difficulty: Option<i32>,
@@ -41,35 +41,10 @@ pub struct FtCursus {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct FtParentProject {
-    pub name: String,
+    pub name: FtProjectName,
     pub id: FtProjectId,
     pub slug: FtSlug,
     pub url: FtUrl,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct FtProjectSession {
-    pub id: i32,
-    pub solo: bool,
-    pub begin_at: Option<FtDateTimeUtc>,
-    pub end_at: Option<FtDateTimeUtc>,
-    pub estimate_time: String,
-    pub difficulty: Option<i32>,
-    pub objectives: Vec<String>,
-    pub description: String,
-    pub duration_days: Option<i32>,
-    pub terminating_after: Option<String>,
-    pub project_id: FtProjectId,
-    pub campus_id: Option<i32>,
-    pub cursus_id: Option<i32>,
-    pub created_at: FtDateTimeUtc,
-    pub updated_at: FtDateTimeUtc,
-    pub max_people: Option<i32>,
-    pub is_subscriptable: bool,
-    pub scales: Vec<String>,
-    pub uploads: Vec<String>,
-    pub team_behaviour: String,
-    pub commit: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]

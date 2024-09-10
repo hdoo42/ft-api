@@ -5,24 +5,24 @@ use crate::{FtDateTimeUtc, FtLanguage, FtUrl};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct FtCampus {
-    pub active: bool,
-    pub address: FtAddress,
-    pub city: String,
-    pub country: String,
-    pub default_hidden_phone: bool,
+    pub id: FtCampusId,
+    pub active: Option<bool>,
+    pub address: Option<FtAddress>,
+    pub city: Option<String>,
+    pub country: Option<String>,
+    pub default_hidden_phone: Option<bool>,
+    pub language: Option<FtLanguage>,
+    pub name: Option<FtCampusName>,
+    pub public: Option<bool>,
+    pub time_zone: Option<String>,
+    pub zip: Option<FtZip>,
+    pub users_count: Option<FtCampusUserCount>,
+    pub twitter: Option<FtUrl>,
     pub email_extension: Option<String>,
     pub endpoint: Option<FtEndpoint>,
     pub facebook: Option<FtUrl>,
-    pub id: FtCampusId,
-    pub language: FtLanguage,
-    pub name: FtCampusName,
-    pub public: bool,
-    pub time_zone: String,
-    pub twitter: Option<FtUrl>,
-    pub users_count: FtCampusUserCount,
     pub vogsphere_id: Option<i32>,
     pub website: Option<FtUrl>,
-    pub zip: FtZip,
 }
 
 #[derive(Debug, Serialize, Deserialize)]

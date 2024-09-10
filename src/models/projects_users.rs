@@ -2,7 +2,7 @@ use rvstruct::ValueStruct;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    FtCursusId, FtDateTimeUtc, FtFinalMark, FtProjects, FtStatus, FtTeam, FtTeamId, FtUser,
+    FtCursusId, FtDateTimeUtc, FtFinalMark, FtProject, FtStatus, FtTeam, FtTeamId, FtUser,
 }; // Assuming these are already defined
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -15,7 +15,7 @@ pub struct FtProjectsUsers {
     pub marked: bool,
     pub marked_at: Option<FtDateTimeUtc>,
     pub occurrence: FtOccurrence,
-    pub project: FtProjects,
+    pub project: FtProject,
     pub retriable_at: Option<FtDateTimeUtc>,
     pub status: FtStatus,
     pub teams: Vec<FtTeam>,

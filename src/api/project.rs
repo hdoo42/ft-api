@@ -3,16 +3,14 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     convert_filter_option_to_tuple, convert_range_option_to_tuple, ClientResult,
-    FtClientHttpConnector, FtClientSession, FtCursusId, FtFilterOption, FtProjectId,
-    FtProjectSessionId, FtRangeOption, FtSortOption, FtTeam, FtUserId,
+    FtClientHttpConnector, FtClientSession, FtCursusId, FtFilterOption, FtProject, FtProjectId,
+    FtRangeOption, FtSortOption,
 };
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
-pub struct FtApiUsersIdTeamsRequest {
+pub struct FtApiProjectRequest {
     pub cursus_id: Option<FtCursusId>,
-    pub user_id: FtUserId,
     pub project_id: Option<FtProjectId>,
-    pub project_session_id: Option<FtProjectSessionId>,
     pub sort: Option<Vec<FtSortOption>>,
     pub range: Option<Vec<FtRangeOption>>,
     pub filter: Option<Vec<FtFilterOption>>,
@@ -22,30 +20,21 @@ pub struct FtApiUsersIdTeamsRequest {
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
 #[serde(transparent)]
-pub struct FtApiUsersIdTeamsResponse {
-    pub value: Vec<FtTeam>,
+pub struct FtApiProjectResponse {
+    pub value: Vec<FtProject>,
 }
 
 impl<'a, FCHC> FtClientSession<'a, FCHC>
 where
     FCHC: FtClientHttpConnector + Send + Sync,
 {
-    pub async fn users_id_teams(
-        &self,
-        req: FtApiUsersIdTeamsRequest,
-    ) -> ClientResult<FtApiUsersIdTeamsResponse> {
-        let url = &format!("users/{}/teams", req.user_id);
+    pub async fn projects(&self, req: FtApiProjectRequest) -> ClientResult<FtApiProjectResponse> {
+        let url = "projects";
 
         let filters = convert_filter_option_to_tuple(req.filter.unwrap_or_default());
         let range = convert_range_option_to_tuple(req.range.unwrap_or_default());
 
         let params = vec![
-            ("cursus_id", req.cursus_id.as_ref().map(|v| v.to_string())),
-            ("project_id", req.project_id.as_ref().map(|v| v.to_string())),
-            (
-                "project_session_id",
-                req.project_session_id.as_ref().map(|v| v.to_string()),
-            ),
             ("page", req.page.as_ref().map(|v| v.to_string())),
             ("per_page", req.per_page.as_ref().map(|v| v.to_string())),
             (
@@ -75,11 +64,12 @@ where
 mod tests {
     use std::{fs::File, io::Write, path::PathBuf};
 
-    use super::*;
     use crate::*;
 
+    use super::*;
+
     #[tokio::test]
-    async fn user_id_teams_basic() {
+    async fn projects() {
         let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
             .await
             .unwrap();
@@ -89,11 +79,7 @@ mod tests {
         ));
 
         let session = client.open_session(&token);
-        let res = session
-            .users_id_teams(FtApiUsersIdTeamsRequest::new(FtUserId::new(
-                TEST_USER_YONDOO06_ID,
-            )))
-            .await;
+        let res = session.projects(FtApiProjectRequest::new()).await;
 
         assert!(res.is_ok(), "{:?}", res);
 
@@ -101,7 +87,7 @@ mod tests {
         let mut temp_dir = PathBuf::new();
 
         // Create a temporary file path
-        temp_dir.push("my_temp_file.txt");
+        temp_dir.push("temp_project.txt");
 
         // Create the file
         let mut temp_file = File::create(&temp_dir).unwrap();
