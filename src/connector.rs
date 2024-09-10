@@ -14,6 +14,7 @@ pub struct FtClientReqwestConnector {
     reqwest_connector: Client,
     ft_api_url: String,
 }
+
 impl Default for FtClientReqwestConnector {
     fn default() -> Self {
         Self::new()
@@ -158,9 +159,9 @@ impl FtClientHttpConnector for FtClientReqwestConnector {
         &'a self,
         full_uri: url::Url,
         token: &'a FtApiToken,
-    ) -> futures::prelude::future::BoxFuture<'a, crate::ClientResult<RS>>
+    ) -> futures::prelude::future::BoxFuture<'a, ClientResult<RS>>
     where
-        RS: for<'de> serde::de::Deserialize<'de> + Send + 'a + 'a + Send,
+        RS: for<'de> serde::de::Deserialize<'de> + Send + 'a,
     {
         async move {
             let request = self
@@ -178,10 +179,10 @@ impl FtClientHttpConnector for FtClientReqwestConnector {
         full_uri: url::Url,
         token: &'a FtApiToken,
         request_body: &'a RQ,
-    ) -> futures::prelude::future::BoxFuture<'a, crate::ClientResult<RS>>
+    ) -> futures::prelude::future::BoxFuture<'a, ClientResult<RS>>
     where
         RQ: serde::ser::Serialize + Send + Sync,
-        RS: for<'de> serde::de::Deserialize<'de> + Send + 'a + Send + 'a,
+        RS: for<'de> serde::de::Deserialize<'de> + Send + 'a,
     {
         async move {
             let request = self
@@ -203,7 +204,7 @@ impl FtClientHttpConnector for FtClientReqwestConnector {
     ) -> futures::prelude::future::BoxFuture<'a, ClientResult<RS>>
     where
         RQ: serde::ser::Serialize + Send + Sync,
-        RS: for<'de> serde::de::Deserialize<'de> + Send + 'a + Send + 'a,
+        RS: for<'de> serde::de::Deserialize<'de> + Send + 'a,
     {
         async move {
             let patch_json =
