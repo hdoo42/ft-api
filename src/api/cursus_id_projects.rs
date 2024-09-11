@@ -21,7 +21,7 @@ pub struct FtApiCursusIdProjectsRequest {
 #[derive(Debug, Serialize, Deserialize, Builder)]
 #[serde(transparent)]
 pub struct FtApiCursusIdProjectsResponse {
-    pub value: Vec<FtProject>,
+    pub projects: Vec<FtProject>,
 }
 
 impl<'a, FCHC> FtClientSession<'a, FCHC>
@@ -65,8 +65,6 @@ where
 
 #[cfg(test)]
 mod tests {
-    use std::{fs::File, io::Write, path::PathBuf};
-
     use crate::*;
 
     use super::*;
@@ -89,21 +87,5 @@ mod tests {
             .await;
 
         assert!(res.is_ok(), "{:?}", res);
-
-        // Get the system's temp directory
-        let mut temp_dir = PathBuf::new();
-
-        // Create a temporary file path
-        temp_dir.push("cursus_project_into_struct.txt");
-
-        // Create the file
-        let mut temp_file = File::create(&temp_dir).unwrap();
-
-        // Write the data to the file
-        res.unwrap().value.iter().for_each(|v| {
-            temp_file
-                .write_all(format!("{:#}", serde_json::to_string(v).unwrap()).as_bytes())
-                .unwrap()
-        });
     }
 }

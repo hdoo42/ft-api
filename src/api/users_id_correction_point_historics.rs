@@ -20,7 +20,7 @@ pub struct FtApiUsersIdCorrectionPointHistoricsRequest {
 #[derive(Debug, Serialize, Deserialize, Builder)]
 #[serde(transparent)]
 pub struct FtApiUsersIdCorrectionPointHistoricsResponse {
-    pub value: Vec<FtCorrectionPointHistory>,
+    pub historics: Vec<FtCorrectionPointHistory>,
 }
 
 impl<'a, FCHC> FtClientSession<'a, FCHC>

@@ -21,7 +21,7 @@ pub struct FtApiProjectDataRequest {
 #[derive(Debug, Serialize, Deserialize, Builder)]
 #[serde(transparent)]
 pub struct FtApiProjectDataResponse {
-    pub value: Vec<FtProjectData>,
+    pub project_data: Vec<FtProjectData>,
 }
 
 impl<'a, FCHC> FtClientSession<'a, FCHC>

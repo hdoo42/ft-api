@@ -23,7 +23,7 @@ pub struct FtApiUsersIdTeamsRequest {
 #[derive(Debug, Serialize, Deserialize, Builder)]
 #[serde(transparent)]
 pub struct FtApiUsersIdTeamsResponse {
-    pub value: Vec<FtTeam>,
+    pub teams: Vec<FtTeam>,
 }
 
 impl<'a, FCHC> FtClientSession<'a, FCHC>
