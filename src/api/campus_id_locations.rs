@@ -38,10 +38,13 @@ where
         let range = convert_range_option_to_tuple(req.range.unwrap_or_default());
 
         let params = vec![
-            ("page", req.page.as_ref().map(|v| v.to_string())),
-            ("per_page", req.per_page.as_ref().map(|v| v.to_string())),
+            ("page".to_string(), req.page.as_ref().map(|v| v.to_string())),
             (
-                "sort",
+                "per_page".to_string(
+               ), req.per_page.as_ref().map(|v| v.to_string(,
+            ))),
+            (
+                "sort".to_string(),
                 req.sort.as_ref().map(|v| {
                     v.iter()
                         .map(|v| {
@@ -55,7 +58,7 @@ where
                         .join(",")
                 }),
             ),
-            ("user_id", req.user_id.as_ref().map(|v| v.to_string())),
+            ("user_id".to_string(), req.user_id.as_ref().map(|v| v.to_string())),
         ];
 
         self.http_session_api
