@@ -1,3 +1,7 @@
-/target
+*
+!*.rs
+!*/
+!Cargo.toml
+**/target
 .env.fish
 .env
