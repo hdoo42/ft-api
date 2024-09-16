@@ -1,3 +1,4 @@
+#![warn(clippy::pedantic)]
 #![feature(concat_idents)]
 
 pub use api::*;

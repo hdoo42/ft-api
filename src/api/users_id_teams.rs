@@ -36,20 +36,36 @@ where
     ) -> ClientResult<FtApiUsersIdTeamsResponse> {
         let url = &format!("users/{}/teams", req.user_id);
 
-        let filters = convert_filter_option_to_tuple(req.filter.unwrap_or_default());
-        let range = convert_range_option_to_tuple(req.range.unwrap_or_default());
+        let filters = convert_filter_option_to_tuple(req.filter.unwrap_or_default()).unwrap();
+        let range = convert_range_option_to_tuple(req.range.unwrap_or_default()).unwrap();
 
         let params = vec![
-            ("cursus_id", req.cursus_id.as_ref().map(|v| v.to_string())),
-            ("project_id", req.project_id.as_ref().map(|v| v.to_string())),
             (
-                "project_session_id",
-                req.project_session_id.as_ref().map(|v| v.to_string()),
+                "cursus_id".to_string(),
+                req.cursus_id.as_ref().map(std::string::ToString::to_string),
             ),
-            ("page", req.page.as_ref().map(|v| v.to_string())),
-            ("per_page", req.per_page.as_ref().map(|v| v.to_string())),
             (
-                "sort",
+                "project_id".to_string(),
+                req.project_id
+                    .as_ref()
+                    .map(std::string::ToString::to_string),
+            ),
+            (
+                "project_session_id".to_string(),
+                req.project_session_id
+                    .as_ref()
+                    .map(std::string::ToString::to_string),
+            ),
+            (
+                "page".to_string(),
+                req.page.as_ref().map(std::string::ToString::to_string),
+            ),
+            (
+                "per_page".to_string(),
+                req.per_page.as_ref().map(std::string::ToString::to_string),
+            ),
+            (
+                "sort".to_string(),
                 req.sort.as_ref().map(|v| {
                     v.iter()
                         .map(|v| {

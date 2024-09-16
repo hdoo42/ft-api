@@ -46,6 +46,12 @@ There are two major components that need to be implemented:
 ### v2
 
 - campus/:campus_id:/locations
+- locations
+- campus/:campus_id:/locations
+- campus/:campus_id:/locations
+- campus/:campus_id:/locations
+- campus/:campus_id:/locations
+- campus/:campus_id:/locations
 
 ### v3
 

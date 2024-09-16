@@ -1,10 +1,11 @@
+use futures::task::waker;
 use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
 
-use crate::convert_filter_option_to_tuple;
 use crate::{
-    convert_range_option_to_tuple, ClientResult, FtClientHttpConnector, FtClientSession,
-    FtCursusId, FtFilterOption, FtProject, FtProjectId, FtRangeOption, FtSortOption,
+    convert_filter_option_to_tuple, convert_range_option_to_tuple, ClientResult,
+    FtClientHttpConnector, FtClientSession, FtCursusId, FtFilterOption, FtProject, FtProjectId,
+    FtRangeOption, FtSortOption,
 };
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
@@ -34,14 +35,20 @@ where
     ) -> ClientResult<FtApiCursusIdProjectsResponse> {
         let url = &format!("cursus/{}/projects", req.cursus_id);
 
-        let filters = convert_filter_option_to_tuple(req.filter.unwrap_or_default());
-        let range = convert_range_option_to_tuple(req.range.unwrap_or_default());
+        let range = convert_range_option_to_tuple(req.range.unwrap_or_default()).unwrap();
+        let filters = convert_filter_option_to_tuple(req.filter.unwrap_or_default()).unwrap();
 
         let params = vec![
-            ("page", req.page.as_ref().map(|v| v.to_string())),
-            ("per_page", req.per_page.as_ref().map(|v| v.to_string())),
             (
-                "sort",
+                "page".to_string(),
+                req.page.as_ref().map(std::string::ToString::to_string),
+            ),
+            (
+                "per_page".to_string(),
+                req.per_page.as_ref().map(std::string::ToString::to_string),
+            ),
+            (
+                "sort".to_string(),
                 req.sort.as_ref().map(|v| {
                     v.iter()
                         .map(|v| {

@@ -34,15 +34,18 @@ where
     ) -> ClientResult<FtApiCampusLocationsResponse> {
         let url = &format!("campus/{}/locations", req.campus_id);
 
-        let filters = convert_filter_option_to_tuple(req.filter.unwrap_or_default());
-        let range = convert_range_option_to_tuple(req.range.unwrap_or_default());
+        let filters = convert_filter_option_to_tuple(req.filter.unwrap_or_default()).unwrap();
+        let range = convert_range_option_to_tuple(req.range.unwrap_or_default()).unwrap();
 
         let params = vec![
-            ("page".to_string(), req.page.as_ref().map(|v| v.to_string())),
             (
-                "per_page".to_string(
-               ), req.per_page.as_ref().map(|v| v.to_string(,
-            ))),
+                "page".to_string(),
+                req.page.as_ref().map(std::string::ToString::to_string),
+            ),
+            (
+                "per_page".to_string(),
+                req.per_page.as_ref().map(std::string::ToString::to_string),
+            ),
             (
                 "sort".to_string(),
                 req.sort.as_ref().map(|v| {
@@ -58,7 +61,10 @@ where
                         .join(",")
                 }),
             ),
-            ("user_id".to_string(), req.user_id.as_ref().map(|v| v.to_string())),
+            (
+                "user_id".to_string(),
+                req.user_id.as_ref().map(std::string::ToString::to_string),
+            ),
         ];
 
         self.http_session_api
@@ -69,10 +75,9 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::{
-        locations::FtApiCampusLocationsRequest, AuthInfo, FtApiToken, FtCampusId, FtClient,
-        FtClientReqwestConnector, FtFilterField, FtFilterOption, GS_CAMPUS_ID,
-    };
+    use campus_id_locations::FtApiCampusLocationsRequest;
+
+    use crate::*;
 
     #[tokio::test]
     async fn location_with_params() {

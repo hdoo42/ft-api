@@ -71,7 +71,7 @@ pub trait FtClientHttpConnector {
     ) -> BoxFuture<'a, ClientResult<RS>>
     where
         RS: for<'de> serde::de::Deserialize<'de> + Send + 'a,
-        PT: std::iter::IntoIterator<Item = (&'p str, Option<TS>)> + Clone,
+        PT: std::iter::IntoIterator<Item = (String, Option<TS>)> + Clone,
         TS: AsRef<str> + 'p + Send,
     {
         let full_uri = self
@@ -197,7 +197,7 @@ where
     ) -> ClientResult<RS>
     where
         RS: for<'de> serde::de::Deserialize<'de> + Send,
-        PT: std::iter::IntoIterator<Item = (&'p str, Option<TS>)> + Clone,
+        PT: std::iter::IntoIterator<Item = (String, Option<TS>)> + Clone,
         TS: AsRef<str> + 'p + Send,
     {
         self.client
@@ -237,9 +237,9 @@ where
 }
 
 lazy_static! {
-    pub static ref FT_HTTP_EMPTY_GET_PARAMS: Vec<(&'static str, Option<&'static String>)> = vec![];
-    pub static ref FT_HTTP_PAGE_SIZE_100: Vec<(&'static str, Option<&'static str>)> =
-        vec![("page[size]", Some("100"))];
+    pub static ref FT_HTTP_EMPTY_GET_PARAMS: Vec<(String, Option<&'static String>)> = vec![];
+    pub static ref FT_HTTP_PAGE_SIZE_100: Vec<(String, Option<&'static str>)> =
+        vec![("page[size]".to_string(), Some("100"))];
 }
 
 impl FtClientHttpApiUri {
@@ -251,7 +251,7 @@ impl FtClientHttpApiUri {
 
     pub fn create_url_with_params<'p, PT, TS>(base_url: Url, params: &'p PT) -> ClientResult<Url>
     where
-        PT: std::iter::IntoIterator<Item = (&'p str, Option<TS>)> + Clone,
+        PT: std::iter::IntoIterator<Item = (String, Option<TS>)> + Clone,
         TS: AsRef<str> + 'p,
     {
         let url_query_params: Vec<(String, String)> = params

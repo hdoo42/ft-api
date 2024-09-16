@@ -1,5 +1,5 @@
+pub mod campus_id_locations;
 pub mod cursus_id_projects;
-pub mod locations;
 pub mod project_data;
 pub mod project_sessions_id_scale_teams;
 pub mod project_sessions_id_teams;

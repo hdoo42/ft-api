@@ -26,6 +26,11 @@ impl<'a, FCHC> FtClientSession<'a, FCHC>
 where
     FCHC: FtClientHttpConnector + Send + Sync,
 {
+    ///
+    ///
+    /// # Errors
+    ///
+    /// This function will return an error if
     pub async fn users_id_correction_points_add(
         &self,
         request: FtApiUsersIdCorrectionPointsAddRequest,
@@ -56,7 +61,7 @@ mod tests {
 
         let raw = r#"{"id":185472,"reason":"test","amount":42}"#;
 
-        assert_eq!(raw, serde_json::to_string(&req).unwrap())
+        assert_eq!(raw, serde_json::to_string(&req).unwrap());
     }
 
     #[tokio::test]

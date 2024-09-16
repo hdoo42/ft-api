@@ -98,99 +98,62 @@ pub enum FtSortField {
     Host,
     CampusId,
 }
+use std::error::Error;
 
-// Function to convert Vec<FtFilterOption> to Vec<(&str, Option<String>)>
-pub fn convert_filter_option_to_tuple(
-    filter_options: Vec<FtFilterOption>,
-) -> Vec<(&'static str, Option<String>)> {
-    filter_options
+pub trait ToQueryParam {
+    fn to_query_key(&self) -> Result<String, Box<dyn Error>>;
+}
+
+impl ToQueryParam for FtFilterField {
+    fn to_query_key(&self) -> Result<String, Box<dyn Error>> {
+        let binding = serde_json::to_value(self)?;
+        let field = binding.as_str().ok_or("Failed to convert enum to string")?;
+        Ok(format!("filter[{field}]"))
+    }
+}
+
+impl ToQueryParam for FtRangeField {
+    fn to_query_key(&self) -> Result<String, Box<dyn Error>> {
+        let binding = serde_json::to_value(self)?;
+        let field = binding.as_str().ok_or("Failed to convert enum to string")?;
+        Ok(format!("range[{field}]"))
+    }
+}
+
+pub fn convert_options_to_tuple<T: ToQueryParam>(
+    options: Vec<(T, Vec<String>)>,
+) -> Result<Vec<(String, Option<String>)>, Box<dyn Error>> {
+    options
         .into_iter()
-        .map(|option| {
-            let field = match option.field {
-                FtFilterField::Active => "filter[active]",
-                FtFilterField::ActiveCursus => "filter[active_cursus]",
-                FtFilterField::BeginAt => "filter[begin_at]",
-                FtFilterField::Campus => "filter[campus]",
-                FtFilterField::CampusId => "filter[campus_id]",
-                FtFilterField::Closed => "filter[closed]",
-                FtFilterField::ClosedAt => "filter[closed_at]",
-                FtFilterField::CreatedAt => "filter[created_at]",
-                FtFilterField::Cursus => "filter[cursus]",
-                FtFilterField::Deadline => "filter[deadline]",
-                FtFilterField::DeadlineAt => "filter[deadline_at]",
-                FtFilterField::End => "filter[end]",
-                FtFilterField::EndAt => "filter[end_at]",
-                FtFilterField::FinalMark => "filter[final_mark]",
-                FtFilterField::Future => "filter[future]",
-                FtFilterField::Host => "filter[host]",
-                FtFilterField::Id => "filter[id]",
-                FtFilterField::Inactive => "filter[inactive]",
-                FtFilterField::Locked => "filter[locked]",
-                FtFilterField::LockedAt => "filter[locked_at]",
-                FtFilterField::Name => "filter[name]",
-                FtFilterField::Primary => "filter[primary]",
-                FtFilterField::PrimaryCampus => "filter[primary_campus]",
-                FtFilterField::ProjectId => "filter[project_id]",
-                FtFilterField::ProjectSessionId => "filter[project_session_id]",
-                FtFilterField::RepoUrl => "filter[repo_url]",
-                FtFilterField::RepoUuid => "filter[repo_uuid]",
-                FtFilterField::Status => "filter[status]",
-                FtFilterField::Terminating => "filter[terminating]",
-                FtFilterField::TerminatingAt => "filter[terminating_at]",
-                FtFilterField::UpdatedAt => "filter[updated_at]",
-                FtFilterField::UserId => "filter[user_id]",
-                FtFilterField::WithMark => "filter[with_mark]",
-            };
-            let values = if option.value.is_empty() {
+        .map(|(field, values)| {
+            let key = field.to_query_key()?;
+            let value = if values.is_empty() {
                 None
             } else {
-                Some(option.value.join(","))
+                Some(values.join(","))
             };
-            (field, values)
+            Ok((key, value))
         })
         .collect()
 }
 
-// Function to convert Vec<FtFilterOption> to Vec<(&str, Option<String>)>
+// Example usage:
+pub fn convert_filter_option_to_tuple(
+    filter_options: Vec<FtFilterOption>,
+) -> Result<Vec<(String, Option<String>)>, Box<dyn Error>> {
+    let options = filter_options
+        .into_iter()
+        .map(|option| (option.field, option.value))
+        .collect();
+    convert_options_to_tuple(options)
+}
+
 pub fn convert_range_option_to_tuple(
     range_options: Vec<FtRangeOption>,
-) -> Vec<(&'static str, Option<String>)> {
-    range_options
+) -> Result<Vec<(String, Option<String>)>, Box<dyn Error>> {
+    let options = range_options
         .into_iter()
-        .map(|option| {
-            let field = match option.range {
-                FtRangeField::Id => "range[id]",
-                FtRangeField::UserId => "range[user_id]",
-                FtRangeField::BeginAt => "range[begin_at]",
-                FtRangeField::EndAt => "range[end_at]",
-                FtRangeField::Primary => "range[primary]",
-                FtRangeField::Host => "range[host]",
-                FtRangeField::CampusId => "range[campus_id]",
-                FtRangeField::UserDataId => "range[user_data_id]",
-                FtRangeField::ScaleTeamId => "range[scale_team_id]",
-                FtRangeField::Reason => "range[reason]",
-                FtRangeField::Sum => "range[sum]",
-                FtRangeField::CreatedAt => "range[created_at]",
-                FtRangeField::UpdatedAt => "range[updated_at]",
-                FtRangeField::Total => "range[total]",
-                FtRangeField::ClosedAt => "range[closed_at]",
-                FtRangeField::DeadlineAt => "range[deadline_at]",
-                FtRangeField::FinalMark => "range[final_mark]",
-                FtRangeField::LockedAt => "range[locked_at]",
-                FtRangeField::Name => "range[name]",
-                FtRangeField::ProjectId => "range[project_id]",
-                FtRangeField::ProjectSessionId => "range[project_session_id]",
-                FtRangeField::RepoUrl => "range[repo_url]",
-                FtRangeField::RepoUuid => "range[repo_uuid]",
-                FtRangeField::Status => "range[status]",
-                FtRangeField::TerminatingAt => "range[terminating_at]",
-            };
-            let values = if option.value.is_empty() {
-                None
-            } else {
-                Some(option.value.join(","))
-            };
-            (field, values)
-        })
-        .collect()
+        .map(|option| (option.range, option.value))
+        .collect();
+    convert_options_to_tuple(options)
 }

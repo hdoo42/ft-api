@@ -2,8 +2,9 @@ use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    convert_filter_option_to_tuple, ClientResult, FtClientHttpConnector, FtClientSession,
-    FtFilterOption, FtProjectSessionId, FtSortOption, FtTeam,
+    convert_filter_option_to_tuple, convert_range_option_to_tuple, ClientResult,
+    FtClientHttpConnector, FtClientSession, FtFilterOption, FtProjectSessionId, FtRangeOption,
+    FtSortOption, FtTeam,
 };
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
@@ -17,6 +18,7 @@ pub struct FtApiProjectSessionsTeamsRequest {
     pub project_session_id: FtProjectSessionId,
     pub sort: Option<Vec<FtSortOption>>,
     pub filter: Option<Vec<FtFilterOption>>,
+    pub range: Option<Vec<FtRangeOption>>,
     pub page: Option<u16>,
     pub per_page: Option<u8>,
 }
@@ -31,13 +33,23 @@ where
     ) -> ClientResult<FtApiProjectSessionsTeamsResponse> {
         let url = &format!("project_sessions/{}/teams", reqest.project_session_id);
 
-        let filters = convert_filter_option_to_tuple(reqest.filter.unwrap_or_default());
+        let filters = convert_filter_option_to_tuple(reqest.filter.unwrap_or_default()).unwrap();
+        let ranges = convert_range_option_to_tuple(reqest.range.unwrap_or_default()).unwrap();
 
         let params = vec![
-            ("page", reqest.page.as_ref().map(|v| v.to_string())),
-            ("per_page", reqest.per_page.as_ref().map(|v| v.to_string())),
             (
-                "sort",
+                "page".to_string(),
+                reqest.page.as_ref().map(std::string::ToString::to_string),
+            ),
+            (
+                "per_page".to_string(),
+                reqest
+                    .per_page
+                    .as_ref()
+                    .map(std::string::ToString::to_string),
+            ),
+            (
+                "sort".to_string(),
                 reqest.sort.as_ref().map(|v| {
                     v.iter()
                         .map(|v| {
@@ -54,7 +66,7 @@ where
         ];
 
         self.http_session_api
-            .http_get(url, &[filters, params].concat())
+            .http_get(url, &[filters, params, ranges].concat())
             .await
     }
 }
