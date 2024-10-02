@@ -2,15 +2,15 @@ use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    convert_filter_option_to_tuple, convert_range_option_to_tuple, ClientResult,
-    FtClientHttpConnector, FtClientSession, FtCursusId, FtFilterOption, FtProject, FtProjectId,
-    FtRangeOption, FtSortOption,
+    convert_filter_option_to_tuple, convert_range_option_to_tuple, ClientResult, FtCampusId,
+    FtClientHttpConnector, FtClientSession, FtFilterOption, FtRangeOption, FtSortOption, FtUser,
+    FtUserId,
 };
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
-pub struct FtApiCursusIdProjectsRequest {
-    pub cursus_id: FtCursusId,
-    pub project_id: Option<FtProjectId>,
+pub struct FtApiCampusUsersRequest {
+    pub campus_id: FtCampusId,
+    pub user_id: Option<FtUserId>,
     pub sort: Option<Vec<FtSortOption>>,
     pub range: Option<Vec<FtRangeOption>>,
     pub filter: Option<Vec<FtFilterOption>>,
@@ -20,22 +20,22 @@ pub struct FtApiCursusIdProjectsRequest {
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
 #[serde(transparent)]
-pub struct FtApiCursusIdProjectsResponse {
-    pub projects: Vec<FtProject>,
+pub struct FtApiCampusUsersResponse {
+    pub users: Vec<FtUser>,
 }
 
 impl<'a, FCHC> FtClientSession<'a, FCHC>
 where
     FCHC: FtClientHttpConnector + Send + Sync,
 {
-    pub async fn cursus_id_projects(
+    pub async fn campus_id_users(
         &self,
-        req: FtApiCursusIdProjectsRequest,
-    ) -> ClientResult<FtApiCursusIdProjectsResponse> {
-        let url = &format!("cursus/{}/projects", req.cursus_id);
+        req: FtApiCampusUsersRequest,
+    ) -> ClientResult<FtApiCampusUsersResponse> {
+        let url = &format!("campus/{}/users", req.campus_id);
 
-        let range = convert_range_option_to_tuple(req.range.unwrap_or_default()).unwrap();
         let filters = convert_filter_option_to_tuple(req.filter.unwrap_or_default()).unwrap();
+        let range = convert_range_option_to_tuple(req.range.unwrap_or_default()).unwrap();
 
         let params = vec![
             (
@@ -61,6 +61,10 @@ where
                         .join(",")
                 }),
             ),
+            (
+                "user_id".to_string(),
+                req.user_id.as_ref().map(std::string::ToString::to_string),
+            ),
         ];
 
         self.http_session_api
@@ -71,12 +75,12 @@ where
 
 #[cfg(test)]
 mod tests {
+    use campus_id_users::FtApiCampusUsersRequest;
+
     use crate::*;
 
-    use super::*;
-
     #[tokio::test]
-    async fn cursus_id_projects_basic() {
+    async fn campus_id_users_basic() {
         let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
             .await
             .unwrap();
@@ -87,9 +91,7 @@ mod tests {
 
         let session = client.open_session(&token);
         let res = session
-            .cursus_id_projects(FtApiCursusIdProjectsRequest::new(FtCursusId::new(
-                FT_CURSUS_ID,
-            )))
+            .campus_id_users(FtApiCampusUsersRequest::new(FtCampusId::new(GS_CAMPUS_ID)))
             .await;
 
         assert!(res.is_ok(), "{:?}", res);

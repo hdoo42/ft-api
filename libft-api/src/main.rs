@@ -1,4 +1,4 @@
-use ft_api::{
+use libft_api::{
     ft_project_session_ids::ft_cursus::inner::LIBFT,
     project_sessions_id_teams::FtApiProjectSessionsTeamsRequest, AuthInfo, FtApiToken, FtClient,
     FtClientReqwestConnector, FtFilterField, FtFilterOption, FtProjectSessionId,

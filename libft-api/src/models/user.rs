@@ -97,4 +97,5 @@ pub enum FtKind {
     Admin,
     Student,
     Staff,
+    External,
 }

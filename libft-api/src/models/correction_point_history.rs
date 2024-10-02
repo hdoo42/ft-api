@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 use std::option::Option;
 
 use crate::{
-    users::{FtCorrectionPointsAmount, FtCorrectionPointsReason},
+    users_id_correction_points_add::{FtCorrectionPointsAmount, FtCorrectionPointsReason},
     FtDateTimeUtc, FtScaleTeamId,
 };
 
