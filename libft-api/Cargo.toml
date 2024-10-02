@@ -2,6 +2,13 @@
 name = "libft-api"
 version = "0.1.0"
 edition = "2021"
+authors  = ["hdoo42 <tyeirdoo06@gmail.com>"]
+description="42api library for rust"
+readme="READEME.md"
+exclude = ["src/main.rs"]
+
+[lib]
+path="src/lib.rs"
 
 [dependencies]
 serde = { version = "1.0.210", features = ["derive"] }
@@ -12,12 +19,9 @@ reqwest = { version = "0.12.7", features = ["json"] }
 rvstruct = "0.3.2"
 tokio = { version = "1.40.0", features = ["full", "tracing"] }
 chrono = { version = "0.4.38", features = ["serde"] }
-chrono-tz = "0.10.0"
 rsb_derive = "0.5.1"
 url = { version = "2.5", features = ["serde"] }
 futures = { version = "0.3", features = ["alloc"] }
 lazy_static = "1.5.0"
-mime = "0.3.17"
 console-subscriber = "0.4.0"
 tracing = "0.1.40"
-
