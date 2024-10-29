@@ -61,7 +61,7 @@ pub trait FtClientHttpConnector {
         token: &'a FtApiToken,
     ) -> BoxFuture<'a, ClientResult<RS>>
     where
-        RS: for<'de> serde::de::Deserialize<'de> + Send + 'a + 'a + Send;
+        RS: for<'de> serde::de::Deserialize<'de> + Send + 'a;
 
     fn http_get<'a, 'p, RS, PT, TS>(
         &'a self,
@@ -92,7 +92,7 @@ pub trait FtClientHttpConnector {
     ) -> BoxFuture<'a, ClientResult<RS>>
     where
         RQ: serde::ser::Serialize + Send + Sync,
-        RS: for<'de> serde::de::Deserialize<'de> + Send + 'a + Send + 'a;
+        RS: for<'de> serde::de::Deserialize<'de> + Send + 'a;
 
     fn http_post<'a, RQ, RS>(
         &'a self,
@@ -118,7 +118,7 @@ pub trait FtClientHttpConnector {
     ) -> BoxFuture<'a, ClientResult<RS>>
     where
         RQ: serde::ser::Serialize + Send + Sync,
-        RS: for<'de> serde::de::Deserialize<'de> + Send + 'a + Send + 'a;
+        RS: for<'de> serde::de::Deserialize<'de> + Send + 'a;
 
     fn http_patch<'a, RQ, RS>(
         &'a self,
