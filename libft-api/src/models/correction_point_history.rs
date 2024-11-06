@@ -2,10 +2,9 @@ use rvstruct::ValueStruct;
 use serde::{Deserialize, Serialize};
 use std::option::Option;
 
-use crate::{
-    users_id_correction_points_add::{FtCorrectionPointsAmount, FtCorrectionPointsReason},
-    FtDateTimeUtc, FtScaleTeamId,
-};
+use crate::api::prelude::*;
+
+use super::{FtDateTimeUtc, FtScaleTeamId};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct FtCorrectionPointHistory {

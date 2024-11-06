@@ -1,4 +1,10 @@
-pub mod users_id_correction_point_historics;
-pub mod users_id_correction_points_add;
-pub mod users_id_locations_stats;
-pub mod users_id_teams;
+mod users_id;
+pub use users_id::*;
+mod users_id_correction_point_historics;
+pub use users_id_correction_point_historics::*;
+mod users_id_correction_points_add;
+pub use users_id_correction_points_add::*;
+mod users_id_locations_stats;
+pub use users_id_locations_stats::*;
+mod users_id_teams;
+pub use users_id_teams::*;

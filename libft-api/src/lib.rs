@@ -1,7 +1,7 @@
 #![warn(clippy::pedantic)]
 #![feature(concat_idents)]
 
-pub use api::prelude::*;
+pub use api::*;
 mod api;
 pub use auth::*;
 mod auth;

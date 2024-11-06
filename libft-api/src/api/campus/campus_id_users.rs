@@ -75,9 +75,7 @@ where
 
 #[cfg(test)]
 mod tests {
-    use campus_id_users::FtApiCampusUsersRequest;
-
-    use crate::*;
+    use crate::{prelude::*, GS_CAMPUS_ID};
 
     #[tokio::test]
     async fn campus_id_users_basic() {

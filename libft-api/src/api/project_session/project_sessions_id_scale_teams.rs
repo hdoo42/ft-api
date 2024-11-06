@@ -34,11 +34,9 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::{
-        ft_project_session_ids::ft_cursus::inner::LIBFT,
-        project_sessions_id_scale_teams::FtApiProjectSessionsScaleTeamsRequest, AuthInfo,
-        FtApiToken, FtClient, FtClientReqwestConnector, FtProjectSessionId,
-    };
+    use ft_project_session_ids::ft_cursus::inner::LIBFT;
+
+    use crate::prelude::*;
 
     #[tokio::test]
     async fn location_deserialize() {

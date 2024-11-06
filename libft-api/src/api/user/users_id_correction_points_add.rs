@@ -43,13 +43,7 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::{
-        users_id_correction_points_add::{
-            FtApiUsersIdCorrectionPointsAddRequest, FtCorrectionPointsAmount,
-            FtCorrectionPointsReason,
-        },
-        AuthInfo, FtApiToken, FtClient, FtClientReqwestConnector, FtUserId,
-    };
+    use crate::prelude::*;
 
     #[test]
     fn correction_points_add_request_serde() {

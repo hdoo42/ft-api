@@ -5,10 +5,8 @@ use chrono::NaiveDate;
 use chrono::NaiveTime;
 use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
-use tracing::info;
 
 use crate::to_param;
-use crate::FtSortOption;
 use crate::{ClientResult, FtClientHttpConnector, FtClientSession, FtUserId};
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
@@ -16,7 +14,6 @@ pub struct FtApiUsersIdLocationsStatsRequest {
     pub user_id: FtUserId,
     pub begin_at: Option<NaiveDate>,
     pub end_at: Option<NaiveDate>,
-    pub sort: Option<Vec<FtSortOption>>,
     pub page: Option<u16>,
     pub per_page: Option<u8>,
 }
@@ -56,21 +53,6 @@ where
                         .expect("NaiveDate after checked add failed")
                 }),
             ),
-            (
-                "sort".to_string(),
-                req.sort.as_ref().map(|v| {
-                    v.iter()
-                        .map(|v| {
-                            format!(
-                                "{}{}",
-                                if v.descending { "-" } else { "" },
-                                serde_plain::to_string(&v.field).unwrap()
-                            )
-                        })
-                        .collect::<Vec<_>>()
-                        .join(",")
-                }),
-            ),
         ];
 
         self.http_session_api
@@ -81,10 +63,8 @@ where
 
 #[cfg(test)]
 mod tests {
+    use crate::{prelude::*, TEST_USER_YONDOO06_ID};
     use chrono::{Days, Local, NaiveDate};
-    use users_id_locations_stats::FtApiUsersIdLocationsStatsRequest;
-
-    use crate::*;
 
     #[tokio::test]
     async fn users_id_locations_stats_basic() {
