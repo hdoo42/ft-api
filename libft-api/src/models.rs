@@ -31,6 +31,8 @@ pub use campus::*;
 mod campus;
 pub use correction_point_history::*;
 mod correction_point_history;
+mod cursus_user;
+pub use cursus_user::*;
 
 mod common;
 

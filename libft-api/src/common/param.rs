@@ -100,11 +100,22 @@ pub enum FtSortField {
 }
 use std::error::Error;
 
+/// Trait to convert a field into a query parameter key.
 pub trait ToQueryParam {
+    /// Converts the field into a query parameter key.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if serialization fails or the field cannot be converted to a string.
     fn to_query_key(&self) -> Result<String, Box<dyn Error>>;
 }
 
 impl ToQueryParam for FtFilterField {
+    /// Converts the `FtFilterField` into a query parameter key for filtering.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if serialization fails or if the enum cannot be converted to a string.
     fn to_query_key(&self) -> Result<String, Box<dyn Error>> {
         let binding = serde_json::to_value(self)?;
         let field = binding.as_str().ok_or("Failed to convert enum to string")?;
@@ -113,6 +124,11 @@ impl ToQueryParam for FtFilterField {
 }
 
 impl ToQueryParam for FtRangeField {
+    /// Converts the `FtRangeField` into a query parameter key for range selection.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if serialization fails or if the enum cannot be converted to a string.
     fn to_query_key(&self) -> Result<String, Box<dyn Error>> {
         let binding = serde_json::to_value(self)?;
         let field = binding.as_str().ok_or("Failed to convert enum to string")?;
@@ -120,6 +136,19 @@ impl ToQueryParam for FtRangeField {
     }
 }
 
+/// Converts a list of options into query parameter tuples.
+///
+/// # Arguments
+///
+/// * `options` - A vector of tuples containing a field that implements `ToQueryParam` and a vector of values.
+///
+/// # Type Parameters
+///
+/// * `T` - A type that implements `ToQueryParam`.
+///
+/// # Errors
+///
+/// Returns an error if converting a field to a query key fails.
 pub fn convert_options_to_tuple<T: ToQueryParam>(
     options: Vec<(T, Vec<String>)>,
 ) -> Result<Vec<(String, Option<String>)>, Box<dyn Error>> {
@@ -137,7 +166,15 @@ pub fn convert_options_to_tuple<T: ToQueryParam>(
         .collect()
 }
 
-// Example usage:
+/// Converts a list of filter options into query parameter tuples.
+///
+/// # Arguments
+///
+/// * `filter_options` - A vector of `FtFilterOption` structs.
+///
+/// # Errors
+///
+/// Returns an error if converting a field to a query key fails.
 pub fn convert_filter_option_to_tuple(
     filter_options: Vec<FtFilterOption>,
 ) -> Result<Vec<(String, Option<String>)>, Box<dyn Error>> {
@@ -148,6 +185,15 @@ pub fn convert_filter_option_to_tuple(
     convert_options_to_tuple(options)
 }
 
+/// Converts a list of range options into query parameter tuples.
+///
+/// # Arguments
+///
+/// * `range_options` - A vector of `FtRangeOption` structs.
+///
+/// # Errors
+///
+/// Returns an error if converting a field to a query key fails.
 pub fn convert_range_option_to_tuple(
     range_options: Vec<FtRangeOption>,
 ) -> Result<Vec<(String, Option<String>)>, Box<dyn Error>> {

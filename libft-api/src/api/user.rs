@@ -8,3 +8,5 @@ mod users_id_locations_stats;
 pub use users_id_locations_stats::*;
 mod users_id_teams;
 pub use users_id_teams::*;
+mod users_id_cursus_users;
+pub use users_id_cursus_users::*;
