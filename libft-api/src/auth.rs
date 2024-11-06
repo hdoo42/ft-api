@@ -171,8 +171,13 @@ impl FtApiToken {
     }
 }
 
+/// Get the value of an environment variable.
+///
+/// # Errors
+///
+/// This function will return an error if the environment variable is not set.
 pub fn config_env_var(name: &str) -> Result<String, String> {
-    std::env::var(name).map_err(|e| format!("{}: {}", name, e))
+    std::env::var(name).map_err(|e| format!("{name}: {e}"))
 }
 
 #[cfg(test)]
