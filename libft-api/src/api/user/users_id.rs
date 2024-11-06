@@ -1,11 +1,7 @@
 use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
 
-use crate::{
-    convert_filter_option_to_tuple, convert_range_option_to_tuple, ClientResult,
-    FtClientHttpConnector, FtClientSession, FtCursusId, FtFilterOption, FtLoginId, FtProjectId,
-    FtProjectSessionId, FtRangeOption, FtSortOption, FtTeam, FtUser, FtUserId,
-};
+use crate::{prelude::*, to_param};
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
 pub struct FtApiUsersIdRequest {
@@ -34,14 +30,8 @@ where
         let range = convert_range_option_to_tuple(req.range.unwrap_or_default()).unwrap();
 
         let params = vec![
-            (
-                "page".to_string(),
-                req.page.as_ref().map(std::string::ToString::to_string),
-            ),
-            (
-                "per_page".to_string(),
-                req.per_page.as_ref().map(std::string::ToString::to_string),
-            ),
+            to_param!(req, page),
+            to_param!(req, per_page),
             (
                 "sort".to_string(),
                 req.sort.as_ref().map(|v| {
@@ -72,7 +62,7 @@ mod tests {
     use crate::*;
 
     #[tokio::test]
-    async fn user_id_teams_basic() {
+    async fn user_id_basic() {
         let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
             .await
             .unwrap();

@@ -39,19 +39,16 @@ where
             to_param!(req, per_page),
             (
                 "begin_at".to_string(),
-                req.begin_at.map(|date| {
-                    date.checked_add_days(Days::new(1))
-                        .map(|date| date.to_string())
-                        .expect("NaiveDate after checked add failed")
-                }),
+                req.begin_at.map(|date| date.to_string()),
             ),
             (
                 "end_at".to_string(),
-                req.end_at.map(|date| {
-                    date.checked_add_days(Days::new(1))
-                        .map(|date| date.to_string())
-                        .expect("NaiveDate after checked add failed")
-                }),
+                req.end_at
+                    .map(|date| {
+                        date.checked_add_days(Days::new(1))
+                            .expect("NaiveDate after checked add failed")
+                    })
+                    .map(|date| date.to_string()),
             ),
         ];
 

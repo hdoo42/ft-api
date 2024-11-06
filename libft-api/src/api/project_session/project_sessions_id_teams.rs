@@ -2,7 +2,7 @@ use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    convert_filter_option_to_tuple, convert_range_option_to_tuple, ClientResult,
+    convert_filter_option_to_tuple, convert_range_option_to_tuple, to_param, ClientResult,
     FtClientHttpConnector, FtClientSession, FtFilterOption, FtProjectSessionId, FtRangeOption,
     FtSortOption, FtTeam,
 };
@@ -29,28 +29,19 @@ where
 {
     pub async fn project_sessions_id_teams(
         &self,
-        reqest: FtApiProjectSessionsTeamsRequest,
+        req: FtApiProjectSessionsTeamsRequest,
     ) -> ClientResult<FtApiProjectSessionsTeamsResponse> {
-        let url = &format!("project_sessions/{}/teams", reqest.project_session_id);
+        let url = &format!("project_sessions/{}/teams", req.project_session_id);
 
-        let filters = convert_filter_option_to_tuple(reqest.filter.unwrap_or_default()).unwrap();
-        let ranges = convert_range_option_to_tuple(reqest.range.unwrap_or_default()).unwrap();
+        let filters = convert_filter_option_to_tuple(req.filter.unwrap_or_default()).unwrap();
+        let ranges = convert_range_option_to_tuple(req.range.unwrap_or_default()).unwrap();
 
         let params = vec![
-            (
-                "page".to_string(),
-                reqest.page.as_ref().map(std::string::ToString::to_string),
-            ),
-            (
-                "per_page".to_string(),
-                reqest
-                    .per_page
-                    .as_ref()
-                    .map(std::string::ToString::to_string),
-            ),
+            to_param!(req, page),
+            to_param!(req, per_page),
             (
                 "sort".to_string(),
-                reqest.sort.as_ref().map(|v| {
+                req.sort.as_ref().map(|v| {
                     v.iter()
                         .map(|v| {
                             format!(

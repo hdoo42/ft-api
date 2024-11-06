@@ -2,7 +2,7 @@ use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    convert_filter_option_to_tuple, convert_range_option_to_tuple, ClientResult,
+    convert_filter_option_to_tuple, convert_range_option_to_tuple, to_param, ClientResult,
     FtClientHttpConnector, FtClientSession, FtCursusId, FtFilterOption, FtProject, FtProjectId,
     FtRangeOption, FtSortOption,
 };
@@ -35,14 +35,8 @@ where
         let range = convert_range_option_to_tuple(req.range.unwrap_or_default()).unwrap();
 
         let params = vec![
-            (
-                "page".to_string(),
-                req.page.as_ref().map(std::string::ToString::to_string),
-            ),
-            (
-                "per_page".to_string(),
-                req.per_page.as_ref().map(std::string::ToString::to_string),
-            ),
+            to_param!(req, page),
+            to_param!(req, per_page),
             (
                 "sort".to_string(),
                 req.sort.as_ref().map(|v| {

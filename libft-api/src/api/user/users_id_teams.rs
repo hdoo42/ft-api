@@ -2,7 +2,7 @@ use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    convert_filter_option_to_tuple, convert_range_option_to_tuple, ClientResult,
+    convert_filter_option_to_tuple, convert_range_option_to_tuple, to_param, ClientResult,
     FtClientHttpConnector, FtClientSession, FtCursusId, FtFilterOption, FtProjectId,
     FtProjectSessionId, FtRangeOption, FtSortOption, FtTeam, FtUserId,
 };
@@ -40,30 +40,11 @@ where
         let range = convert_range_option_to_tuple(req.range.unwrap_or_default()).unwrap();
 
         let params = vec![
-            (
-                "cursus_id".to_string(),
-                req.cursus_id.as_ref().map(std::string::ToString::to_string),
-            ),
-            (
-                "project_id".to_string(),
-                req.project_id
-                    .as_ref()
-                    .map(std::string::ToString::to_string),
-            ),
-            (
-                "project_session_id".to_string(),
-                req.project_session_id
-                    .as_ref()
-                    .map(std::string::ToString::to_string),
-            ),
-            (
-                "page".to_string(),
-                req.page.as_ref().map(std::string::ToString::to_string),
-            ),
-            (
-                "per_page".to_string(),
-                req.per_page.as_ref().map(std::string::ToString::to_string),
-            ),
+            to_param!(req, page),
+            to_param!(req, per_page),
+            to_param!(req, project_session_id),
+            to_param!(req, project_id),
+            to_param!(req, cursus_id),
             (
                 "sort".to_string(),
                 req.sort.as_ref().map(|v| {

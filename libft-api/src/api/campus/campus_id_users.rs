@@ -2,9 +2,9 @@ use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    convert_filter_option_to_tuple, convert_range_option_to_tuple, ClientResult, FtCampusId,
-    FtClientHttpConnector, FtClientSession, FtFilterOption, FtRangeOption, FtSortOption, FtUser,
-    FtUserId,
+    convert_filter_option_to_tuple, convert_range_option_to_tuple, to_param, ClientResult,
+    FtCampusId, FtClientHttpConnector, FtClientSession, FtFilterOption, FtRangeOption,
+    FtSortOption, FtUser, FtUserId,
 };
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
@@ -38,14 +38,8 @@ where
         let range = convert_range_option_to_tuple(req.range.unwrap_or_default()).unwrap();
 
         let params = vec![
-            (
-                "page".to_string(),
-                req.page.as_ref().map(std::string::ToString::to_string),
-            ),
-            (
-                "per_page".to_string(),
-                req.per_page.as_ref().map(std::string::ToString::to_string),
-            ),
+            to_param!(req, page),
+            to_param!(req, per_page),
             (
                 "sort".to_string(),
                 req.sort.as_ref().map(|v| {
@@ -60,10 +54,6 @@ where
                         .collect::<Vec<_>>()
                         .join(",")
                 }),
-            ),
-            (
-                "user_id".to_string(),
-                req.user_id.as_ref().map(std::string::ToString::to_string),
             ),
         ];
 
