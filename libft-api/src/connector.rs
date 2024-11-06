@@ -5,7 +5,7 @@ use reqwest::{
     header::{self, AUTHORIZATION},
     Client, Method, RequestBuilder, StatusCode,
 };
-use tracing::Span;
+use tracing::{debug, Span};
 use url::Url;
 
 use crate::*;
@@ -108,6 +108,7 @@ impl FtClientReqwestConnector {
 
         match http_status {
             StatusCode::OK if http_content_is_json => {
+                debug!("http_body_str: {}", http_body_str);
                 let decoded_body = serde_json::from_str(http_body_str.as_str())
                     .map_err(|err| map_serde_error(err, Some(http_body_str.as_str())))?;
                 Ok(decoded_body)
