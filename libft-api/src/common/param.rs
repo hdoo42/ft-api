@@ -157,3 +157,13 @@ pub fn convert_range_option_to_tuple(
         .collect();
     convert_options_to_tuple(options)
 }
+
+#[macro_export]
+macro_rules! to_param {
+    ($req:expr, $field:ident) => {
+        (
+            stringify!($field).to_string(),
+            $req.$field.as_ref().map(std::string::ToString::to_string),
+        )
+    };
+}
