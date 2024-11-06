@@ -69,7 +69,7 @@ pub enum FtFilterField {
     WithMark,
 }
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, Builder)]
 pub struct FtSortOption {
     pub field: FtSortField,
     pub descending: bool,
