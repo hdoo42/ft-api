@@ -95,6 +95,7 @@ impl FtClientReqwestConnector {
             .map_err(|error| FtReqwestError { error })?;
         let http_status = http_res.status();
         let http_headers = http_res.headers().clone();
+        debug!("headers: {:#?}", http_headers);
         let http_content_type = http_headers.get(header::CONTENT_TYPE);
         let http_body_str = http_res
             .text()
