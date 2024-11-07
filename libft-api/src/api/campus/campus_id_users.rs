@@ -82,6 +82,6 @@ mod tests {
             .campus_id_users(FtApiCampusUsersRequest::new(FtCampusId::new(GS_CAMPUS_ID)))
             .await;
 
-        assert!(res.is_ok(), "{:?}", res);
+        assert!(res.is_ok());
     }
 }

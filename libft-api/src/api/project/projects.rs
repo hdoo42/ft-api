@@ -80,6 +80,6 @@ mod tests {
         let session = client.open_session(&token);
         let res = session.projects(FtApiProjectRequest::new()).await;
 
-        assert!(res.is_ok(), "{:?}", res);
+        assert!(res.is_ok());
     }
 }

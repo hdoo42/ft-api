@@ -83,6 +83,6 @@ mod tests {
 
         let res = session.project_data(FtApiProjectDataRequest::new()).await;
 
-        assert!(res.is_ok(), "{:?}", res);
+        assert!(res.is_ok());
     }
 }

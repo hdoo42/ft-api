@@ -86,6 +86,6 @@ mod tests {
             )))
             .await;
 
-        assert!(res.is_ok(), "{:?}", res);
+        assert!(res.is_ok());
     }
 }

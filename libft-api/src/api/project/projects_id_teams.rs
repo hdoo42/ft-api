@@ -85,6 +85,6 @@ mod tests {
             .projects_id_teams(FtApiProjectsIdTeamsRequest::new(FtProjectId::new(1314)))
             .await;
 
-        assert!(res.is_ok(), "{:?}", res);
+        assert!(res.is_ok());
     }
 }

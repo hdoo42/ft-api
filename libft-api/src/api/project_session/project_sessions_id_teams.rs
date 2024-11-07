@@ -84,7 +84,7 @@ mod tests {
 
         let session = client.open_session(&token);
         let res = session.project_sessions_id_teams(req).await;
-        assert!(res.is_ok(), "{:?}", res);
+        assert!(res.is_ok());
     }
 
     #[tokio::test]

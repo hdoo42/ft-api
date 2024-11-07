@@ -52,6 +52,6 @@ mod tests {
 
         let session = client.open_session(&token);
         let res = session.project_sessions_scale_teams(req).await;
-        assert!(res.is_ok(), "{:?}", res);
+        assert!(res.is_ok());
     }
 }
