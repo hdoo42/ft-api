@@ -64,7 +64,7 @@ mod tests {
     use chrono::{Days, Local, NaiveDate};
 
     #[tokio::test]
-    async fn users_id_locations_stats_basic() {
+    async fn basic() {
         let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
             .await
             .unwrap();

@@ -135,7 +135,7 @@ mod tests {
     use crate::TEST_USER_YONDOO06_ID;
 
     #[tokio::test]
-    async fn cursus_users_basic() {
+    async fn basic() {
         tracing_subscriber::fmt::init();
         let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
             .await

@@ -68,7 +68,7 @@ mod tests {
     use crate::{prelude::*, GS_CAMPUS_ID};
 
     #[tokio::test]
-    async fn campus_id_users_basic() {
+    async fn basic() {
         let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
             .await
             .unwrap();

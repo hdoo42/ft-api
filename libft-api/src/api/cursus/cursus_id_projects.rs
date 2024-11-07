@@ -70,7 +70,7 @@ mod tests {
     use super::*;
 
     #[tokio::test]
-    async fn cursus_id_projects_basic() {
+    async fn basic() {
         let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
             .await
             .unwrap();

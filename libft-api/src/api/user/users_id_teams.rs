@@ -75,7 +75,7 @@ mod tests {
     use crate::*;
 
     #[tokio::test]
-    async fn user_id_teams_basic() {
+    async fn basic() {
         let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
             .await
             .unwrap();
