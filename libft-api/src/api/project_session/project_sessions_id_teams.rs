@@ -80,11 +80,11 @@ mod tests {
             reqwest::Client::new(),
         ));
 
-        let req = FtApiProjectSessionsTeamsRequest::new(FtProjectSessionId::new(LIBFT));
+        let reqest = FtApiProjectSessionsTeamsRequest::new(FtProjectSessionId::new(LIBFT));
 
         let session = client.open_session(&token);
-        let res = session.project_sessions_id_teams(req).await;
-        assert!(res.is_ok());
+        let result = session.project_sessions_id_teams(reqest).await;
+        assert!(result.is_ok());
     }
 
     #[tokio::test]

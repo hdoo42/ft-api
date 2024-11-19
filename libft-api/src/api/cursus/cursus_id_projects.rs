@@ -65,9 +65,10 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::*;
-
     use super::*;
+    use crate::{
+        AuthInfo, FtApiToken, FtClient, FtClientReqwestConnector, FtCursusId, FT_CURSUS_ID,
+    };
 
     #[tokio::test]
     async fn basic() {

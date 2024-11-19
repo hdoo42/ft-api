@@ -1,11 +1,11 @@
-use libft_api::{
-    ft_project_session_ids::ft_cursus::inner::LIBFT,
-    project_sessions_id_teams::FtApiProjectSessionsTeamsRequest, AuthInfo, FtApiToken, FtClient,
-    FtClientReqwestConnector, FtFilterField, FtFilterOption, FtProjectSessionId,
-};
+use libft_api::{prelude::*, FT_CURSUS_ID};
+
+mod test;
+enum TestTest {}
 
 #[tokio::main]
 async fn main() {
+    tracing_subscriber::fmt::init();
     let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
         .await
         .unwrap();
@@ -13,15 +13,28 @@ async fn main() {
     let client = FtClient::new(FtClientReqwestConnector::with_connector(
         reqwest::Client::new(),
     ));
-
-    let req =
-        FtApiProjectSessionsTeamsRequest::new(FtProjectSessionId::new(LIBFT)).with_filter(vec![
-            FtFilterOption::new(FtFilterField::Campus, vec!["69".to_owned()]),
-        ]);
-
     let session = client.open_session(&token);
-    let res = session.project_sessions_id_teams(req).await;
 
-    assert!(res.is_ok());
-    println!("{:?}", res.unwrap());
+    let mut results = vec![];
+    let mut page = 1;
+    while let Ok(result) = session
+        .cursus_id_projects(
+            FtApiCursusIdProjectsRequest::new(FtCursusId::new(FT_CURSUS_ID))
+                .with_per_page(100)
+                .with_page(page),
+        )
+        .await
+    {
+        if result.projects.is_empty() {
+            break;
+        }
+        page += 1;
+        results.push(result);
+    }
+
+    for res in results {
+        res.projects
+            .iter()
+            .for_each(|project| println!("{},{}", project.id, project.name));
+    }
 }

@@ -77,10 +77,14 @@ mod tests {
         ));
 
         let session = client.open_session(&token);
+        let project_ids = ALL_INNER_SUBJECTS_ID
+            .into_iter()
+            .map(|id| id.to_string())
+            .collect();
         let res = session
             .projects_uesrs(FtApiProjectsUsersRequest::new().with_filter(vec![
                 FtFilterOption::new(FtFilterField::UserId, vec!["174083".to_owned()]),
-                FtFilterOption::new(FtFilterField::ProjectId, vec!["1314".to_owned()]),
+                FtFilterOption::new(FtFilterField::ProjectId, project_ids),
             ]))
             .await;
 

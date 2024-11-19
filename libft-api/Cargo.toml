@@ -11,17 +11,17 @@ exclude = ["src/main.rs"]
 path="src/lib.rs"
 
 [dependencies]
-serde = { version = "1.0.210", features = ["derive"] }
-serde_with = { version = "3.9.0", features = ["macros"] }
-serde_json = { version = "1.0.128", features = ["std"] }
+serde = { version = "1.0.214", features = ["derive"] }
+serde_with = { version = "3.11.0", features = ["macros"] }
+serde_json = { version = "1.0.132", features = ["std"] }
 serde_plain = "1.0.2"
-reqwest = { version = "0.12.7", features = ["json"] }
+reqwest = { version = "0.12.9", features = ["json"] }
 rvstruct = "0.3.2"
-tokio = { version = "1.40.0", features = ["full", "tracing"] }
+tokio = { version = "1.41.0", features = ["full", "tracing"] }
 chrono = { version = "0.4.38", features = ["serde"] }
 rsb_derive = "0.5.1"
 url = { version = "2.5", features = ["serde"] }
 futures = { version = "0.3", features = ["alloc"] }
 lazy_static = "1.5.0"
-console-subscriber = "0.4.0"
 tracing = "0.1.40"
+tracing-subscriber = "0.3.18"

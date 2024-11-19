@@ -21,7 +21,7 @@ pub struct FtCampus {
     pub email_extension: Option<String>,
     pub endpoint: Option<FtEndpoint>,
     pub facebook: Option<FtUrl>,
-    pub vogsphere_id: Option<i32>,
+    pub vogsphere_id: Option<FtVogsphereId>,
     pub website: Option<FtUrl>,
 }
 
@@ -33,6 +33,9 @@ pub struct FtEndpoint {
     pub created_at: FtDateTimeUtc,
     pub updated_at: FtDateTimeUtc,
 }
+
+#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
+pub struct FtVogsphereId(i32);
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtEndpointId(i32);
