@@ -1,7 +1,7 @@
 use rvstruct::ValueStruct;
 use serde::{Deserialize, Serialize};
 
-use crate::{FtDateTimeUtc, FtLanguage, FtUrl};
+use crate::FtDateTimeUtc;
 
 use super::{FtCampusId, FtUserId};
 

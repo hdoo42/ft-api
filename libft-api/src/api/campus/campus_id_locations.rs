@@ -5,7 +5,7 @@ use tracing::debug;
 use crate::{
     convert_filter_option_to_tuple, convert_range_option_to_tuple, to_param, ClientResult,
     FtCampusId, FtClientHttpConnector, FtClientSession, FtFilterOption, FtLocation, FtRangeOption,
-    FtSortOption, FtUserId, FT_HTTP_PAGE_SIZE_100,
+    FtSortOption, FtUserId,
 };
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
@@ -89,11 +89,8 @@ mod tests {
             .await;
 
         assert!(res.is_ok());
-        match res {
-            Ok(res) => {
-                assert_eq!(100, res.location.len())
-            }
-            Err(_) => {}
+        if let Ok(res) = res {
+            assert_eq!(100, res.location.len());
         }
     }
 }
