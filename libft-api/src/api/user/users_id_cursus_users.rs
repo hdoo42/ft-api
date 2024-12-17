@@ -148,9 +148,8 @@ mod tests {
         let session = client.open_session(&token);
         let res = session
             .users_id_cursus_users(FtApiUsersIdCursusUsersRequest::new(FtUserId::new(174083)))
-            .await
-            .unwrap();
+            .await;
 
-        info!("{:?}", res);
+        assert!(res.is_ok(), "{:?}", res.unwrap());
     }
 }

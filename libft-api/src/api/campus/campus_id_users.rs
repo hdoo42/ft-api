@@ -8,7 +8,7 @@ use crate::{
 };
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
-pub struct FtApiCampusUsersRequest {
+pub struct FtApiCampusIdUsersRequest {
     pub campus_id: FtCampusId,
     pub user_id: Option<FtUserId>,
     pub sort: Option<Vec<FtSortOption>>,
@@ -20,7 +20,7 @@ pub struct FtApiCampusUsersRequest {
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
 #[serde(transparent)]
-pub struct FtApiCampusUsersResponse {
+pub struct FtApiCampusIdUsersResponse {
     pub users: Vec<FtUser>,
 }
 
@@ -30,8 +30,8 @@ where
 {
     pub async fn campus_id_users(
         &self,
-        req: FtApiCampusUsersRequest,
-    ) -> ClientResult<FtApiCampusUsersResponse> {
+        req: FtApiCampusIdUsersRequest,
+    ) -> ClientResult<FtApiCampusIdUsersResponse> {
         let url = &format!("campus/{}/users", req.campus_id);
 
         let filters = convert_filter_option_to_tuple(req.filter.unwrap_or_default()).unwrap();
@@ -79,7 +79,9 @@ mod tests {
 
         let session = client.open_session(&token);
         let res = session
-            .campus_id_users(FtApiCampusUsersRequest::new(FtCampusId::new(GS_CAMPUS_ID)))
+            .campus_id_users(FtApiCampusIdUsersRequest::new(FtCampusId::new(
+                GS_CAMPUS_ID,
+            )))
             .await;
 
         assert!(res.is_ok());

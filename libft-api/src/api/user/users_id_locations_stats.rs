@@ -64,7 +64,7 @@ mod tests {
     use chrono::{Days, Local, NaiveDate};
 
     #[tokio::test]
-    async fn basic() {
+    async fn specific_date_range() {
         let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
             .await
             .unwrap();
@@ -89,5 +89,11 @@ mod tests {
             .await;
 
         assert!(res.is_ok());
+        match res {
+            Ok(res) => {
+                assert_eq!(100, res.stats.len())
+            }
+            Err(_) => {}
+        }
     }
 }

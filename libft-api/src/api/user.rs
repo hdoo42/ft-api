@@ -10,3 +10,5 @@ mod users_id_teams;
 pub use users_id_teams::*;
 mod users_id_cursus_users;
 pub use users_id_cursus_users::*;
+mod campus_users;
+pub use campus_users::*;

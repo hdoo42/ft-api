@@ -50,7 +50,7 @@ pub enum FtPoolMonth {
 }
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
-pub struct FtPoolYear(String);
+pub struct FtPoolYear(pub String);
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtEmail(String);

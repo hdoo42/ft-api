@@ -257,7 +257,7 @@ impl FtClientHttpApiUri {
         let url_query_params: Vec<(String, String)> = params
             .clone()
             .into_iter()
-            .filter_map(|(k, vo)| vo.map(|v| (k.to_string(), v.as_ref().to_string())))
+            .filter_map(|(k, vo)| vo.map(|v| (k, v.as_ref().to_string())))
             .collect();
 
         Ok(Url::parse_with_params(base_url.as_str(), url_query_params)?)

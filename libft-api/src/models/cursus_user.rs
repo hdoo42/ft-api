@@ -27,7 +27,7 @@ pub struct FtSkill {
 }
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
-pub struct FtCursusUserLevel(f64);
+pub struct FtCursusUserLevel(pub f64);
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtGrade(String);

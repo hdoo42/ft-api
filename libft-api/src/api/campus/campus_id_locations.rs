@@ -1,10 +1,11 @@
 use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
+use tracing::debug;
 
 use crate::{
     convert_filter_option_to_tuple, convert_range_option_to_tuple, to_param, ClientResult,
     FtCampusId, FtClientHttpConnector, FtClientSession, FtFilterOption, FtLocation, FtRangeOption,
-    FtSortOption, FtUserId,
+    FtSortOption, FtUserId, FT_HTTP_PAGE_SIZE_100,
 };
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
@@ -57,6 +58,7 @@ where
                 }),
             ),
         ];
+        debug!("{:#?}", params);
 
         self.http_session_api
             .http_get(url, &[filters, range, params].concat())
@@ -70,6 +72,7 @@ mod tests {
 
     #[tokio::test]
     async fn location_with_params() {
+        tracing_subscriber::fmt::init();
         let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
             .await
             .unwrap();
@@ -81,12 +84,16 @@ mod tests {
         let session = client.open_session(&token);
         let res = session
             .campus_id_locations(
-                FtApiCampusLocationsRequest::new(FtCampusId::new(GS_CAMPUS_ID)).with_filter(vec![
-                    FtFilterOption::new(FtFilterField::Active, vec!["true".to_string()]),
-                ]),
+                FtApiCampusLocationsRequest::new(FtCampusId::new(GS_CAMPUS_ID)).with_per_page(100),
             )
             .await;
 
         assert!(res.is_ok());
+        match res {
+            Ok(res) => {
+                assert_eq!(100, res.location.len())
+            }
+            Err(_) => {}
+        }
     }
 }

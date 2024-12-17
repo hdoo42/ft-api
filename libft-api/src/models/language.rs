@@ -5,11 +5,11 @@ use crate::FtDateTimeUtc;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct FtLanguage {
-    pub created_at: FtDateTimeUtc,
     pub id: FtLanguageId,
     pub identifier: String,
     pub name: String,
-    pub updated_at: FtDateTimeUtc,
+    pub created_at: Option<FtDateTimeUtc>,
+    pub updated_at: Option<FtDateTimeUtc>,
 }
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
