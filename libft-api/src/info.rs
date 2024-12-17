@@ -437,4 +437,3 @@ mod ft_cursus {
     pub const _CYBERSECURITY_STOCKHOLM_MALWARE: u16 = 2337;
     pub const _UNDERSTANDING_CUSTOMER: u16 = 1956;
 }
-
