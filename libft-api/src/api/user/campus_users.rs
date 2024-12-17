@@ -63,14 +63,11 @@ where
 
 #[cfg(test)]
 mod tests {
-    use tracing::info;
 
     use super::*;
-    use crate::TEST_USER_YONDOO06_ID;
 
     #[tokio::test]
     async fn basic() {
-        tracing_subscriber::fmt::init();
         let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
             .await
             .unwrap();
@@ -80,9 +77,8 @@ mod tests {
         ));
 
         let session = client.open_session(&token);
-        let res = session
-            .campus_users(FtApiCampusUsersRequest::new())
-            .await
-            .unwrap();
+        let res = session.campus_users(FtApiCampusUsersRequest::new()).await;
+
+        assert!(res.is_ok());
     }
 }

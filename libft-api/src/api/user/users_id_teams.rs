@@ -87,10 +87,11 @@ mod tests {
         let session = client.open_session(&token);
         let res = session
             .users_id_teams(FtApiUsersIdTeamsRequest::new(FtUserId::new(
-                TEST_USER_YONDOO06_ID,
+                TEST_USER_YONDOO_ID,
             )))
-            .await;
+            .await
+            .unwrap();
 
-        assert!(res.is_ok());
+        // assert!(res.is_ok());
     }
 }

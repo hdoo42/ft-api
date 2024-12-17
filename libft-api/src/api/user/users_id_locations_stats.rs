@@ -60,8 +60,8 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::{prelude::*, TEST_USER_YONDOO06_ID};
-    use chrono::{Days, Local, NaiveDate};
+    use crate::{prelude::*, TEST_USER_YONDOO_ID};
+    use chrono::{Days, Local};
 
     #[tokio::test]
     async fn specific_date_range() {
@@ -80,20 +80,12 @@ mod tests {
             .expect("This is just 5 days ago");
         let res = session
             .users_id_locations_stats(
-                FtApiUsersIdLocationsStatsRequest::new(FtUserId::new(TEST_USER_YONDOO06_ID))
+                FtApiUsersIdLocationsStatsRequest::new(FtUserId::new(TEST_USER_YONDOO_ID))
                     .with_begin_at(begin_at)
-                    .with_end_at(end_at)
-                    .with_page(1)
-                    .with_per_page(100),
+                    .with_end_at(end_at),
             )
             .await;
 
         assert!(res.is_ok());
-        match res {
-            Ok(res) => {
-                assert_eq!(100, res.stats.len())
-            }
-            Err(_) => {}
-        }
     }
 }

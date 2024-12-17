@@ -277,5 +277,5 @@ fn parse_to_struct() {
 ]
     "#;
 
-    let result: FtApiUsersIdCursusUsersResponse = serde_json::from_str(raw).unwrap();
+    serde_json::from_str::<FtApiUsersIdCursusUsersResponse>(raw).unwrap();
 }

@@ -48,12 +48,12 @@ mod tests {
     #[test]
     fn correction_points_add_request_serde() {
         let req = FtApiUsersIdCorrectionPointsAddRequest {
-            id: FtUserId::new(crate::info::TEST_USER_YONDOO06_ID),
+            id: FtUserId::new(crate::info::TEST_USER_YONDOO_ID),
             reason: FtCorrectionPointsReason::new("test".to_owned()),
             amount: FtCorrectionPointsAmount::new(42),
         };
 
-        let raw = r#"{"id":185472,"reason":"test","amount":42}"#;
+        let raw = r#"{"id":180844,"reason":"test","amount":42}"#;
 
         assert_eq!(raw, serde_json::to_string(&req).unwrap());
     }
@@ -71,7 +71,7 @@ mod tests {
         let session = client.open_session(&token);
         let res = session
             .users_id_correction_points_add(FtApiUsersIdCorrectionPointsAddRequest {
-                id: FtUserId::new(crate::info::TEST_USER_YONDOO06_ID),
+                id: FtUserId::new(crate::info::TEST_USER_YONDOO_ID),
                 reason: FtCorrectionPointsReason::new("test".to_owned()),
                 amount: FtCorrectionPointsAmount::new(42),
             })

@@ -97,14 +97,17 @@ mod tests {
             reqwest::Client::new(),
         ));
 
-        let req = FtApiProjectSessionsTeamsRequest::new(FtProjectSessionId::new(LIBFT))
-            .with_filter(vec![FtFilterOption::new(
-                FtFilterField::Campus,
-                vec!["69".to_owned()],
-            )]);
-
         let session = client.open_session(&token);
-        let res = session.project_sessions_id_teams(req).await;
+        let res = session
+            .project_sessions_id_teams(
+                FtApiProjectSessionsTeamsRequest::new(FtProjectSessionId::new(LIBFT)).with_filter(
+                    vec![FtFilterOption::new(
+                        FtFilterField::Campus,
+                        vec!["69".to_owned()],
+                    )],
+                ),
+            )
+            .await;
 
         assert!(res.is_ok());
     }

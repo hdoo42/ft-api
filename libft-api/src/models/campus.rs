@@ -130,5 +130,5 @@ fn deser() {
   }]
     "#;
 
-    let res: Vec<FtCampus> = serde_json::from_str(raw_string).unwrap();
+    serde_json::from_str::<Vec<FtCampus>>(raw_string).unwrap();
 }

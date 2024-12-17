@@ -72,7 +72,6 @@ mod tests {
 
     #[tokio::test]
     async fn location_with_params() {
-        tracing_subscriber::fmt::init();
         let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
             .await
             .unwrap();
