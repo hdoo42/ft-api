@@ -10,6 +10,14 @@ exclude = ["src/main.rs"]
 [lib]
 path="src/lib.rs"
 
+[[bin]]
+name="project_stats"
+path="bin/project_stats.rs"
+
+[[bin]]
+name="locations"
+path="bin/locations.rs"
+
 [dependencies]
 serde = { version = "1.0.216", features = ["derive"] }
 serde_with = { version = "3.11.0", features = ["macros"] }
