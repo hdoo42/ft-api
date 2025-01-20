@@ -65,7 +65,7 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::{prelude::*, GS_CAMPUS_ID};
+    use crate::{campus_id::GYEONGSAN, prelude::*};
 
     #[tokio::test]
     async fn basic() {
@@ -79,9 +79,7 @@ mod tests {
 
         let session = client.open_session(&token);
         let res = session
-            .campus_id_users(FtApiCampusIdUsersRequest::new(FtCampusId::new(
-                GS_CAMPUS_ID,
-            )))
+            .campus_id_users(FtApiCampusIdUsersRequest::new(FtCampusId::new(GYEONGSAN)))
             .await;
 
         assert!(res.is_ok());

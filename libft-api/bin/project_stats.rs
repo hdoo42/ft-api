@@ -1,6 +1,6 @@
 use std::time::Duration;
 
-use libft_api::{prelude::*, EXAM_RANK_03, GS_CAMPUS_ID, MINISHELL, PHILOSOPHERS};
+use libft_api::{campus_id::GYEONGSAN, prelude::*, EXAM_RANK_03, MINISHELL, PHILOSOPHERS};
 use tokio::time::sleep;
 
 #[tokio::main]
@@ -29,7 +29,7 @@ async fn main() {
                                 MINISHELL.to_string(),
                             ],
                         ),
-                        FtFilterOption::new(FtFilterField::Campus, vec![GS_CAMPUS_ID.to_string()]),
+                        FtFilterOption::new(FtFilterField::Campus, vec![GYEONGSAN.to_string()]),
                     ]),
             )
             .await;

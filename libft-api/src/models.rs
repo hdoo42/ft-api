@@ -35,6 +35,8 @@ mod cursus_user;
 pub use cursus_user::*;
 mod campus_user;
 pub use campus_user::*;
+mod journals;
+pub use journals::*;
 
 mod common;
 

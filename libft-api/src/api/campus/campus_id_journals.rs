@@ -4,14 +4,16 @@ use tracing::debug;
 
 use crate::{
     convert_filter_option_to_tuple, convert_range_option_to_tuple, to_param, ClientResult,
-    FtCampusId, FtClientHttpConnector, FtClientSession, FtFilterOption, FtLocation, FtRangeOption,
-    FtSortOption, FtUserId,
+    FtCampusId, FtClientHttpConnector, FtClientSession, FtFilterOption, FtJournal, FtLocation,
+    FtRangeOption, FtSortOption, FtUserId,
 };
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
-pub struct FtApiCampusLocationsRequest {
+pub struct FtApiCampusIdJournalsRequest {
     pub user_id: Option<FtUserId>,
     pub campus_id: FtCampusId,
+    pub begin_at: String,
+    pub end_at: String,
     pub sort: Option<Vec<FtSortOption>>,
     pub range: Option<Vec<FtRangeOption>>,
     pub filter: Option<Vec<FtFilterOption>>,
@@ -21,19 +23,19 @@ pub struct FtApiCampusLocationsRequest {
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
 #[serde(transparent)]
-pub struct FtApiCampusLocationsResponse {
-    pub location: Vec<FtLocation>,
+pub struct FtApiCampusIdJournalsResponse {
+    pub location: Vec<FtJournal>,
 }
 
 impl<'a, FCHC> FtClientSession<'a, FCHC>
 where
     FCHC: FtClientHttpConnector + Send + Sync,
 {
-    pub async fn campus_id_locations(
+    pub async fn campus_id_journals(
         &self,
-        req: FtApiCampusLocationsRequest,
-    ) -> ClientResult<FtApiCampusLocationsResponse> {
-        let url = &format!("campus/{}/locations", req.campus_id);
+        req: FtApiCampusIdJournalsRequest,
+    ) -> ClientResult<FtApiCampusIdJournalsResponse> {
+        let url = &format!("campus/{}/journals", req.campus_id);
 
         let filters = convert_filter_option_to_tuple(req.filter.unwrap_or_default()).unwrap();
         let range = convert_range_option_to_tuple(req.range.unwrap_or_default()).unwrap();
@@ -42,6 +44,8 @@ where
             to_param!(req, page),
             to_param!(req, per_page),
             to_param!(req, user_id),
+            ("begin_at".to_string(), Some(req.begin_at)),
+            ("end_at".to_string(), Some(req.end_at)),
             (
                 "sort".to_string(),
                 req.sort.as_ref().map(|v| {
@@ -82,14 +86,13 @@ mod tests {
 
         let session = client.open_session(&token);
         let res = session
-            .campus_id_locations(
-                FtApiCampusLocationsRequest::new(FtCampusId::new(GYEONGSAN)).with_per_page(100),
-            )
+            .campus_id_journals(FtApiCampusIdJournalsRequest::new(
+                FtCampusId::new(GYEONGSAN),
+                "2025-1-1".to_string(),
+                "2025-1-2".to_string(),
+            ))
             .await;
 
         assert!(res.is_ok());
-        if let Ok(res) = res {
-            assert_eq!(100, res.location.len());
-        }
     }
 }
