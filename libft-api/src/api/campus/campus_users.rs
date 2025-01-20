@@ -1,17 +1,11 @@
 use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
-use tracing::debug;
 
-use crate::{
-    convert_filter_option_to_tuple, convert_range_option_to_tuple, to_param, ClientResult,
-    FtCampusId, FtClientHttpConnector, FtClientSession, FtFilterOption, FtLocation, FtRangeOption,
-    FtSortOption, FtUserId,
-};
+use crate::{prelude::*, to_param};
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
-pub struct FtApiCampusLocationsRequest {
+pub struct FtApiCampusUsersRequest {
     pub user_id: Option<FtUserId>,
-    pub campus_id: FtCampusId,
     pub sort: Option<Vec<FtSortOption>>,
     pub range: Option<Vec<FtRangeOption>>,
     pub filter: Option<Vec<FtFilterOption>>,
@@ -21,19 +15,22 @@ pub struct FtApiCampusLocationsRequest {
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
 #[serde(transparent)]
-pub struct FtApiCampusLocationsResponse {
-    pub location: Vec<FtLocation>,
+pub struct FtApiCampusUsersResponse {
+    pub campus_users: Vec<FtCampusUser>,
 }
 
-impl<'a, FCHC> FtClientSession<'a, FCHC>
+impl<FCHC> FtClientSession<'_, FCHC>
 where
     FCHC: FtClientHttpConnector + Send + Sync,
 {
-    pub async fn campus_id_locations(
+    pub async fn campus_users(
         &self,
-        req: FtApiCampusLocationsRequest,
-    ) -> ClientResult<FtApiCampusLocationsResponse> {
-        let url = &format!("campus/{}/locations", req.campus_id);
+        req: FtApiCampusUsersRequest,
+    ) -> ClientResult<FtApiCampusUsersResponse> {
+        let url = match req.user_id {
+            Some(user_id) => &format!("users/{user_id}/campus_users"),
+            None => "campus_users",
+        };
 
         let filters = convert_filter_option_to_tuple(req.filter.unwrap_or_default()).unwrap();
         let range = convert_range_option_to_tuple(req.range.unwrap_or_default()).unwrap();
@@ -41,7 +38,6 @@ where
         let params = vec![
             to_param!(req, page),
             to_param!(req, per_page),
-            to_param!(req, user_id),
             (
                 "sort".to_string(),
                 req.sort.as_ref().map(|v| {
@@ -58,7 +54,6 @@ where
                 }),
             ),
         ];
-        debug!("{:#?}", params);
 
         self.http_session_api
             .http_get(url, &[filters, range, params].concat())
@@ -68,10 +63,11 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::{campus_id::GYEONGSAN, prelude::*};
+
+    use super::*;
 
     #[tokio::test]
-    async fn location_with_params() {
+    async fn basic() {
         let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
             .await
             .unwrap();
@@ -81,15 +77,8 @@ mod tests {
         ));
 
         let session = client.open_session(&token);
-        let res = session
-            .campus_id_locations(
-                FtApiCampusLocationsRequest::new(FtCampusId::new(GYEONGSAN)).with_per_page(100),
-            )
-            .await;
+        let res = session.campus_users(FtApiCampusUsersRequest::new()).await;
 
         assert!(res.is_ok());
-        if let Ok(res) = res {
-            assert_eq!(100, res.location.len());
-        }
     }
 }

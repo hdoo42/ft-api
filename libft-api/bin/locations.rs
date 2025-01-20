@@ -1,6 +1,6 @@
 use std::time::Duration;
 
-use libft_api::{prelude::*, GS_CAMPUS_ID};
+use libft_api::{campus_id::GYEONGSAN, prelude::*};
 use tokio::time::sleep;
 
 #[tokio::main]
@@ -16,7 +16,7 @@ async fn main() {
     loop {
         let res = session
             .campus_id_locations(
-                FtApiCampusLocationsRequest::new(FtCampusId::new(GS_CAMPUS_ID))
+                FtApiCampusLocationsRequest::new(FtCampusId::new(GYEONGSAN))
                     .with_page(page)
                     .with_per_page(100)
                     .with_range(vec![FtRangeOption::new(

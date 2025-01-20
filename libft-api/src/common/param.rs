@@ -35,6 +35,7 @@ pub enum FtRangeField {
 #[serde(rename_all = "snake_case")]
 pub enum FtFilterField {
     Active,
+    Kind,
     ActiveCursus,
     BeginAt,
     Campus,
@@ -57,8 +58,10 @@ pub enum FtFilterField {
     Name,
     Primary,
     PrimaryCampus,
+    PrimaryCampusId,
     ProjectId,
     ProjectSessionId,
+    Reason,
     RepoUrl,
     RepoUuid,
     Status,

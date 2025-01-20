@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 use crate::prelude::*;
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct FtProjectsUsers {
+pub struct FtProjectsUser {
     pub created_at: FtDateTimeUtc,
     pub current_team_id: Option<FtTeamId>,
     pub cursus_ids: Vec<FtCursusId>,
@@ -273,7 +273,7 @@ fn deser_projects_users() {
 ]
 "#;
 
-    let result = serde_json::from_str::<Vec<FtProjectsUsers>>(raw_text);
+    let result = serde_json::from_str::<Vec<FtProjectsUser>>(raw_text);
 
     assert!(result.is_ok());
 }

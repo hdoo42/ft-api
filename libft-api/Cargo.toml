@@ -18,6 +18,18 @@ path="bin/project_stats.rs"
 name="locations"
 path="bin/locations.rs"
 
+[[bin]]
+name="blackholed"
+path="bin/blackholed.rs"
+
+[[bin]]
+name="journals"
+path="bin/journals.rs"
+
+[[bin]]
+name="campus_users"
+path="bin/campus_users.rs"
+
 [dependencies]
 serde = { version = "1.0.216", features = ["derive"] }
 serde_with = { version = "3.11.0", features = ["macros"] }

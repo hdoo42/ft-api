@@ -17,7 +17,7 @@ pub struct FtApiProjectsUsersRequest {
 #[derive(Debug, Serialize, Deserialize, Builder)]
 #[serde(transparent)]
 pub struct FtApiProjectsUsersResponse {
-    pub projects_users: Vec<FtProjectsUsers>,
+    pub projects_users: Vec<FtProjectsUser>,
 }
 
 impl<'a, FCHC> FtClientSession<'a, FCHC>
