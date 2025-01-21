@@ -118,6 +118,11 @@ impl FtClientReqwestConnector {
                 println!("no contents");
                 serde_json::from_str("{}").map_err(|err| map_serde_error(err, Some("{}")))
             }
+            StatusCode::CREATED if http_content_is_json => {
+                let decoded_body = serde_json::from_str(http_body_str.as_str())
+                    .map_err(|err| map_serde_error(err, Some(http_body_str.as_str())))?;
+                Ok(decoded_body)
+            }
             StatusCode::TOO_MANY_REQUESTS if http_content_is_json => {
                 let ft_message: FtEnvelopeMessage = serde_json::from_str(http_body_str.as_str())
                     .map_err(|err| map_serde_error(err, Some(http_body_str.as_str())))?;
