@@ -14,8 +14,27 @@ pub struct FtApiUsersIdCursusUsersRequest {
 }
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
+pub struct FtApiUsersIdCursusUsersPostRequest {
+    pub cursus_users: FtApiCursusUsersBody,
+}
+
+#[derive(Debug, Serialize, Deserialize, Builder)]
+pub struct FtApiCursusUsersBody {
+    pub cursus_id: i8,
+    pub user_id: FtUserId,
+    pub begin_at: String,
+    pub has_coalition: bool,
+}
+
+#[derive(Debug, Serialize, Deserialize, Builder)]
 #[serde(transparent)]
 pub struct FtApiUsersIdCursusUsersResponse {
+    pub cursus_user: Vec<FtCursusUser>,
+}
+
+#[derive(Debug, Serialize, Deserialize, Builder)]
+#[serde(transparent)]
+pub struct FtApiUsersIdCursusUsersPostResponse {
     pub cursus_user: Vec<FtCursusUser>,
 }
 
@@ -124,6 +143,24 @@ where
         self.http_session_api
             .http_get(url, &[filters, range, params].concat())
             .await
+    }
+
+    pub async fn cursus_users_post(
+        &self,
+        req: FtApiUsersIdCursusUsersRequest,
+    ) -> ClientResult<FtApiUsersIdCursusUsersResponse> {
+        let url = "cursus_users";
+
+        self.http_session_api.http_post(url, &req).await
+    }
+
+    pub async fn users_id_cursus_users_post(
+        &self,
+        req: FtApiUsersIdCursusUsersRequest,
+    ) -> ClientResult<FtApiUsersIdCursusUsersResponse> {
+        let url = &format!("users/{}/cursus_users", req.user_id.clone());
+
+        self.http_session_api.http_post(url, &req).await
     }
 }
 
