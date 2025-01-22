@@ -27,11 +27,12 @@ impl AuthInfo {
     }
 
     #[inline]
-    pub fn get_params(&self) -> [(&str, &str); 3] {
+    pub fn get_params(&self) -> [(&str, &str); 4] {
         [
             ("grant_type", "client_credentials"),
             ("client_id", &self.uid),
             ("client_secret", &self.secret),
+            ("scope", "public profile projects"),
         ]
     }
 }
@@ -41,7 +42,7 @@ pub struct FtApiToken {
     access_token: String,
     token_type: AccessTokenType,
     expires_in: i64,
-    scope: AccessTokenScope,
+    scope: String,
     created_at: i64,
     secret_valid_until: i64,
 }

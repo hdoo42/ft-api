@@ -15,12 +15,12 @@ pub struct FtApiUsersIdCursusUsersRequest {
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
 pub struct FtApiUsersIdCursusUsersPostRequest {
-    pub cursus_users: FtApiCursusUsersBody,
+    pub cursus_user: FtApiCursusUsersBody,
 }
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
 pub struct FtApiCursusUsersBody {
-    pub cursus_id: i8,
+    pub cursus_id: FtCursusId,
     pub user_id: FtUserId,
     pub begin_at: String,
     pub has_coalition: bool,
@@ -35,7 +35,7 @@ pub struct FtApiUsersIdCursusUsersResponse {
 #[derive(Debug, Serialize, Deserialize, Builder)]
 #[serde(transparent)]
 pub struct FtApiUsersIdCursusUsersPostResponse {
-    pub cursus_user: Vec<FtCursusUser>,
+    pub cursus_user: FtCursusUser,
 }
 
 impl<FCHC> FtClientSession<'_, FCHC>
@@ -147,7 +147,7 @@ where
 
     pub async fn cursus_users_post(
         &self,
-        req: FtApiUsersIdCursusUsersRequest,
+        req: FtApiUsersIdCursusUsersPostRequest,
     ) -> ClientResult<FtApiUsersIdCursusUsersResponse> {
         let url = "cursus_users";
 
@@ -156,9 +156,9 @@ where
 
     pub async fn users_id_cursus_users_post(
         &self,
-        req: FtApiUsersIdCursusUsersRequest,
-    ) -> ClientResult<FtApiUsersIdCursusUsersResponse> {
-        let url = &format!("users/{}/cursus_users", req.user_id.clone());
+        req: FtApiUsersIdCursusUsersPostRequest,
+    ) -> ClientResult<FtApiUsersIdCursusUsersPostResponse> {
+        let url = &format!("users/{}/cursus_users", req.cursus_user.user_id.clone());
 
         self.http_session_api.http_post(url, &req).await
     }
@@ -167,7 +167,40 @@ where
 #[cfg(test)]
 mod tests {
 
+    use chrono::{TimeDelta, Utc};
+
+    use crate::FT_PISCINE_CURSUS_ID;
+
     use super::*;
+
+    // #[tokio::test]
+    // async fn add_cursus() {
+    //     let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
+    //         .await
+    //         .unwrap();
+    //
+    //     let client = FtClient::new(FtClientReqwestConnector::with_connector(
+    //         reqwest::Client::new(),
+    //     ));
+    //
+    //     let session = client.open_session(&token);
+    //     let res = session
+    //         .users_id_cursus_users_post(FtApiUsersIdCursusUsersPostRequest::new(
+    //             FtApiCursusUsersBody {
+    //                 cursus_id: FT_PISCINE_CURSUS_ID,
+    //                 user_id: FtUserId::new(212_750),
+    //                 begin_at: Utc::now()
+    //                     .checked_add_signed(TimeDelta::new(60, 0).unwrap())
+    //                     .unwrap()
+    //                     .to_string(),
+    //                 has_coalition: false,
+    //             },
+    //         ))
+    //         .await
+    //         .unwrap();
+    //
+    //     assert_eq!(res.cursus_user.cursus_id, FtCursusId::new(9));
+    // }
 
     #[tokio::test]
     async fn basic() {

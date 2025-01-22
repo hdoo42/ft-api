@@ -91,6 +91,12 @@ impl FtPhone {
     }
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+pub enum FtUserIdentifier {
+    Login(FtLoginId),
+    UserId(FtUserId),
+}
+
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum FtKind {

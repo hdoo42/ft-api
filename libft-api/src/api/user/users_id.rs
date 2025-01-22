@@ -3,12 +3,6 @@ use serde::{Deserialize, Serialize};
 
 use crate::{prelude::*, to_param};
 
-#[derive(Debug, Serialize, Deserialize)]
-pub enum FtUserIdentifier {
-    Login(FtLoginId),
-    UserId(FtUserId),
-}
-
 #[derive(Debug, Serialize, Deserialize, Builder)]
 pub struct FtApiUsersIdRequest {
     pub id: FtUserIdentifier,

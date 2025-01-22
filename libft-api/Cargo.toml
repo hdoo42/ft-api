@@ -30,6 +30,13 @@ path="bin/journals.rs"
 name="campus_users"
 path="bin/campus_users.rs"
 
+[[bin]]
+name="user_creation"
+path="bin/user_creation.rs"
+[[bin]]
+name="user_subscribe"
+path="bin/user_subscribe.rs"
+
 [dependencies]
 serde = { version = "1.0.216", features = ["derive"] }
 serde_with = { version = "3.11.0", features = ["macros"] }

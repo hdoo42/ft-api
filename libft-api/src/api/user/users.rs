@@ -5,12 +5,6 @@ use serde_json::Value;
 
 use crate::{prelude::*, to_param};
 
-#[derive(Debug, Serialize, Deserialize)]
-pub enum FtUserIdentifier {
-    Login(FtLoginId),
-    UserId(FtUserId),
-}
-
 #[derive(Debug, Serialize, Deserialize, Builder)]
 pub struct FtApiUsersPostRequest {
     pub user: FtApiUserPostBody,
@@ -119,30 +113,30 @@ mod tests {
         assert!(res.is_ok());
     }
 
-    #[tokio::test]
-    async fn user_creation() {
-        let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
-            .await
-            .unwrap();
-
-        let client = FtClient::new(FtClientReqwestConnector::with_connector(
-            reqwest::Client::new(),
-        ));
-
-        let session = client.open_session(&token);
-        let res = session
-            .users_post(FtApiUsersPostRequest::new(FtApiUserPostBody {
-                email: "yondoo@42gyeongsan.kr".to_string(),
-                campus_id: FtCampusId::new(GYEONGSAN),
-                first_name: "TEST".to_string(),
-                last_name: "ACCOUNT".to_string(),
-                login: "exam-gs03".to_string(),
-                password: "Exam-gs03@4242".to_string(),
-                kind: FtKind::Student,
-                pool_month: "january".to_string(),
-                pool_year: 2025,
-            }))
-            .await
-            .unwrap();
-    }
+    // #[tokio::test]
+    // async fn user_creation() {
+    //     let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
+    //         .await
+    //         .unwrap();
+    //
+    //     let client = FtClient::new(FtClientReqwestConnector::with_connector(
+    //         reqwest::Client::new(),
+    //     ));
+    //
+    //     let session = client.open_session(&token);
+    //     let res = session
+    //         .users_post(FtApiUsersPostRequest::new(FtApiUserPostBody {
+    //             email: "yondoo@42gyeongsan.kr".to_string(),
+    //             campus_id: FtCampusId::new(GYEONGSAN),
+    //             first_name: "TEST".to_string(),
+    //             last_name: "ACCOUNT".to_string(),
+    //             login: "exam-gs03".to_string(),
+    //             password: "Exam-gs03@4242".to_string(),
+    //             kind: FtKind::Student,
+    //             pool_month: "january".to_string(),
+    //             pool_year: 2025,
+    //         }))
+    //         .await
+    //         .unwrap();
+    // }
 }

@@ -4,6 +4,22 @@ use serde::{Deserialize, Serialize};
 use crate::{prelude::*, to_param};
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
+pub struct FtApiProjectsUsersPostRequest {
+    pub projects_user: FtApiProjectsUsersPostBody,
+}
+
+#[derive(Debug, Serialize, Deserialize, Builder)]
+pub struct FtApiProjectsUsersPostBody {
+    pub project_id: FtProjectId,
+    pub user_id: FtUserId,
+}
+
+#[derive(Debug, Serialize, Deserialize, Builder)]
+#[serde(transparent)]
+pub struct FtApiProjectsUsersPostResponse {
+    pub projects_user: FtProjectsUser,
+}
+#[derive(Debug, Serialize, Deserialize, Builder)]
 pub struct FtApiProjectsUsersRequest {
     pub user_id: Option<Vec<FtUserId>>,
     pub project_id: Option<Vec<FtProjectId>>,
@@ -24,6 +40,15 @@ impl<'a, FCHC> FtClientSession<'a, FCHC>
 where
     FCHC: FtClientHttpConnector + Send + Sync,
 {
+    pub async fn projects_uesrs_post(
+        &self,
+        req: FtApiProjectsUsersPostRequest,
+    ) -> ClientResult<FtApiProjectsUsersPostResponse> {
+        let url = "projects_users";
+
+        self.http_session_api.http_post(url, &req).await
+    }
+
     pub async fn projects_uesrs(
         &self,
         req: FtApiProjectsUsersRequest,

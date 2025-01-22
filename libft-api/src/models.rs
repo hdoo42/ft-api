@@ -37,6 +37,10 @@ mod campus_user;
 pub use campus_user::*;
 mod journals;
 pub use journals::*;
+mod group;
+pub use group::*;
+mod exam;
+pub use exam::*;
 
 mod common;
 

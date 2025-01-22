@@ -1,13 +1,13 @@
 use std::{ops::ControlFlow, sync::Arc, time::Duration};
 
+use chrono::Utc;
 use libft_api::{campus_id::*, prelude::*};
 use tokio::{sync::Semaphore, task::JoinSet, time::sleep};
 use tracing::{info, info_span};
 
 #[tokio::main]
 async fn main() {
-    tracing_subscriber::fmt::init();
-    let thread_num = 6;
+    let thread_num = 4;
     let mut handles = JoinSet::new();
 
     let permit = Arc::new(Semaphore::new(thread_num));
@@ -58,16 +58,16 @@ async fn main() {
         info!("{}", result.len());
     }
 
-    println!("user_id,login,email,project_name,marked_at,final_mark");
+    println!("user_id,login,project_name,marked_at,final_mark,updated_at");
     result.into_iter().for_each(|projects_user| {
         println!(
-            "{:?},{:?},{:?},{:?},{:?},{:?}",
+            "{:?},{:?},{:?},{:?},{:?},{}",
             projects_user.user.id,
             projects_user.user.login,
-            projects_user.user.email,
             projects_user.project.name,
             projects_user.marked_at,
             projects_user.final_mark,
+            Utc::now()
         )
     });
 }
@@ -143,6 +143,9 @@ async fn get_users(
             if res.users.is_empty() {
                 return ControlFlow::Break(());
             }
+            res.users
+                .iter()
+                .for_each(|user| println!("{:?}, {:?}", user.id, user.login));
             result.extend(res.users);
             info!("{}", result.len());
             *page += thread_num;

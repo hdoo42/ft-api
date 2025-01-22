@@ -119,6 +119,7 @@ impl FtClientReqwestConnector {
                 serde_json::from_str("{}").map_err(|err| map_serde_error(err, Some("{}")))
             }
             StatusCode::CREATED if http_content_is_json => {
+                debug!("http_body_str: {}", http_body_str);
                 let decoded_body = serde_json::from_str(http_body_str.as_str())
                     .map_err(|err| map_serde_error(err, Some(http_body_str.as_str())))?;
                 Ok(decoded_body)
