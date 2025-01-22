@@ -5,7 +5,7 @@ use reqwest::{
     header::{self, AUTHORIZATION},
     Client, Method, RequestBuilder, StatusCode,
 };
-use tracing::{debug, Span};
+use tracing::{debug, info, Span};
 use url::Url;
 
 use crate::*;
@@ -68,16 +68,20 @@ pub fn parse_link_contents(
 }
 
 impl FtClientReqwestConnector {
+    #[must_use]
     pub fn new() -> Self {
         Self::with_connector(reqwest::Client::new())
     }
 
+    #[must_use]
     pub fn with_connector(connector: Client) -> Self {
         Self {
             ft_api_url: FtClientHttpApiUri::FT_API_URI_STR.to_string(),
             reqwest_connector: connector,
         }
     }
+
+    #[must_use]
     pub fn with_ft_api_url(self, ft_api_url: &str) -> Self {
         Self {
             ft_api_url: ft_api_url.to_string(),
@@ -85,10 +89,17 @@ impl FtClientReqwestConnector {
         }
     }
 
-    async fn send_http_request<'a, RS>(&'a self, reqwest: RequestBuilder) -> ClientResult<RS>
+    // TODO: chagne to hyper, remove url
+    async fn send_http_request<'a, RS>(
+        &'a self,
+        reqwest: RequestBuilder,
+        url: Url,
+    ) -> ClientResult<RS>
     where
         RS: for<'de> serde::de::Deserialize<'de>,
     {
+        let url_str = url.to_string();
+        info!(ft_url = url_str, "Sending HTTP request to");
         let http_res = reqwest
             .send()
             .await
@@ -102,6 +113,7 @@ impl FtClientReqwestConnector {
             .await
             .map_err(|error| FtReqwestError { error })?;
 
+        info!(ft_url = url_str, "Received HTTP response {}", http_status);
         let http_content_is_json = matches!(
             http_content_type.map(|content_type| content_type.to_str()),
             Some(Ok("application/json; charset=utf-8"))
@@ -109,20 +121,17 @@ impl FtClientReqwestConnector {
 
         match http_status {
             StatusCode::OK if http_content_is_json => {
-                debug!("http_body_str: {}", http_body_str);
+                let decoded_body = serde_json::from_str(http_body_str.as_str())
+                    .map_err(|err| map_serde_error(err, Some(http_body_str.as_str())))?;
+                Ok(decoded_body)
+            }
+            StatusCode::CREATED if http_content_is_json => {
                 let decoded_body = serde_json::from_str(http_body_str.as_str())
                     .map_err(|err| map_serde_error(err, Some(http_body_str.as_str())))?;
                 Ok(decoded_body)
             }
             StatusCode::OK | StatusCode::NO_CONTENT => {
-                println!("no contents");
                 serde_json::from_str("{}").map_err(|err| map_serde_error(err, Some("{}")))
-            }
-            StatusCode::CREATED if http_content_is_json => {
-                debug!("http_body_str: {}", http_body_str);
-                let decoded_body = serde_json::from_str(http_body_str.as_str())
-                    .map_err(|err| map_serde_error(err, Some(http_body_str.as_str())))?;
-                Ok(decoded_body)
             }
             StatusCode::TOO_MANY_REQUESTS if http_content_is_json => {
                 let ft_message: FtEnvelopeMessage = serde_json::from_str(http_body_str.as_str())
@@ -174,10 +183,11 @@ impl FtClientHttpConnector for FtClientReqwestConnector {
         async move {
             let request = self
                 .reqwest_connector
-                .request(Method::GET, full_uri)
+                //TODO: remove clone after migrate to hyper
+                .get(full_uri.clone())
                 .header(AUTHORIZATION, token.get_token_value());
 
-            self.send_http_request(request).await
+            self.send_http_request(request, full_uri).await
         }
         .boxed()
     }
@@ -195,11 +205,12 @@ impl FtClientHttpConnector for FtClientReqwestConnector {
         async move {
             let request = self
                 .reqwest_connector
-                .post(full_uri)
+                //TODO: remove clone after migrate to hyper
+                .post(full_uri.clone())
                 .header(AUTHORIZATION, token.get_token_value())
                 .json(&request_body);
 
-            self.send_http_request(request).await
+            self.send_http_request(request, full_uri).await
         }
         .boxed()
     }
@@ -215,16 +226,14 @@ impl FtClientHttpConnector for FtClientReqwestConnector {
         RS: for<'de> serde::de::Deserialize<'de> + Send + 'a,
     {
         async move {
-            let patch_json =
-                serde_json::to_string(&request_body).map_err(|err| map_serde_error(err, None))?;
-
             let request = self
                 .reqwest_connector
-                .patch(full_uri)
+                //TODO: remove clone after migrate to hyper
+                .patch(full_uri.clone())
                 .header(AUTHORIZATION, token.get_token_value())
-                .body(patch_json);
+                .json(&request_body);
 
-            self.send_http_request(request).await
+            self.send_http_request(request, full_uri).await
         }
         .boxed()
     }
