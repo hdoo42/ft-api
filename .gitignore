@@ -2,6 +2,7 @@
 !*.rs
 !*/
 !Cargo.toml
+!progress*.csv
 **/target
 .env.fish
 .env

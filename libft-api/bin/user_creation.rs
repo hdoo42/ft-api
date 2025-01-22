@@ -1,9 +1,7 @@
-use std::{ops::ControlFlow, sync::Arc, time::Duration};
-
 use chrono::{TimeDelta, Utc};
 use libft_api::{campus_id::*, prelude::*, FT_GROUP_ID_TEST_ACCOUNT, FT_PISCINE_CURSUS_ID};
-use tokio::{sync::Semaphore, task::JoinSet, time::sleep};
-use tracing::{info, info_span};
+use std::sync::Arc;
+use tokio::{sync::Semaphore, task::JoinSet};
 
 #[tokio::main]
 async fn main() {

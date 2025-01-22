@@ -44,6 +44,7 @@ pub enum FtFilterField {
     ClosedAt,
     CreatedAt,
     Cursus,
+    CursusId,
     Deadline,
     DeadlineAt,
     End,

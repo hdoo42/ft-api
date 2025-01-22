@@ -1,6 +1,6 @@
 use std::{sync::Arc, time::Duration};
 
-use libft_api::{campus_id::GYEONGSAN, prelude::*};
+use libft_api::{campus_id::GYEONGSAN, prelude::*, FT_PISCINE_CURSUS_ID};
 use tokio::{sync::Semaphore, task, time::sleep};
 
 #[tokio::main]
@@ -24,13 +24,13 @@ async fn main() {
                     .campus_id_journals(
                         FtApiCampusIdJournalsRequest::new(
                             FtCampusId::new(GYEONGSAN),
-                            "2024-10-1".to_string(),
-                            "2025-1-1".to_string(),
+                            "2025-1-20".to_string(),
+                            "2025-1-23".to_string(),
                         )
                         .with_page(page as u16)
                         .with_filter(vec![FtFilterOption::new(
-                            FtFilterField::Reason,
-                            vec!["Used intranet".to_string()],
+                            FtFilterField::CursusId,
+                            vec![FT_PISCINE_CURSUS_ID.to_string()],
                         )]),
                     )
                     .await;
