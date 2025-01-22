@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     convert_filter_option_to_tuple, convert_range_option_to_tuple, to_param, ClientResult,
-    FtClientHttpConnector, FtClientSession, FtExam, FtExamId, FtFilterOption, FtGroup, FtGroupId,
+    FtClientHttpConnector, FtClientSession, FtExam, FtExamId, FtFilterOption,
     FtRangeOption, FtSortOption, FtUserId,
 };
 

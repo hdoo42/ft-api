@@ -4,7 +4,7 @@ use tracing::debug;
 
 use crate::{
     convert_filter_option_to_tuple, convert_range_option_to_tuple, to_param, ClientResult,
-    FtCampusId, FtClientHttpConnector, FtClientSession, FtFilterOption, FtJournal, FtLocation,
+    FtCampusId, FtClientHttpConnector, FtClientSession, FtFilterOption, FtJournal,
     FtRangeOption, FtSortOption, FtUserId,
 };
 

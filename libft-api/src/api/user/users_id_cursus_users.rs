@@ -167,9 +167,9 @@ where
 #[cfg(test)]
 mod tests {
 
-    use chrono::{TimeDelta, Utc};
+    
 
-    use crate::FT_PISCINE_CURSUS_ID;
+    
 
     use super::*;
 

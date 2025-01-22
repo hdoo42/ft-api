@@ -1,5 +1,5 @@
 use rvstruct::ValueStruct;
-use serde::{de::Error, Deserialize, Deserializer, Serialize};
+use serde::{Deserialize, Deserializer, Serialize};
 
 use crate::*;
 

@@ -3,7 +3,7 @@ use std::time::Duration;
 use futures::FutureExt;
 use reqwest::{
     header::{self, AUTHORIZATION},
-    Client, Method, RequestBuilder, StatusCode,
+    Client, RequestBuilder, StatusCode,
 };
 use tracing::{debug, info, Span};
 use url::Url;

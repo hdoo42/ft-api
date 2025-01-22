@@ -1,7 +1,5 @@
-use chrono::Datelike;
 use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
-use serde_json::Value;
 
 use crate::{prelude::*, to_param};
 
@@ -91,8 +89,8 @@ where
 #[cfg(test)]
 mod tests {
 
-    use campus_id::GYEONGSAN;
-    use serde_with::with_prefix;
+    
+    
 
     use super::*;
     use crate::*;
