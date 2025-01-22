@@ -34,6 +34,7 @@ pub enum FtRangeField {
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum FtFilterField {
+    Sum,
     Active,
     Kind,
     ActiveCursus,

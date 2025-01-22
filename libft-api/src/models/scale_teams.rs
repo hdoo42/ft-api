@@ -51,16 +51,16 @@ pub enum FtCorrecteds {
 }
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
-pub struct FtFinalMark(pub i32);
+pub struct FtFinalMark(i32);
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtScaleTeamId(i32);
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
-pub struct FtScaleTeamComment(pub String);
+pub struct FtScaleTeamComment(String);
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
-pub struct FtScaleTeamFeedback(pub String);
+pub struct FtScaleTeamFeedback(String);
 
 #[test]
 fn deserialize_scaleteam() {
