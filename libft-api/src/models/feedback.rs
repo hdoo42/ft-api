@@ -10,8 +10,8 @@ pub struct FtFeedback {
     pub feedbackable_id: FtFeedbackableId,
     pub feedbackable_type: FtFeedbackableType,
     pub id: FtFeedbackId,
-    pub rating: FtRating,
-    pub user: FtUser,
+    pub rating: Option<FtRating>,
+    pub user: Option<FtUser>,
 }
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]

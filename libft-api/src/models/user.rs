@@ -1,9 +1,10 @@
+use rsb_derive::Builder;
 use rvstruct::ValueStruct;
 use serde::{Deserialize, Serialize};
 
 use crate::{FtDateTimeFixedOffset, FtDateTimeUtc, FtHost, FtImage, FtUrl};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize, Builder)]
 pub struct FtUser {
     pub id: Option<FtUserId>,
     pub email: Option<FtEmail>,

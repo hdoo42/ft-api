@@ -1,5 +1,5 @@
 use rvstruct::ValueStruct;
-use serde::{Deserialize, Serialize};
+use serde::{de::Error, Deserialize, Deserializer, Serialize};
 
 use crate::*;
 
@@ -17,10 +17,23 @@ pub struct FtScaleTeam {
     pub corrector: FtCorrector,
     pub correcteds: FtCorrecteds,
     pub filled_at: Option<FtDateTimeUtc>,
+    #[serde(deserialize_with = "deserialize_truant")]
     pub truant: Option<FtUser>,
     pub scale: Option<FtScale>,
     pub team: Option<FtTeam>,
     pub feedbacks: Option<Vec<FtFeedback>>,
+}
+
+fn deserialize_truant<'de, D>(deserializer: D) -> Result<Option<FtUser>, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    let value: FtUser = Deserialize::deserialize(deserializer)?;
+    if value == FtUser::new() {
+        Ok(None)
+    } else {
+        Ok(Some(value))
+    }
 }
 
 #[derive(Debug, Serialize, Deserialize)]

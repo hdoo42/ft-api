@@ -9,7 +9,7 @@ use super::FtDateTimeUtc;
 pub struct FtTeam {
     pub id: FtTeamId,
     pub created_at: Option<FtDateTimeUtc>,
-    pub name: Option<FtName>,
+    pub name: Option<FtTeamName>,
     pub project_id: Option<FtProjectId>,
     pub project_session_id: Option<FtProjectSessionId>,
     pub repo_uuid: Option<FtRepoUuid>,
@@ -43,7 +43,7 @@ pub struct FtTeamUpload {
 pub struct FtTeamId(pub i32);
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
-pub struct FtName(pub String);
+pub struct FtTeamName(pub String);
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtProjectGitlabPath(pub String);
