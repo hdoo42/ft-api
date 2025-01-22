@@ -1,12 +1,12 @@
 use std::{
-    collections::HashMap, fmt::Debug, io::Write, ops::ControlFlow, sync::Arc, time::Duration,
+    collections::HashMap, io::Write, ops::ControlFlow, sync::Arc, time::Duration,
 };
 
 use chrono::Utc;
 use libft_api::{campus_id::*, prelude::*, FT_PISCINE_CURSUS_ID};
 use rvstruct::ValueStruct;
 use tokio::{sync::Semaphore, task::JoinSet, time::sleep};
-use tracing::{info, info_span};
+use tracing::info;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {

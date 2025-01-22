@@ -3,8 +3,8 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     convert_filter_option_to_tuple, convert_range_option_to_tuple, to_param, ClientResult,
-    FtClientHttpConnector, FtClientSession, FtExam, FtExamId, FtFilterOption,
-    FtRangeOption, FtSortOption, FtUserId,
+    FtClientHttpConnector, FtClientSession, FtExam, FtExamId, FtFilterOption, FtRangeOption,
+    FtSortOption, FtUserId,
 };
 
 #[derive(Debug, Serialize, Deserialize, Builder)]

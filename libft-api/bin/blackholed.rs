@@ -106,44 +106,45 @@ async fn cursus_users(
     }
     ControlFlow::Continue(())
 }
-async fn campus_users(thread_num: usize, page: &mut usize) -> ControlFlow<Vec<FtCampusUser>> {
-    let token = FtApiToken::try_get(AuthInfo::build_from_env().unwrap())
-        .await
-        .unwrap();
-    let client = FtClient::new(FtClientReqwestConnector::new());
-    let session = Arc::new(client.open_session(&token));
-    let res = session
-        .campus_users(
-            FtApiCampusUsersRequest::new()
-                .with_per_page(100)
-                .with_page(*page as u16)
-                .with_filter(vec![
-                    FtFilterOption::new(FtFilterField::CampusId, vec![SINGAPORE.to_string()]),
-                    FtFilterOption::new(FtFilterField::Status, vec!["student".to_string()]),
-                ]),
-        )
-        .await;
-    let mut result = Vec::new();
 
-    match res {
-        Ok(res) => {
-            if res.campus_users.is_empty() {
-                return ControlFlow::Break(result);
-            }
-            result.extend(res.campus_users);
-            *page += thread_num;
-        }
-        Err(FtClientError::RateLimitError(_)) => {
-            eprintln!("rate limit, try again.");
-            sleep(Duration::new(1, 42)).await
-        }
-        Err(e) => {
-            eprintln!("other error: {e}");
-            return ControlFlow::Break(result);
-        }
-    }
-    ControlFlow::Continue(())
-}
+// async fn campus_users(thread_num: usize, page: &mut usize) -> ControlFlow<Vec<FtCampusUser>> {
+//     let token = FtApiToken::try_get(AuthInfo::build_from_env().unwrap())
+//         .await
+//         .unwrap();
+//     let client = FtClient::new(FtClientReqwestConnector::new());
+//     let session = Arc::new(client.open_session(&token));
+//     let res = session
+//         .campus_users(
+//             FtApiCampusUsersRequest::new()
+//                 .with_per_page(100)
+//                 .with_page(*page as u16)
+//                 .with_filter(vec![
+//                     FtFilterOption::new(FtFilterField::CampusId, vec![SINGAPORE.to_string()]),
+//                     FtFilterOption::new(FtFilterField::Status, vec!["student".to_string()]),
+//                 ]),
+//         )
+//         .await;
+//     let mut result = Vec::new();
+//
+//     match res {
+//         Ok(res) => {
+//             if res.campus_users.is_empty() {
+//                 return ControlFlow::Break(result);
+//             }
+//             result.extend(res.campus_users);
+//             *page += thread_num;
+//         }
+//         Err(FtClientError::RateLimitError(_)) => {
+//             eprintln!("rate limit, try again.");
+//             sleep(Duration::new(1, 42)).await
+//         }
+//         Err(e) => {
+//             eprintln!("other error: {e}");
+//             return ControlFlow::Break(result);
+//         }
+//     }
+//     ControlFlow::Continue(())
+// }
 
 async fn users(result: &mut Vec<FtUser>, thread_num: usize, page: &mut usize) -> ControlFlow<()> {
     let token = FtApiToken::try_get(AuthInfo::build_from_env().unwrap())
