@@ -1,6 +1,4 @@
-use std::{
-    collections::HashMap, io::Write, ops::ControlFlow, sync::Arc, time::Duration,
-};
+use std::{collections::HashMap, io::Write, ops::ControlFlow, sync::Arc, time::Duration};
 
 use chrono::Utc;
 use libft_api::{campus_id::*, prelude::*, FT_PISCINE_CURSUS_ID};

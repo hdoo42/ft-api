@@ -12,22 +12,22 @@ struct ExamSet {
 #[tokio::main]
 async fn main() {
     tracing_subscriber::fmt::init();
-    let permit = Arc::new(Semaphore::new(7));
+    let permit = Arc::new(Semaphore::new(1));
 
     let target_users = [
         213148, 213147, 213146, 213145, 213144, 213143, 212752, 212751, 212750, 212749,
     ];
     let exam_sets = Arc::new([
         ExamSet {
-            exam_id: FtExamId::new(22086),
+            exam_id: FtExamId::new(22085),
             project_id: FtProjectId::new(1302),
         },
         ExamSet {
-            exam_id: FtExamId::new(22087),
+            exam_id: FtExamId::new(22086),
             project_id: FtProjectId::new(1303),
         },
         ExamSet {
-            exam_id: FtExamId::new(22088),
+            exam_id: FtExamId::new(22087),
             project_id: FtProjectId::new(1304),
         },
     ]);
