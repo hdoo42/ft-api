@@ -81,13 +81,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     let file_path = format!(
-        "/Users/hdoo/works/gsia/libft-api/libft-api/bin/piscine/third_cohort/first_round/progress_{}.csv\n",
+        "/Users/hdoo/works/gsia/libft-api/libft-api/bin/piscine/third_cohort/first_round/progress_{}.csv",
         Utc::now().format("%Y-%m-%d_%H-%M-%S")
     );
 
     let mut file = std::fs::File::create(&file_path).expect("Failed to create output file");
 
-    file.write_all("user_id,login,project_name,marked_at,final_mark,updated_at".as_bytes())?;
+    file.write_all("user_id,login,project_name,marked_at,final_mark,updated_at\n".as_bytes())?;
 
     for projects_user in result {
         writeln!(

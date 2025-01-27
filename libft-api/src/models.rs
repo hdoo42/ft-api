@@ -1,4 +1,5 @@
 use chrono::{DateTime, FixedOffset, Utc};
+use rvstruct::ValueStruct;
 use serde::{Deserialize, Serialize};
 
 pub use locations::*;
@@ -44,7 +45,7 @@ pub use exam::*;
 
 mod common;
 
-#[derive(Serialize, Deserialize, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, ValueStruct)]
 pub struct FtDateTimeUtc(pub DateTime<Utc>);
 
 #[derive(Serialize, PartialEq, Deserialize, Debug)]

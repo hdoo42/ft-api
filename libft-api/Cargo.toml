@@ -42,6 +42,9 @@ path="bin/evaluation.rs"
 name="user_subscribe"
 path="bin/user_subscribe.rs"
 
+[[bin]]
+name="teams"
+path="bin/teams.rs"
 [dependencies]
 serde = { version = "1.0.216", features = ["derive"] }
 serde_with = { version = "3.11.0", features = ["macros"] }

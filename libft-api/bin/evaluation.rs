@@ -151,22 +151,29 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .unwrap_or("".to_string()),
             None => "".to_string(),
         };
-        let team = match scale_team.team {
-            Some(team) => team
-                .users
-                .map(|users| {
-                    users
-                        .into_iter()
-                        .map(|user| {
-                            user.login
-                                .map(|l| l.0.to_string())
-                                .unwrap_or("".to_string())
-                        })
-                        .collect::<Vec<String>>()
-                        .join(",")
-                })
-                .unwrap_or("".to_string()),
-            None => "".to_string(),
+        let (team_uesr, project_id) = match scale_team.team {
+            Some(team) => {
+                let user = team
+                    .users
+                    .map(|users| {
+                        users
+                            .into_iter()
+                            .map(|user| {
+                                user.login
+                                    .map(|l| l.0.to_string())
+                                    .unwrap_or("".to_string())
+                            })
+                            .collect::<Vec<String>>()
+                            .join(",")
+                    })
+                    .unwrap_or("".to_string());
+                let project_id = team
+                    .project_id
+                    .map(|project_id| project_id.to_string())
+                    .unwrap_or("".to_string());
+                (user, project_id)
+            }
+            None => ("".to_string(), "".to_string()),
         };
         let final_mark = match scale_team.final_mark {
             Some(final_mark) => final_mark.value().to_string(),
@@ -174,7 +181,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         };
         writeln!(
             file,
-            "{}ㅣ{}ㅣ{}ㅣ{}ㅣ{}ㅣ{}ㅣ{}ㅣ{}ㅣ{}ㅣ{}ㅣ{:?}ㅣ{:?}",
+            "{}ㅣ{}ㅣ{}ㅣ{}ㅣ{}ㅣ{}ㅣ{}ㅣ{}ㅣ{}ㅣ{}ㅣ{}ㅣ{:?}ㅣ{:?}",
+            project_id,
             scale_team.id,
             scale_team.created_at.0.to_utc(),
             scale_team.updated_at.0.to_utc(),
@@ -184,7 +192,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             correcteds,
             filled_at,
             truant,
-            team,
+            team_uesr,
             scale_team.comment,
             scale_team.feedback
         )

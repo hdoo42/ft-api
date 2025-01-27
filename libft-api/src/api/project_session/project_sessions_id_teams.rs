@@ -19,7 +19,7 @@ pub struct FtApiProjectSessionsTeamsRequest {
     pub sort: Option<Vec<FtSortOption>>,
     pub filter: Option<Vec<FtFilterOption>>,
     pub range: Option<Vec<FtRangeOption>>,
-    pub page: Option<u16>,
+    pub page: Option<usize>,
     pub per_page: Option<u8>,
 }
 

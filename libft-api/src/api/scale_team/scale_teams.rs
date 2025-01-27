@@ -17,11 +17,37 @@ pub struct FtApiScaleTeamsRequest {
 pub struct FtApiScaleTeamsResponse {
     pub scale_teams: Vec<FtScaleTeam>,
 }
+#[derive(Debug, Serialize, Deserialize, Builder)]
+pub struct FtApiScaleTeamsMultipleCreateRequest {
+    pub scale_teams: Vec<FtApiScaleTeamsMultipleCreateBody>,
+}
+
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
+pub struct FtApiScaleTeamsMultipleCreateBody {
+    pub begin_at: FtDateTimeUtc,
+    pub user_id: FtUserId,
+    pub team_id: FtTeamId,
+}
+
+#[derive(Debug, Serialize, Deserialize, Builder)]
+#[serde(transparent)]
+pub struct FtApiScaleTeamsMultipleCreateResponse {
+    pub scale_teams: Vec<FtScaleTeam>,
+}
 
 impl<'a, FCHC> FtClientSession<'a, FCHC>
 where
     FCHC: FtClientHttpConnector + Send + Sync,
 {
+    pub async fn scale_teams_multiple_create_post(
+        &self,
+        req: FtApiScaleTeamsMultipleCreateRequest,
+    ) -> ClientResult<FtApiScaleTeamsMultipleCreateResponse> {
+        let url = "scale_teams/multiple_create";
+
+        self.http_session_api.http_post(url, &req).await
+    }
+
     pub async fn scale_teams(
         &self,
         req: FtApiScaleTeamsRequest,
