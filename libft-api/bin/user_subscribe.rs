@@ -14,9 +14,7 @@ async fn main() {
     tracing_subscriber::fmt::init();
     let permit = Arc::new(Semaphore::new(1));
 
-    let target_users = [
-        213148, 213147, 213146, 213145, 213144, 213143, 212752, 212751, 212750, 212749,
-    ];
+    let target_users = [];
     let exam_sets = Arc::new([
         ExamSet {
             exam_id: FtExamId::new(22085),

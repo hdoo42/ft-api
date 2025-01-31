@@ -48,7 +48,7 @@ mod common;
 #[derive(Serialize, Deserialize, Debug, PartialEq, ValueStruct)]
 pub struct FtDateTimeUtc(pub DateTime<Utc>);
 
-#[derive(Serialize, PartialEq, Deserialize, Debug)]
+#[derive(Serialize, PartialEq, Deserialize, Debug, ValueStruct)]
 pub struct FtDateTimeFixedOffset(DateTime<FixedOffset>);
 
 pub type Seresult<T> = Result<T, serde_json::Error>;
