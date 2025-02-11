@@ -136,6 +136,32 @@ pub trait FtClientHttpConnector {
         }
     }
 
+    fn http_delete_uri<'a, RQ, RS>(
+        &'a self,
+        full_uri: Url,
+        token: &'a FtApiToken,
+        request_body: &'a RQ,
+    ) -> BoxFuture<'a, ClientResult<RS>>
+    where
+        RQ: serde::ser::Serialize + Send + Sync,
+        RS: for<'de> serde::de::Deserialize<'de> + Send + 'a;
+
+    fn http_delete<'a, RQ, RS>(
+        &'a self,
+        method_relative_uri: &str,
+        token: &'a FtApiToken,
+        request: &'a RQ,
+    ) -> BoxFuture<'a, ClientResult<RS>>
+    where
+        RQ: serde::ser::Serialize + Send + Sync,
+        RS: for<'de> serde::de::Deserialize<'de> + Send + 'a,
+    {
+        match self.create_method_uri_path(method_relative_uri) {
+            Ok(full_uri) => self.http_delete_uri(full_uri, token, request),
+            Err(err) => std::future::ready(Err(err)).boxed(),
+        }
+    }
+
     fn create_method_uri_path(&self, method_relative_uri: &str) -> ClientResult<Url> {
         Ok(FtClientHttpApiUri::create_method_uri_path(method_relative_uri).parse()?)
     }
@@ -232,6 +258,34 @@ where
             .http_api
             .connector
             .http_post_uri(full_uri, self.token, request)
+            .await
+    }
+
+    pub async fn http_delete<RQ, RS>(
+        &self,
+        method_relative_uri: &str,
+        request: &RQ,
+    ) -> ClientResult<RS>
+    where
+        RQ: serde::ser::Serialize + Send + Sync,
+        RS: for<'de> serde::de::Deserialize<'de> + Send,
+    {
+        self.client
+            .http_api
+            .connector
+            .http_delete(method_relative_uri, self.token, request)
+            .await
+    }
+
+    pub async fn http_delete_uri<RQ, RS>(&self, full_uri: Url, request: &RQ) -> ClientResult<RS>
+    where
+        RQ: serde::ser::Serialize + Send + Sync,
+        RS: for<'de> serde::de::Deserialize<'de> + Send,
+    {
+        self.client
+            .http_api
+            .connector
+            .http_delete_uri(full_uri, self.token, request)
             .await
     }
 }
