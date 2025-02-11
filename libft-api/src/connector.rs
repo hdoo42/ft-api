@@ -27,46 +27,6 @@ pub struct FtClientApiCallContext<'a> {
     pub current_page: Option<usize>,
 }
 
-//std::option::Option<std::result::Result<&str, reqwest::header::ToStrError>>
-pub fn parse_link_contents(
-    link_contents: Option<Result<&str, reqwest::header::ToStrError>>,
-) -> Vec<(&str, i32)> {
-    let mut result = Vec::new();
-    let link_contents = match link_contents {
-        Some(Ok(s)) => s,
-        _ => return result,
-    };
-
-    for part in link_contents.split(", ") {
-        let parts: Vec<&str> = part.split("; ").collect();
-
-        let url_part = parts[0];
-        let rel_part = parts[1];
-
-        let Some(page_str) = url_part
-            .split("page=")
-            .nth(1)
-            .and_then(|s| s.split('&').next())
-        else {
-            continue;
-        };
-        let Ok(page_num) = page_str.parse() else {
-            continue;
-        };
-
-        let Some(rel_type) = rel_part.split('=').nth(1) else {
-            continue;
-        };
-        let rel_type = rel_type.trim_matches('"');
-
-        if rel_type == "next" || rel_type == "prev" || rel_type == "last" {
-            result.push((rel_type, page_num));
-        }
-    }
-
-    result
-}
-
 impl FtClientReqwestConnector {
     #[must_use]
     pub fn new() -> Self {
@@ -230,6 +190,29 @@ impl FtClientHttpConnector for FtClientReqwestConnector {
                 .reqwest_connector
                 //TODO: remove clone after migrate to hyper
                 .patch(full_uri.clone())
+                .header(AUTHORIZATION, token.get_token_value())
+                .json(&request_body);
+
+            self.send_http_request(request, full_uri).await
+        }
+        .boxed()
+    }
+
+    fn http_delete_uri<'a, RQ, RS>(
+        &'a self,
+        full_uri: Url,
+        token: &'a FtApiToken,
+        request_body: &'a RQ,
+    ) -> futures::future::BoxFuture<'a, ClientResult<RS>>
+    where
+        RQ: serde::ser::Serialize + Send + Sync,
+        RS: for<'de> serde::de::Deserialize<'de> + Send + 'a,
+    {
+        async move {
+            let request = self
+                .reqwest_connector
+                //TODO: remove clone after migrate to hyper
+                .delete(full_uri.clone())
                 .header(AUTHORIZATION, token.get_token_value())
                 .json(&request_body);
 

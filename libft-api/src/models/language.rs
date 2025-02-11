@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::FtDateTimeUtc;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, PartialOrd, Serialize, Deserialize)]
 pub struct FtLanguage {
     pub id: FtLanguageId,
     pub identifier: String,
@@ -12,5 +12,30 @@ pub struct FtLanguage {
     pub updated_at: Option<FtDateTimeUtc>,
 }
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtLanguageId(i32);
+
+//
+// FtLanguagesUser and its field structs
+//
+
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ValueStruct)]
+pub struct FtLanguagesUserId(pub u64);
+
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ValueStruct)]
+pub struct FtLanguagesUserLanguageId(pub u64);
+
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ValueStruct)]
+pub struct FtLanguagesUserUserId(pub u64);
+
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ValueStruct)]
+pub struct FtLanguagesUserPosition(pub u64);
+
+#[derive(Debug, PartialEq, PartialOrd, Serialize, Deserialize)]
+pub struct FtLanguagesUser {
+    pub id: FtLanguagesUserId,
+    pub language_id: FtLanguagesUserLanguageId,
+    pub user_id: FtLanguagesUserUserId,
+    pub position: FtLanguagesUserPosition,
+    pub created_at: FtDateTimeUtc,
+}

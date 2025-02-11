@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{FtCampus, FtDateTimeUtc, FtProjectSession, FtUrl};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, PartialOrd, Serialize, Deserialize)]
 pub struct FtProject {
     pub campus: Option<Vec<FtCampus>>,
     pub children: Option<Vec<FtProject>>,
@@ -22,7 +22,7 @@ pub struct FtProject {
     pub videos: Option<Vec<FtVideo>>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, PartialOrd, Serialize, Deserialize)]
 pub struct FtChildProject {
     pub name: String,
     pub id: FtProjectId,
@@ -30,7 +30,7 @@ pub struct FtChildProject {
     pub url: FtUrl,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, PartialOrd, Serialize, Deserialize)]
 pub struct FtCursus {
     pub id: FtCursusId,
     pub created_at: FtDateTimeUtc,
@@ -39,7 +39,7 @@ pub struct FtCursus {
     pub kind: String,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, PartialOrd, Serialize, Deserialize)]
 pub struct FtParentProject {
     pub name: FtProjectName,
     pub id: FtProjectId,
@@ -47,18 +47,18 @@ pub struct FtParentProject {
     pub url: FtUrl,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, PartialOrd, Serialize, Deserialize)]
 pub struct FtVideo {}
 
 // Newtype structs for various IDs and other specific fields
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtProjectId(pub i32);
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtProjectName(pub String);
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtSlug(pub String);
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtCursusId(pub i32);

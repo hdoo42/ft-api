@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 use super::{FtDateTimeUtc, FtUser, FtUserId};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, PartialOrd, Serialize, Deserialize)]
 pub struct FtExamUser {
     pub id: FtExamUserId,
     pub exam_id: FtExamId,
@@ -14,7 +14,7 @@ pub struct FtExamUser {
     pub exam: FtExam,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, PartialOrd, Serialize, Deserialize)]
 pub struct FtExam {
     pub id: FtExamId,
     pub ip_range: String,
@@ -28,8 +28,8 @@ pub struct FtExam {
     pub updated_at: FtDateTimeUtc,
 }
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtExamId(pub i32);
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtExamUserId(pub i32);

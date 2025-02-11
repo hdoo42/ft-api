@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::FtDateTimeUtc;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, PartialOrd, Serialize, Deserialize)]
 pub struct FtFlag {
     pub id: i8,
     pub name: FtFlagName,
@@ -12,10 +12,10 @@ pub struct FtFlag {
     pub updated_at: FtDateTimeUtc,
 }
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize)]
 pub struct FtFlagName(String);
 
-// #[derive(PartialEq, Serialize, Debug)]
+// #[derive(PartialEq, PartialOrd, Serialize, Debug)]
 // pub enum FtFlagName {
 //     Ok,
 //     EmptyWork,

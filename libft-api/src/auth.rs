@@ -37,7 +37,7 @@ impl AuthInfo {
     }
 }
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, PartialOrd, Clone, Serialize, Deserialize)]
 pub struct FtApiToken {
     access_token: String,
     token_type: AccessTokenType,
@@ -53,7 +53,7 @@ impl FtApiToken {
     }
 }
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, PartialOrd, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 enum AccessTokenScope {
     Public,
@@ -64,7 +64,7 @@ enum AccessTokenScope {
     Forum,
 }
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, PartialOrd, Clone, Serialize, Deserialize)]
 enum AccessTokenType {
     #[serde(rename = "bearer")]
     Bearer,

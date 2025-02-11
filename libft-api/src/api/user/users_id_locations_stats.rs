@@ -14,6 +14,7 @@ pub struct FtApiUsersIdLocationsStatsRequest {
     pub user_id: FtUserId,
     pub begin_at: Option<NaiveDate>,
     pub end_at: Option<NaiveDate>,
+    pub time_zone: Option<String>,
     pub page: Option<u16>,
     pub per_page: Option<u8>,
 }
@@ -21,7 +22,7 @@ pub struct FtApiUsersIdLocationsStatsRequest {
 #[derive(Debug, Serialize, Deserialize, Builder)]
 #[serde(transparent)]
 pub struct FtApiUsersIdLocationsStatsResponse {
-    pub stats: HashMap<NaiveDate, NaiveTime>,
+    pub stats: HashMap<NaiveDate, String>,
 }
 
 impl<'a, FCHC> FtClientSession<'a, FCHC>
@@ -50,6 +51,7 @@ where
                     })
                     .map(|date| date.to_string()),
             ),
+            ("time_zone".to_string(), req.time_zone),
         ];
 
         self.http_session_api

@@ -17,7 +17,7 @@ pub struct FtApiGroupsUsersPostRequest {
     pub groups_user: FtApiGroupsUsersPostBody,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, PartialOrd, Serialize, Deserialize)]
 pub struct FtApiGroupsUsersPostBody {
     pub group_id: FtGroupId,
     pub user_id: FtUserId,

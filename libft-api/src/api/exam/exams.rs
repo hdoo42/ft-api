@@ -21,7 +21,7 @@ pub struct FtApiExamsUsersPostRequest {
     pub exams_user: FtApiExamsUsersPostBody,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, PartialOrd, Serialize, Deserialize)]
 pub struct FtApiExamsUsersPostBody {
     pub user_id: FtUserId,
 }

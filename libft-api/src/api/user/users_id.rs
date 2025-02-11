@@ -81,8 +81,7 @@ mod tests {
             .users_id(FtApiUsersIdRequest::new(FtUserIdentifier::Login(
                 FtLoginId::new("taejikim".to_owned()),
             )))
-            .await;
-
-        assert!(res.is_ok());
+            .await
+            .unwrap();
     }
 }

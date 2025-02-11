@@ -22,7 +22,7 @@ pub struct FtApiScaleTeamsMultipleCreateRequest {
     pub scale_teams: Vec<FtApiScaleTeamsMultipleCreateBody>,
 }
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, PartialOrd, Serialize, Deserialize)]
 pub struct FtApiScaleTeamsMultipleCreateBody {
     pub begin_at: FtDateTimeUtc,
     pub user_id: FtUserId,

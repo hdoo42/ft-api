@@ -1,7 +1,7 @@
 use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum FtRangeField {
     BeginAt,
@@ -31,7 +31,7 @@ pub enum FtRangeField {
     UserId,
 }
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum FtFilterField {
     Sum,
@@ -74,25 +74,25 @@ pub enum FtFilterField {
     WithMark,
 }
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, Builder)]
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize, Builder)]
 pub struct FtSortOption {
     pub field: FtSortField,
     pub descending: bool,
 }
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, Builder)]
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize, Builder)]
 pub struct FtRangeOption {
     pub range: FtRangeField,
     pub value: Vec<String>,
 }
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, Builder)]
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize, Builder)]
 pub struct FtFilterOption {
     pub field: FtFilterField,
     pub value: Vec<String>,
 }
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum FtSortField {
     Id,
