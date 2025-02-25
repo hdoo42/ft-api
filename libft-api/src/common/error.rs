@@ -37,7 +37,7 @@ impl FtClientError {
     fn option_to_string<T: ToString>(value: &Option<T>) -> String {
         value
             .as_ref()
-            .map_or_else(|| "-".to_string(), |v| v.to_string())
+            .map_or_else(|| "-".to_string(), std::string::ToString::to_string)
     }
 }
 
@@ -176,7 +176,7 @@ impl std::fmt::Display for FtSystemError {
         write!(
             f,
             "Ft system protocol error. {}{:?}",
-            self.message.as_ref().unwrap_or(&"".to_string()),
+            self.message.as_ref().unwrap_or(&String::new()),
             self.cause
         )
     }
@@ -222,6 +222,7 @@ impl From<Box<dyn std::error::Error + Sync + Send>> for FtClientError {
 
 pub fn map_serde_error(err: serde_json::Error, tried_to_parse: Option<&str>) -> FtClientError {
     FtClientError::ProtocolError(
-        FtProtocolError::new(err).opt_json_body(tried_to_parse.map(|s| s.to_string())),
+        FtProtocolError::new(err)
+            .opt_json_body(tried_to_parse.map(std::string::ToString::to_string)),
     )
 }

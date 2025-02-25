@@ -9,7 +9,7 @@ use crate::{
 };
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
-pub struct FtApiCampusLocationsRequest {
+pub struct FtApiCampusIdLocationsRequest {
     pub user_id: Option<FtUserId>,
     pub campus_id: FtCampusId,
     pub sort: Option<Vec<FtSortOption>>,
@@ -21,7 +21,7 @@ pub struct FtApiCampusLocationsRequest {
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
 #[serde(transparent)]
-pub struct FtApiCampusLocationsResponse {
+pub struct FtApiCampusIdLocationsResponse {
     pub location: Vec<FtLocation>,
 }
 
@@ -31,8 +31,8 @@ where
 {
     pub async fn campus_id_locations(
         &self,
-        req: FtApiCampusLocationsRequest,
-    ) -> ClientResult<FtApiCampusLocationsResponse> {
+        req: FtApiCampusIdLocationsRequest,
+    ) -> ClientResult<FtApiCampusIdLocationsResponse> {
         let url = &format!("campus/{}/locations", req.campus_id);
 
         let filters = convert_filter_option_to_tuple(req.filter.unwrap_or_default()).unwrap();
@@ -83,7 +83,7 @@ mod tests {
         let session = client.open_session(&token);
         let res = session
             .campus_id_locations(
-                FtApiCampusLocationsRequest::new(FtCampusId::new(GYEONGSAN)).with_per_page(100),
+                FtApiCampusIdLocationsRequest::new(FtCampusId::new(GYEONGSAN)).with_per_page(100),
             )
             .await;
 

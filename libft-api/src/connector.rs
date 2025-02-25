@@ -8,7 +8,10 @@ use reqwest::{
 use tracing::{debug, info, Span};
 use url::Url;
 
-use crate::*;
+use crate::{
+    map_serde_error, ClientResult, FtApiToken, FtClientError, FtClientHttpApiUri,
+    FtClientHttpConnector, FtEnvelopeMessage, FtHttpError, FtRateLimitError, FtReqwestError,
+};
 
 pub struct FtClientReqwestConnector {
     reqwest_connector: Client,
@@ -25,46 +28,6 @@ impl Default for FtClientReqwestConnector {
 pub struct FtClientApiCallContext<'a> {
     pub tracing_span: &'a Span,
     pub current_page: Option<usize>,
-}
-
-//std::option::Option<std::result::Result<&str, reqwest::header::ToStrError>>
-pub fn parse_link_contents(
-    link_contents: Option<Result<&str, reqwest::header::ToStrError>>,
-) -> Vec<(&str, i32)> {
-    let mut result = Vec::new();
-    let link_contents = match link_contents {
-        Some(Ok(s)) => s,
-        _ => return result,
-    };
-
-    for part in link_contents.split(", ") {
-        let parts: Vec<&str> = part.split("; ").collect();
-
-        let url_part = parts[0];
-        let rel_part = parts[1];
-
-        let Some(page_str) = url_part
-            .split("page=")
-            .nth(1)
-            .and_then(|s| s.split('&').next())
-        else {
-            continue;
-        };
-        let Ok(page_num) = page_str.parse() else {
-            continue;
-        };
-
-        let Some(rel_type) = rel_part.split('=').nth(1) else {
-            continue;
-        };
-        let rel_type = rel_type.trim_matches('"');
-
-        if rel_type == "next" || rel_type == "prev" || rel_type == "last" {
-            result.push((rel_type, page_num));
-        }
-    }
-
-    result
 }
 
 impl FtClientReqwestConnector {

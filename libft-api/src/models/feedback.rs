@@ -12,6 +12,14 @@ pub struct FtFeedback {
     pub id: FtFeedbackId,
     pub rating: Option<FtRating>,
     pub user: Option<FtUser>,
+    pub feedback_details: Vec<FtFeedbackDetail>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct FtFeedbackDetail {
+    id: u64,
+    rate: i8,
+    kind: String,
 }
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]

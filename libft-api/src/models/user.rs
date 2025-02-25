@@ -77,7 +77,7 @@ pub struct FtDisplayName(String);
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtLastName(String);
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
+#[derive(Debug, Eq, Hash, PartialEq, Clone, Copy, Serialize, Deserialize, ValueStruct)]
 pub struct FtUserId(i32);
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]

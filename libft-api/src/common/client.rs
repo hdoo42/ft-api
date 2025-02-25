@@ -49,7 +49,6 @@ where
 pub struct FtEnvelopeMessage {
     pub ok: bool,
     pub error: Option<String>,
-    // Slack may return validation errors in `errors` field with `ok: false` for some methods (such as `apps.manifest.validate`.
     pub errors: Option<Vec<String>>,
     pub warnings: Option<Vec<String>>,
 }
