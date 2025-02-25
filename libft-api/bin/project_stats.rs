@@ -39,13 +39,16 @@ async fn main() {
                 if res.projects_users.is_empty() {
                     break;
                 }
-                for mut ele in res.projects_users {
-                    let team_mate = match ele.teams.pop() {
-                        Some(team) => match team.users {
-                            Some(users) => users
-                                .into_iter()
-                                .map(|user| user.login)
-                                .collect::<Vec<Option<FtLoginId>>>(),
+                for ele in res.projects_users {
+                    let team_mate = match ele.teams {
+                        Some(mut teams) => match teams.pop() {
+                            Some(team) => match team.users {
+                                Some(users) => users
+                                    .into_iter()
+                                    .map(|user| user.login)
+                                    .collect::<Vec<Option<FtLoginId>>>(),
+                                None => vec![None],
+                            },
                             None => vec![None],
                         },
                         None => vec![None],
@@ -53,7 +56,7 @@ async fn main() {
 
                     println!(
                         "{:?}|{}|{:?}|{:?}|{}|{:?}",
-                        ele.user.login,
+                        ele.user.expect("projects_users always have FtUser").login,
                         ele.project.name,
                         ele.final_mark,
                         ele.retriable_at,

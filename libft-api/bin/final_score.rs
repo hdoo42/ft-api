@@ -32,17 +32,16 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         212535, 212534, 212533, 212532,
     ]
     .map(FtUserId::new);
-    let mut handles = JoinSet::new();
 
+    let mut teams_task = JoinSet::new();
     for id in ids {
         let permit = Arc::clone(&permit);
-        handles.spawn(async move {
+        teams_task.spawn(async move {
             let _permit = permit.acquire().await.unwrap();
-            let mut result = HashMap::new();
+            let mut result = Vec::new();
             let mut page = 1;
             loop {
-                if let ControlFlow::Break(()) =
-                    get_evaluation_historics(&mut result, &id, &mut page).await
+                if let ControlFlow::Break(()) = get_user_id_teams(&mut result, &mut page, id).await
                 {
                     break result;
                 }
@@ -50,41 +49,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         });
     }
 
-    let mut historics_of_students = Vec::new();
-    while let Some(Ok(res)) = handles.join_next().await {
-        historics_of_students.extend(res);
-        info!("{}", historics_of_students.len());
-    }
-
-    let file_path = format!(
-        "/Users/hdoo/works/gsia/codes/libft-api/libft-api/bin/piscine/third_cohort/first_round/evaluation_historics_{}.csv",
-        Utc::now().format("%Y-%m-%d_%H-%M-%S")
-    );
-
-    let mut file = std::fs::File::create(&file_path).expect("Failed to create output file");
-
-    file.write_all(
-        "id, created_at, reason, scale_team_id, sum, total, updated_at, intra_id\n".as_bytes(),
-    )?;
-
-    for (intra_id, historics) in historics_of_students {
-        for history in historics {
-            writeln!(
-                file,
-                "{},{},{},{},{},{},{},{}",
-                history.id,
-                history.created_at.0.to_utc(),
-                history.reason,
-                history
-                    .scale_team_id
-                    .map(|team| team.value().to_string())
-                    .unwrap_or("".to_string()),
-                history.sum,
-                history.total,
-                history.updated_at.0.to_utc(),
-                intra_id
-            )
-            .expect("Failed to write record");
+    let mut teams_by_id = HashMap::new();
+    while let Some(Ok(res)) = teams_task.join_next().await {
+        for team in res {
+            tracing::info!("{}", team.id.0);
+            teams_by_id.entry(team.id.clone()).or_insert(team);
         }
     }
 
@@ -108,17 +77,19 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     while let Some(Ok(res)) = handles.join_next().await {
         scale_teams.extend(res);
-        info!("{}", scale_teams.len());
     }
 
     let file_path = format!(
-        "/Users/hdoo/works/gsia/codes/libft-api/libft-api/bin/piscine/third_cohort/first_round/scale_teams_{}.csv",
+        "/Users/hdoo/works/gsia/codes/gs_stat_bins/data/piscine/third_cohort/first_round/final_mark{}.csv",
         Utc::now().format("%Y-%m-%d_%H-%M-%S")
     );
 
     let mut file = std::fs::File::create(&file_path).expect("Failed to create output file");
 
-    file.write_all("project_idㅣscale_team_idㅣcreated_atㅣupdated_atㅣfinal_markㅣbegin_atㅣcorrectorㅣcorrectedsㅣfilled_atㅣtruantㅣteam.userㅣcommentㅣfeedback\n".as_bytes())?;
+    file.write_all(
+        "project_id|evaluator|evaluated|feedback_detail_score_avg|evaluated_mark|mulinette_mark\n"
+            .as_bytes(),
+    )?;
 
     for scale_team in scale_teams {
         let corrector = match scale_team.corrector {
@@ -128,85 +99,68 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             FtCorrector::String(s) => s,
         };
         let correcteds = match scale_team.correcteds {
-            FtCorrecteds::String(s) => s,
-            FtCorrecteds::Vec(vec) => vec
+            FtCorrecteds::String(s) => vec![s],
+            FtCorrecteds::Vec(ft_users) => ft_users
                 .into_iter()
-                .map(|user| user.login.map(|l| l.0).unwrap_or("".to_string()))
-                .collect::<Vec<String>>()
-                .join(","),
-        };
-        let begin_at = match scale_team.begin_at {
-            Some(date) => date.0.to_utc().to_string(),
-            None => "".to_string(),
-        };
-        let filled_at = match scale_team.filled_at {
-            Some(date) => date.0.to_utc().to_string(),
-            None => "".to_string(),
+                .map(|user| user.login.map(|login| login.0).unwrap_or("".to_string()))
+                .collect::<Vec<String>>(),
         };
 
-        let truant = match scale_team.truant {
-            Some(user) => user
-                .login
-                .map(|l| l.0.to_string())
-                .unwrap_or("".to_string()),
-            None => "".to_string(),
-        };
-        let (team_uesr, project_id) = match scale_team.team {
-            Some(team) => {
-                let user = team
-                    .users
-                    .map(|users| {
-                        users
-                            .into_iter()
-                            .map(|user| {
-                                user.login
-                                    .map(|l| l.0.to_string())
-                                    .unwrap_or("".to_string())
-                            })
-                            .collect::<Vec<String>>()
-                            .join(",")
-                    })
-                    .unwrap_or("".to_string());
-                let project_id = team
-                    .project_id
-                    .map(|project_id| project_id.to_string())
-                    .unwrap_or("".to_string());
-                (user, project_id)
+        let feedback_detail_score_avg = match scale_team.feedbacks {
+            Some(feedbacks) if !feedbacks.is_empty() => {
+                let count = feedbacks.len();
+                let total: i32 = feedbacks
+                    .into_iter()
+                    .map(|f| f.rating.map(|r| r.into_value()).unwrap_or(0))
+                    .sum();
+                Some(total as f32 / count as f32)
             }
-            None => ("".to_string(), "".to_string()),
+            _ => None,
         };
-        let final_mark = match scale_team.final_mark {
-            Some(final_mark) => final_mark.value().to_string(),
-            None => "".to_string(),
+
+        let evaluated_mark = scale_team.final_mark;
+
+        let (project_id, moulinette_mark) = match scale_team.team {
+            Some(team) => match teams_by_id.remove(&team.id) {
+                Some(target_team) => {
+                    let moulinette_mark = match target_team.teams_uploads {
+                        Some(teams_uploads) => teams_uploads
+                            .into_iter()
+                            .map(|team| team.final_mark)
+                            .max_by(|a, b| a.cmp(b)),
+                        None => None,
+                    };
+                    let project_id = target_team.project_id;
+                    (project_id, moulinette_mark)
+                }
+                None => (None, None),
+            },
+            None => (None, None),
         };
-        writeln!(
-            file,
-            "{}ㅣ{}ㅣ{}ㅣ{}ㅣ{}ㅣ{}ㅣ{}ㅣ{}ㅣ{}ㅣ{}ㅣ{}ㅣ{:?}ㅣ{:?}",
-            project_id,
-            scale_team.id,
-            scale_team.created_at.0.to_utc(),
-            scale_team.updated_at.0.to_utc(),
-            final_mark,
-            begin_at,
-            corrector,
-            correcteds,
-            filled_at,
-            truant,
-            team_uesr,
-            scale_team.comment,
-            scale_team.feedback
-        )
-        .expect("Failed to write record");
+
+        for corrected in correcteds {
+            writeln!(
+                file,
+                "{:?}|{:?}|{}|{:?}|{:?}|{:?}",
+                project_id,
+                corrector,
+                corrected,
+                feedback_detail_score_avg,
+                evaluated_mark,
+                moulinette_mark
+            )
+            .expect("Failed to write record");
+        }
     }
 
     println!("Output written to: {}", file_path);
     Ok(())
 }
 
-async fn get_evaluation_historics(
-    result: &mut HashMap<FtUserId, Vec<FtCorrectionPointHistory>>,
-    id: &FtUserId,
-    page: &mut i32,
+async fn get_user_id_teams(
+    result: &mut Vec<FtTeam>,
+    page: &mut u16,
+    id: FtUserId,
 ) -> ControlFlow<()> {
     let token = FtApiToken::try_get(AuthInfo::build_from_env().unwrap())
         .await
@@ -214,31 +168,35 @@ async fn get_evaluation_historics(
     let client = FtClient::new(FtClientReqwestConnector::new());
     let session = Arc::new(client.open_session(&token));
     let res = session
-        .users_id_correction_point_historics(
-            FtApiUsersIdCorrectionPointHistoricsRequest::new(id.clone())
-                .with_filter(vec![FtFilterOption::new(
-                    FtFilterField::Sum,
-                    vec!["-1".to_owned()],
-                )])
+        .users_id_teams(
+            FtApiUsersIdTeamsRequest::new(id)
                 .with_per_page(100)
-                .with_page(*page as u16),
+                .with_page(*page),
         )
         .await;
+
     match res {
         Ok(res) => {
-            if res.historics.is_empty() {
-                return ControlFlow::Break(());
+            if res.teams.is_empty() {
+                ControlFlow::Break(())
+            } else {
+                result.extend(res.teams);
+                *page += 1;
+
+                ControlFlow::Continue(())
             }
-            result.entry(id.clone()).or_default().extend(res.historics);
-            *page += 1;
         }
-        Err(FtClientError::RateLimitError(_)) => sleep(Duration::new(1, 42)).await,
-        Err(e) => {
-            eprintln!("other error: {e}");
-            return ControlFlow::Break(());
-        }
+        Err(e) => match e {
+            FtClientError::RateLimitError(ft_rate_limit_error) => {
+                sleep(Duration::new(1, 42)).await;
+                ControlFlow::Continue(())
+            }
+            _ => {
+                tracing::error!("{:?}", e);
+                ControlFlow::Break(())
+            }
+        },
     }
-    ControlFlow::Continue(())
 }
 
 async fn get_scale_teams(

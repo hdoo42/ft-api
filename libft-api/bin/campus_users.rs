@@ -2,6 +2,7 @@ use std::{io::Write, ops::ControlFlow, sync::Arc, time::Duration};
 
 use chrono::Utc;
 use libft_api::prelude::*;
+use rvstruct::ValueStruct;
 use tokio::{sync::Semaphore, task::JoinSet, time::sleep};
 use tracing::info;
 
@@ -81,22 +82,36 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     let file_path = format!(
-        "/Users/hdoo/works/gsia/libft-api/libft-api/bin/piscine/third_cohort/first_round/progress_{}.csv",
+        "/Users/hdoo/works/gsia/codes/libft-api/libft-api/bin/piscine/third_cohort/first_round/progress_{}.csv",
         Utc::now().format("%Y-%m-%d_%H-%M-%S")
     );
 
     let mut file = std::fs::File::create(&file_path).expect("Failed to create output file");
 
-    file.write_all("user_id,login,project_name,marked_at,final_mark,updated_at\n".as_bytes())?;
+    file.write_all(
+        "user_id,login,project_name,marked_at,created_at,final_mark,updated_at\n".as_bytes(),
+    )?;
 
     for projects_user in result {
+        let (id, login) = {
+            let user = projects_user
+                .user
+                .expect("projects_users always have user.");
+            (
+                user.id.map(|id| id.to_string()).unwrap_or("".to_string()),
+                user.login
+                    .map(|id| id.to_string())
+                    .unwrap_or("".to_string()),
+            )
+        };
         writeln!(
             file,
-            "{:?},{:?},{:?},{:?},{:?},{}",
-            projects_user.user.id,
-            projects_user.user.login,
+            "{},{},{},{:?},{},{:?},{}",
+            id,
+            login,
             projects_user.project.name,
             projects_user.marked_at,
+            projects_user.created_at.value(),
             projects_user.final_mark,
             Utc::now()
         )
