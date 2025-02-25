@@ -16,9 +16,9 @@ pub struct FtProjectsUser {
     pub project: FtProject,
     pub retriable_at: Option<FtDateTimeUtc>,
     pub status: FtStatus,
-    pub teams: Vec<FtTeam>,
+    pub teams: Option<Vec<FtTeam>>,
     pub updated_at: FtDateTimeUtc,
-    pub user: FtUser,
+    pub user: Option<FtUser>,
     pub validated: Option<bool>,
 }
 

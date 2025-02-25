@@ -50,7 +50,9 @@ pub enum FtCorrecteds {
     Vec(Vec<FtUser>),
 }
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
+#[derive(
+    Debug, Eq, Hash, PartialEq, PartialOrd, Ord, Clone, Serialize, Deserialize, ValueStruct,
+)]
 pub struct FtFinalMark(i32);
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
