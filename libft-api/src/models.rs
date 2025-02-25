@@ -42,13 +42,19 @@ mod group;
 pub use group::*;
 mod exam;
 pub use exam::*;
+mod achievement;
+pub use achievement::*;
+mod title;
+pub use title::*;
+mod role;
+pub use role::*;
 
 mod common;
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, ValueStruct)]
+#[derive(Serialize, PartialEq, PartialOrd, Deserialize, Debug, ValueStruct)]
 pub struct FtDateTimeUtc(pub DateTime<Utc>);
 
-#[derive(Serialize, PartialEq, Deserialize, Debug, ValueStruct)]
+#[derive(Serialize, PartialEq, PartialOrd, Deserialize, Debug, ValueStruct)]
 pub struct FtDateTimeFixedOffset(DateTime<FixedOffset>);
 
 pub type Seresult<T> = Result<T, serde_json::Error>;
@@ -58,7 +64,7 @@ mod tests {
     use super::*;
     use serde_json::from_str;
 
-    #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+    #[derive(Debug, PartialEq, PartialOrd, Clone, Serialize, Deserialize)]
     struct FtTestUser {
         user: FtLoginId,
     }

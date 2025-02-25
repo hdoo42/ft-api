@@ -13,7 +13,7 @@ pub struct FtApiProjectSessionsTeamsResponse {
     pub teams: Vec<FtTeam>,
 }
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize, Builder)]
+#[derive(Debug, PartialEq, PartialOrd, Clone, Serialize, Deserialize, Builder)]
 pub struct FtApiProjectSessionsTeamsRequest {
     pub project_session_id: FtProjectSessionId,
     pub sort: Option<Vec<FtSortOption>>,

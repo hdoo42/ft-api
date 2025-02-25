@@ -21,9 +21,10 @@ pub struct FtApiExamsUsersPostRequest {
     pub exams_user: FtApiExamsUsersPostBody,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, PartialOrd, Serialize, Deserialize)]
 pub struct FtApiExamsUsersPostBody {
     pub user_id: FtUserId,
+    pub exam_id: FtExamId,
 }
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
@@ -102,9 +103,8 @@ where
     pub async fn exams_users_post(
         &self,
         req: FtApiExamsUsersPostRequest,
-        exam_id: FtExamId,
     ) -> ClientResult<FtApiExamsUsersPostResponse> {
-        let url = &format!("exams/{exam_id}/exams_users");
+        let url = &format!("exams/{}/exams_users", req.exam_id);
 
         self.http_session_api.http_post(url, &req).await
     }

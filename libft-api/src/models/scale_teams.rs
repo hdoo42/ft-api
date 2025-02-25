@@ -3,7 +3,7 @@ use serde::{Deserialize, Deserializer, Serialize};
 
 use crate::*;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, PartialOrd, Serialize, Deserialize)]
 pub struct FtScaleTeam {
     pub id: FtScaleTeamId,
     pub scale_id: FtScaleId,
@@ -36,14 +36,14 @@ where
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, PartialOrd, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum FtCorrector {
     User(Box<FtUser>),
     String(String),
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, PartialOrd, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum FtCorrecteds {
     String(String),
@@ -55,13 +55,13 @@ pub enum FtCorrecteds {
 )]
 pub struct FtFinalMark(i32);
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtScaleTeamId(i32);
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtScaleTeamComment(String);
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtScaleTeamFeedback(String);
 
 #[test]

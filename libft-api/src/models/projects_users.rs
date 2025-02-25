@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::prelude::*;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, PartialOrd, Serialize, Deserialize)]
 pub struct FtProjectsUser {
     pub created_at: FtDateTimeUtc,
     pub current_team_id: Option<FtTeamId>,
@@ -22,10 +22,10 @@ pub struct FtProjectsUser {
     pub validated: Option<bool>,
 }
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtProjectUserId(pub i32);
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtOccurrence(i32);
 
 #[test]

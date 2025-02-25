@@ -5,7 +5,7 @@ use crate::{FtFinalMark, FtProjectId, FtProjectSessionId, FtScaleTeam, FtUrl, Ft
 
 use super::FtDateTimeUtc;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, PartialOrd, Serialize, Deserialize)]
 pub struct FtTeam {
     pub id: FtTeamId,
     pub created_at: Option<FtDateTimeUtc>,
@@ -30,7 +30,7 @@ pub struct FtTeam {
     pub validated: Option<bool>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, PartialOrd, Serialize, Deserialize)]
 pub struct FtTeamUpload {
     pub id: FtTeamId,
     pub final_mark: FtFinalMark,
@@ -44,19 +44,19 @@ pub struct FtTeamUpload {
 )]
 pub struct FtTeamId(pub i32);
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtTeamName(pub String);
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtProjectGitlabPath(pub String);
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtRepoUuid(pub String);
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtStatus(pub String);
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtTeamUploadId(i32);
 
 #[test]

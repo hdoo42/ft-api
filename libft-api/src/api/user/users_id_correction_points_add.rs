@@ -10,17 +10,17 @@ pub struct FtApiUsersIdCorrectionPointsAddResponse {
     pub res: FtUser,
 }
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize, Builder)]
+#[derive(Debug, PartialEq, PartialOrd, Clone, Serialize, Deserialize, Builder)]
 pub struct FtApiUsersIdCorrectionPointsAddRequest {
     pub id: FtUserId,
     pub reason: FtCorrectionPointsReason,
     pub amount: FtCorrectionPointsAmount,
 }
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtCorrectionPointsReason(String);
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtCorrectionPointsAmount(i32);
 impl<'a, FCHC> FtClientSession<'a, FCHC>
 where

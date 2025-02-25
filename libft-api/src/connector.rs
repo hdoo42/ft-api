@@ -200,4 +200,27 @@ impl FtClientHttpConnector for FtClientReqwestConnector {
         }
         .boxed()
     }
+
+    fn http_delete_uri<'a, RQ, RS>(
+        &'a self,
+        full_uri: Url,
+        token: &'a FtApiToken,
+        request_body: &'a RQ,
+    ) -> futures::future::BoxFuture<'a, ClientResult<RS>>
+    where
+        RQ: serde::ser::Serialize + Send + Sync,
+        RS: for<'de> serde::de::Deserialize<'de> + Send + 'a,
+    {
+        async move {
+            let request = self
+                .reqwest_connector
+                //TODO: remove clone after migrate to hyper
+                .delete(full_uri.clone())
+                .header(AUTHORIZATION, token.get_token_value())
+                .json(&request_body);
+
+            self.send_http_request(request, full_uri).await
+        }
+        .boxed()
+    }
 }

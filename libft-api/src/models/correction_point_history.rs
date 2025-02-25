@@ -5,7 +5,7 @@ use crate::api::prelude::*;
 
 use super::{FtDateTimeUtc, FtScaleTeamId};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, PartialOrd, Serialize, Deserialize)]
 pub struct FtCorrectionPointHistory {
     pub id: FtCorrectionPointHistoryId,
     pub created_at: FtDateTimeUtc,
@@ -16,10 +16,10 @@ pub struct FtCorrectionPointHistory {
     pub updated_at: FtDateTimeUtc,
 }
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize)]
 pub struct FtCorrectionPointHistoryId(u64);
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize)]
 pub struct FtCorrectionpointsTotal(i64);
 
 impl std::fmt::Display for FtCorrectionPointHistoryId {

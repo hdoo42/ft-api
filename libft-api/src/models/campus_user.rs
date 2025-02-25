@@ -5,7 +5,7 @@ use crate::FtDateTimeUtc;
 
 use super::{FtCampusId, FtUserId};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, PartialOrd, Serialize, Deserialize)]
 pub struct FtCampusUser {
     pub id: FtCampusUserId,
     pub user_id: FtUserId,
@@ -15,7 +15,7 @@ pub struct FtCampusUser {
     pub updated_at: FtDateTimeUtc,
 }
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtCampusUserId(pub i32);
 
 #[test]

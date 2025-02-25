@@ -4,7 +4,12 @@ use serde::{Deserialize, Serialize};
 
 use crate::{FtDateTimeFixedOffset, FtDateTimeUtc, FtHost, FtImage, FtUrl};
 
-#[derive(Debug, PartialEq, Serialize, Deserialize, Builder)]
+use super::{
+    FtAchievement, FtCampus, FtCampusUser, FtCursusUser, FtLanguagesUser, FtProjectsUser, FtRole,
+    FtTitle, FtTitleUser,
+};
+
+#[derive(Debug, PartialEq, PartialOrd, Serialize, Deserialize, Builder)]
 pub struct FtUser {
     pub id: Option<FtUserId>,
     pub email: Option<FtEmail>,
@@ -31,9 +36,18 @@ pub struct FtUser {
     pub usual_first_name: Option<FtUsualFirstName>,
     pub usual_full_name: Option<FtUsualFullName>,
     pub wallet: Option<FtWallet>,
+    pub cursus_users: Option<Vec<FtCursusUser>>,
+    pub projects_users: Option<Vec<FtProjectsUser>>,
+    pub languages_users: Option<Vec<FtLanguagesUser>>,
+    pub achievements: Option<Vec<FtAchievement>>,
+    pub campus: Option<Vec<FtCampus>>,
+    pub campus_users: Option<Vec<FtCampusUser>>,
+    pub titles: Option<Vec<FtTitle>>,
+    pub titles_users: Option<Vec<FtTitleUser>>,
+    pub roles: Option<Vec<FtRole>>,
 }
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum FtPoolMonth {
     January,
@@ -50,55 +64,56 @@ pub enum FtPoolMonth {
     December,
 }
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtPoolYear(pub String);
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtEmail(String);
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtUsualFirstName(String);
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtUsualFullName(String);
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtCorrectionPoint(i32);
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtWallet(i32);
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtFirstName(String);
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtDisplayName(String);
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtLastName(String);
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Copy, Serialize, Deserialize, ValueStruct)]
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtUserId(i32);
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtLoginId(pub String);
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtPhone(pub String);
 
 impl FtPhone {
+    #[must_use]
     pub fn is_hidden(&self) -> bool {
         self.0 == "hidden"
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, PartialOrd, Serialize, Deserialize)]
 pub enum FtUserIdentifier {
     Login(FtLoginId),
     UserId(FtUserId),
 }
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, PartialOrd, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum FtKind {
     Admin,

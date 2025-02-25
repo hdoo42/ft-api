@@ -4,6 +4,8 @@
 !Cargo.toml
 !progress*.csv
 !scale_team*.csv
+!location_stats*.csv
+!rush_teams*.csv
 !evaluation_historics*.csv
 **/target
 .env.fish

@@ -2,7 +2,7 @@ use crate::prelude::*;
 use rvstruct::ValueStruct;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, PartialOrd, Serialize, Deserialize)]
 pub struct FtCursusUser {
     pub id: FtCursusUserId,
     pub grade: Option<FtGrade>,
@@ -19,29 +19,29 @@ pub struct FtCursusUser {
     pub user: FtUser,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, PartialOrd, Serialize, Deserialize)]
 pub struct FtSkill {
     pub id: FtSkillId,
     pub name: FtSkillName,
     pub level: FtSkillLevel,
 }
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
+#[derive(Debug, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtCursusUserLevel(pub f64);
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtGrade(String);
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtCursusUserId(i32);
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtSkillId(i32);
 
-#[derive(Debug, Eq, Hash, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtSkillName(String);
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize, ValueStruct)]
+#[derive(Debug, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtSkillLevel(f64);
 
 #[test]

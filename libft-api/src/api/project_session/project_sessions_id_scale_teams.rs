@@ -11,7 +11,7 @@ pub struct FtApiProjectSessionsScaleTeamsResponse {
     pub scale_teams: Vec<FtScaleTeam>,
 }
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize, Builder)]
+#[derive(Debug, PartialEq, PartialOrd, Clone, Serialize, Deserialize, Builder)]
 pub struct FtApiProjectSessionsScaleTeamsRequest {
     pub project_session_id: FtProjectSessionId,
 }
