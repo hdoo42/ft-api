@@ -1,16 +1,9 @@
-use std::{
-    collections::HashMap, io::Write, ops::ControlFlow, str::FromStr, sync::Arc, time::Duration,
-};
+use std::{io::Write, sync::Arc};
 
-use chrono::{DateTime, TimeDelta, TimeZone, Utc};
+use chrono::{TimeDelta, TimeZone, Utc};
 use ft_project_session_ids::c_piscine::C_PISCINE_RUSH_02;
-use libft_api::{
-    campus_id::*, ft_project_session_ids::c_piscine::C_PISCINE_RUSH_01, prelude::*,
-    FT_PISCINE_CURSUS_ID,
-};
+use libft_api::{campus_id::*, prelude::*, FT_PISCINE_CURSUS_ID};
 use rvstruct::ValueStruct;
-use tokio::{sync::Semaphore, task::JoinSet, time::sleep};
-use tracing::info;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {

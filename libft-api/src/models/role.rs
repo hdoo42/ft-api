@@ -1,7 +1,6 @@
 use rvstruct::ValueStruct;
 use serde::{Deserialize, Serialize};
 
-use super::FtDateTimeUtc;
 //
 // FtRole and its field structs
 //

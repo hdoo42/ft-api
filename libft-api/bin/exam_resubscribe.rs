@@ -31,10 +31,12 @@ async fn main() {
             let session = client.open_session(&token);
 
             let exam_res = session
-                .exams_users_post(FtApiExamsUsersPostRequest::new(FtApiExamsUsersPostBody {
-                    user_id: FtUserId::new(id),
-                    exam_id: FtExamId::new(22331),
-                }))
+                .exams_users_post(
+                    FtApiExamsUsersPostRequest::new(FtApiExamsUsersPostBody {
+                        user_id: FtUserId::new(id),
+                    }),
+                    FtExamId::new(22331),
+                )
                 .await;
         });
     }

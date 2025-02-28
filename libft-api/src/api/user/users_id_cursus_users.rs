@@ -48,24 +48,24 @@ where
     ///
     /// - `req`: An `FtApiUsersIdCursusUsersRequest` object containing the parameters for the API call.
     ///     - `user_id`: `FtUserId`
-    ///         The user ID.
+    ///       The user ID.
     ///     - `sort` (optional): `Vec<FtSortOption>`
-    ///         Must be one of: `id`, `cursus_id`, `user_id`, `created_at`, `updated_at`, `end_at`,
-    ///         `begin_at`, `has_coalition`, `blackholed_at`, `level`.
-    ///         The sort field. Sorted by `created_at` desc, `id` desc by default.
+    ///       Must be one of: `id`, `cursus_id`, `user_id`, `created_at`, `updated_at`, `end_at`,
+    ///       `begin_at`, `has_coalition`, `blackholed_at`, `level`.
+    ///       The sort field. Sorted by `created_at` desc, `id` desc by default.
     ///     - `filter` (optional): `Vec<FtFilterOption>`
-    ///         Must be one of: `id`, `cursus_id`, `user_id`, `created_at`, `updated_at`, `end_at`,
-    ///         `begin_at`, `has_coalition`, `blackholed_at`, `level`, `active`, `campus_id`, `end`,
-    ///         `future`, `blackholed`.
-    ///         Filtering on one or more fields.
+    ///       Must be one of: `id`, `cursus_id`, `user_id`, `created_at`, `updated_at`, `end_at`,
+    ///       `begin_at`, `has_coalition`, `blackholed_at`, `level`, `active`, `campus_id`, `end`,
+    ///       `future`, `blackholed`.
+    ///       Filtering on one or more fields.
     ///     - `range` (optional): `Vec<FtRangeOption>`
-    ///         Must be one of: `id`, `cursus_id`, `user_id`, `created_at`, `updated_at`, `end_at`,
-    ///         `begin_at`, `has_coalition`, `blackholed_at`, `level`.
-    ///         Select on a particular range.
+    ///       Must be one of: `id`, `cursus_id`, `user_id`, `created_at`, `updated_at`, `end_at`,
+    ///       `begin_at`, `has_coalition`, `blackholed_at`, `level`.
+    ///       Select on a particular range.
     ///     - `page` (optional): `u16`
-    ///         The current page number.
+    ///       The current page number.
     ///     - `per_page` (optional): `u8`
-    ///         The number of items per page, defaults to 30, maximum 100.
+    ///       The number of items per page, defaults to 30, maximum 100.
     ///
     /// # Returns
     ///
@@ -210,7 +210,7 @@ mod tests {
 
         let session = client.open_session(&token);
         let res = session
-            .users_id_cursus_users(FtApiUsersIdCursusUsersRequest::new(FtUserId::new(174083)))
+            .users_id_cursus_users(FtApiUsersIdCursusUsersRequest::new(FtUserId::new(174_083)))
             .await;
 
         assert!(res.is_ok(), "{:?}", res.unwrap());

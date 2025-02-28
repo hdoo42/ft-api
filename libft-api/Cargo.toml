@@ -50,9 +50,9 @@ path="bin/teams.rs"
 name="exam_resubscribe"
 path="bin/exam_resubscribe.rs"
 
-[[bin]]
-name="location_stat"
-path="bin/location_stat.rs"
+# [[bin]]
+# name="location_stat"
+# path="bin/location_stat.rs"
 
 [dependencies]
 serde = { version = "1.0.216", features = ["derive"] }

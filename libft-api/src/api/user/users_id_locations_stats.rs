@@ -2,7 +2,6 @@ use std::collections::HashMap;
 
 use chrono::Days;
 use chrono::NaiveDate;
-use chrono::NaiveTime;
 use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
 
@@ -25,7 +24,7 @@ pub struct FtApiUsersIdLocationsStatsResponse {
     pub stats: HashMap<NaiveDate, String>,
 }
 
-impl<'a, FCHC> FtClientSession<'a, FCHC>
+impl<FCHC> FtClientSession<'_, FCHC>
 where
     FCHC: FtClientHttpConnector + Send + Sync,
 {

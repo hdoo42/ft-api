@@ -52,7 +52,7 @@ pub struct FtApiUsersIdResponse {
     pub user: FtUserExt,
 }
 
-impl<'a, FCHC> FtClientSession<'a, FCHC>
+impl<FCHC> FtClientSession<'_, FCHC>
 where
     FCHC: FtClientHttpConnector + Send + Sync,
 {
@@ -110,7 +110,8 @@ mod tests {
         ));
 
         let session = client.open_session(&token);
-        let res = session
+        /* let res = */
+        session
             .users_id(FtApiUsersIdRequest::new(FtUserIdentifier::Login(
                 FtLoginId::new("taejikim".to_owned()),
             )))

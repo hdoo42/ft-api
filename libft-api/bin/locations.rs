@@ -16,7 +16,7 @@ async fn main() {
     loop {
         let res = session
             .campus_id_locations(
-                FtApiCampusLocationsRequest::new(FtCampusId::new(GYEONGSAN))
+                FtApiCampusIdLocationsRequest::new(FtCampusId::new(GYEONGSAN))
                     .with_page(page)
                     .with_per_page(100)
                     .with_range(vec![FtRangeOption::new(

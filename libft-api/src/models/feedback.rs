@@ -1,7 +1,7 @@
 use rvstruct::ValueStruct;
 use serde::{Deserialize, Serialize};
 
-use crate::*;
+use crate::{FtComment, FtDateTimeUtc, FtUser};
 
 #[derive(Debug, PartialEq, PartialOrd, Serialize, Deserialize)]
 pub struct FtFeedback {
@@ -15,7 +15,7 @@ pub struct FtFeedback {
     pub feedback_details: Vec<FtFeedbackDetail>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, PartialOrd, Serialize, Deserialize)]
 pub struct FtFeedbackDetail {
     id: u64,
     rate: i8,
@@ -36,6 +36,7 @@ pub struct FtRating(i32);
 
 #[test]
 fn deser_feedbacks() {
+    use crate::Seresult;
     let raw_feedbacks = r#"
     [
       {
@@ -80,5 +81,5 @@ fn deser_feedbacks() {
     "#;
 
     let res: Seresult<Vec<FtFeedback>> = serde_json::from_str(raw_feedbacks);
-    assert!(res.is_ok(), "{:?}", res);
+    assert!(res.is_ok());
 }
