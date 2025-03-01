@@ -36,15 +36,6 @@ pub struct FtUser {
     pub usual_first_name: Option<FtUsualFirstName>,
     pub usual_full_name: Option<FtUsualFullName>,
     pub wallet: Option<FtWallet>,
-    pub cursus_users: Option<Vec<FtCursusUser>>,
-    pub projects_users: Option<Vec<FtProjectsUser>>,
-    pub languages_users: Option<Vec<FtLanguagesUser>>,
-    pub achievements: Option<Vec<FtAchievement>>,
-    pub campus: Option<Vec<FtCampus>>,
-    pub campus_users: Option<Vec<FtCampusUser>>,
-    pub titles: Option<Vec<FtTitle>>,
-    pub titles_users: Option<Vec<FtTitleUser>>,
-    pub roles: Option<Vec<FtRole>>,
 }
 
 #[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize)]
