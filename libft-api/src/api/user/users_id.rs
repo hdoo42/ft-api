@@ -14,7 +14,9 @@ pub struct FtUserExt {
     pub phone: Option<FtPhone>,
     pub displayname: Option<FtDisplayName>,
     pub kind: Option<FtKind>,
+    #[serde(rename = "active?")]
     pub active: Option<bool>,
+    #[serde(rename = "alumni?")]
     pub alumni: Option<bool>,
     pub alumnized_at: Option<FtDateTimeFixedOffset>,
     pub anonymize_date: Option<FtDateTimeFixedOffset>,

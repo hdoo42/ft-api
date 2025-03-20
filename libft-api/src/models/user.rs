@@ -4,11 +4,6 @@ use serde::{Deserialize, Serialize};
 
 use crate::{FtDateTimeFixedOffset, FtDateTimeUtc, FtHost, FtImage, FtUrl};
 
-use super::{
-    FtAchievement, FtCampus, FtCampusUser, FtCursusUser, FtLanguagesUser, FtProjectsUser, FtRole,
-    FtTitle, FtTitleUser,
-};
-
 #[derive(Debug, PartialEq, PartialOrd, Serialize, Deserialize, Builder)]
 pub struct FtUser {
     pub id: Option<FtUserId>,
@@ -20,7 +15,9 @@ pub struct FtUser {
     pub phone: Option<FtPhone>,
     pub displayname: Option<FtDisplayName>,
     pub kind: Option<FtKind>,
+    #[serde(rename = "active?")]
     pub active: Option<bool>,
+    #[serde(rename = "alumni?")]
     pub alumni: Option<bool>,
     pub alumnized_at: Option<FtDateTimeFixedOffset>,
     pub anonymize_date: Option<FtDateTimeFixedOffset>,
@@ -31,6 +28,7 @@ pub struct FtUser {
     pub location: Option<FtHost>,
     pub pool_month: Option<FtPoolMonth>,
     pub pool_year: Option<FtPoolYear>,
+    #[serde(rename = "staff?")]
     pub staff: Option<bool>,
     pub updated_at: Option<FtDateTimeUtc>,
     pub usual_first_name: Option<FtUsualFirstName>,

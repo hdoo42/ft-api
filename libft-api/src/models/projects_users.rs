@@ -19,6 +19,7 @@ pub struct FtProjectsUser {
     pub teams: Option<Vec<FtTeam>>,
     pub updated_at: FtDateTimeUtc,
     pub user: Option<FtUser>,
+    #[serde(rename = "validated?")]
     pub validated: Option<bool>,
 }
 
