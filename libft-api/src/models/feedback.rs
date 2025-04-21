@@ -12,7 +12,7 @@ pub struct FtFeedback {
     pub id: FtFeedbackId,
     pub rating: Option<FtRating>,
     pub user: Option<FtUser>,
-    pub feedback_details: Vec<FtFeedbackDetail>,
+    pub feedback_details: Option<Vec<FtFeedbackDetail>>,
 }
 
 #[derive(Debug, PartialEq, PartialOrd, Serialize, Deserialize)]
