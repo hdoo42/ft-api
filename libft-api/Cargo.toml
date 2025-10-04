@@ -47,6 +47,10 @@ name="teams"
 path="bin/teams.rs"
 
 [[bin]]
+name="get_user_ext"
+path="bin/get_user_ext.rs"
+
+[[bin]]
 name="exam_resubscribe"
 path="bin/exam_resubscribe.rs"
 

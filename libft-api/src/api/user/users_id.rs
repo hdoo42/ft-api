@@ -4,46 +4,6 @@ use serde::{Deserialize, Serialize};
 use crate::{prelude::*, to_param};
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
-pub struct FtUserExt {
-    pub id: Option<FtUserId>,
-    pub email: Option<FtEmail>,
-    pub login: Option<FtLoginId>,
-    pub first_name: Option<FtFirstName>,
-    pub last_name: Option<FtLastName>,
-    pub url: Option<FtUrl>,
-    pub phone: Option<FtPhone>,
-    pub displayname: Option<FtDisplayName>,
-    pub kind: Option<FtKind>,
-    #[serde(rename = "active?")]
-    pub active: Option<bool>,
-    #[serde(rename = "alumni?")]
-    pub alumni: Option<bool>,
-    pub alumnized_at: Option<FtDateTimeFixedOffset>,
-    pub anonymize_date: Option<FtDateTimeFixedOffset>,
-    pub correction_point: Option<FtCorrectionPoint>,
-    pub created_at: Option<FtDateTimeUtc>,
-    pub data_erasure_date: Option<FtDateTimeUtc>,
-    pub image: Option<FtImage>,
-    pub location: Option<FtHost>,
-    pub pool_month: Option<FtPoolMonth>,
-    pub pool_year: Option<FtPoolYear>,
-    pub staff: Option<bool>,
-    pub updated_at: Option<FtDateTimeUtc>,
-    pub usual_first_name: Option<FtUsualFirstName>,
-    pub usual_full_name: Option<FtUsualFullName>,
-    pub wallet: Option<FtWallet>,
-    pub cursus_users: Option<Vec<FtCursusUser>>,
-    pub projects_users: Option<Vec<FtProjectsUser>>,
-    pub languages_users: Option<Vec<FtLanguagesUser>>,
-    pub achievements: Option<Vec<FtAchievement>>,
-    pub campus: Option<Vec<FtCampus>>,
-    pub campus_users: Option<Vec<FtCampusUser>>,
-    pub titles: Option<Vec<FtTitle>>,
-    pub titles_users: Option<Vec<FtTitleUser>>,
-    pub roles: Option<Vec<FtRole>>,
-}
-
-#[derive(Debug, Serialize, Deserialize, Builder)]
 pub struct FtApiUsersIdRequest {
     pub id: FtUserIdentifier,
     pub sort: Option<Vec<FtSortOption>>,
@@ -56,7 +16,7 @@ pub struct FtApiUsersIdRequest {
 #[derive(Debug, Serialize, Deserialize, Builder)]
 #[serde(transparent)]
 pub struct FtApiUsersIdResponse {
-    pub user: FtUserExt,
+    pub user: FtUser,
 }
 
 impl<FCHC> FtClientSession<'_, FCHC>

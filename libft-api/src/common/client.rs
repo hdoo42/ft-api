@@ -176,6 +176,7 @@ where
         }
     }
 
+    #[must_use]
     pub fn open_session<'a>(&'a self, token: &'a FtApiToken) -> FtClientSession<'a, FCHC> {
         // TODO: Add tracer for LOGGING
         // let http_session_span = span!(Level::DEBUG, "Ft API request",);
