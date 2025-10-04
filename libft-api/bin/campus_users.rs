@@ -81,10 +81,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         info!("{}", result.len());
     }
 
-    let file_path = format!(
-        "/Users/hdoo/works/gsia/codes/libft-api/libft-api/bin/piscine/third_cohort/first_round/progress_{}.csv",
-        Utc::now().format("%Y-%m-%d_%H-%M-%S")
-    );
+    let file_path = format!("./progress_{}.csv", Utc::now().format("%Y-%m-%d_%H-%M-%S"));
 
     let mut file = std::fs::File::create(&file_path).expect("Failed to create output file");
 
