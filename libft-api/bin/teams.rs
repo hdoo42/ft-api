@@ -163,7 +163,7 @@ async fn post_scale_team(
         .await
         .unwrap();
     let client = FtClient::new(FtClientReqwestConnector::new());
-    let session = Arc::new(client.open_session(&token));
+    let session = Arc::new(client.open_session(token));
 
     session
         .scale_teams_multiple_create_post(FtApiScaleTeamsMultipleCreateRequest::new(bodys))
@@ -179,7 +179,7 @@ async fn get_project_teams(
         .await
         .unwrap();
     let client = FtClient::new(FtClientReqwestConnector::new());
-    let session = Arc::new(client.open_session(&token));
+    let session = Arc::new(client.open_session(token));
     let res = session
         .project_sessions_id_teams(
             FtApiProjectSessionsTeamsRequest::new(project_session_id)

@@ -42,7 +42,7 @@ pub struct FtApiUsersResponse {
     pub users: Vec<FtUser>,
 }
 
-impl<'a, FCHC> FtClientSession<'a, FCHC>
+impl<FCHC> FtClientSession<'_, FCHC>
 where
     FCHC: FtClientHttpConnector + Send + Sync,
 {
@@ -102,7 +102,7 @@ mod tests {
             reqwest::Client::new(),
         ));
 
-        let session = client.open_session(&token);
+        let session = client.open_session(token);
         let res = session.users(FtApiUsersRequest::new()).await;
 
         assert!(res.is_ok());
@@ -118,7 +118,7 @@ mod tests {
     //         reqwest::Client::new(),
     //     ));
     //
-    //     let session = client.open_session(&token);
+    //     let session = client.open_session(token);
     //     let res = session
     //         .users_post(FtApiUsersPostRequest::new(FtApiUserPostBody {
     //             email: "yondoo@42gyeongsan.kr".to_string(),

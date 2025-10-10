@@ -212,10 +212,10 @@ async fn get_evaluation_historics(
         .await
         .unwrap();
     let client = FtClient::new(FtClientReqwestConnector::new());
-    let session = Arc::new(client.open_session(&token));
+    let session = Arc::new(client.open_session(token));
     let res = session
         .users_id_correction_point_historics(
-            FtApiUsersIdCorrectionPointHistoricsRequest::new(id.clone())
+            FtApiUsersIdCorrectionPointHistoricsRequest::new(*id)
                 .with_filter(vec![FtFilterOption::new(
                     FtFilterField::Sum,
                     vec!["-1".to_owned()],
@@ -229,7 +229,7 @@ async fn get_evaluation_historics(
             if res.historics.is_empty() {
                 return ControlFlow::Break(());
             }
-            result.entry(id.clone()).or_default().extend(res.historics);
+            result.entry(*id).or_default().extend(res.historics);
             *page += 1;
         }
         Err(FtClientError::RateLimitError(_)) => sleep(Duration::new(1, 42)).await,
@@ -250,7 +250,7 @@ async fn get_scale_teams(
         .await
         .unwrap();
     let client = FtClient::new(FtClientReqwestConnector::new());
-    let session = Arc::new(client.open_session(&token));
+    let session = Arc::new(client.open_session(token));
     let res = session
         .scale_teams(
             FtApiScaleTeamsRequest::new()

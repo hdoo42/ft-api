@@ -36,7 +36,7 @@ pub struct FtApiGroupsResponse {
     pub groups: Vec<FtGroup>,
 }
 
-impl<'a, FCHC> FtClientSession<'a, FCHC>
+impl<FCHC> FtClientSession<'_, FCHC>
 where
     FCHC: FtClientHttpConnector + Send + Sync,
 {
@@ -74,7 +74,7 @@ mod tests {
             reqwest::Client::new(),
         ));
 
-        let session = client.open_session(&token);
+        let session = client.open_session(token);
 
         let res = session
             .groups_users_post(FtApiGroupsUsersPostRequest::new(FtApiGroupsUsersPostBody {
@@ -97,7 +97,7 @@ mod tests {
             reqwest::Client::new(),
         ));
 
-        let session = client.open_session(&token);
+        let session = client.open_session(token);
 
         session.groups(FtApiGroupsRequest::new()).await.unwrap();
     }

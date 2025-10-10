@@ -16,7 +16,7 @@ pub struct FtApiProjectSessionsScaleTeamsRequest {
     pub project_session_id: FtProjectSessionId,
 }
 
-impl<'a, FCHC> FtClientSession<'a, FCHC>
+impl<FCHC> FtClientSession<'_, FCHC>
 where
     FCHC: FtClientHttpConnector + Send + Sync,
 {
@@ -50,7 +50,7 @@ mod tests {
 
         let req = FtApiProjectSessionsScaleTeamsRequest::new(FtProjectSessionId::new(LIBFT));
 
-        let session = client.open_session(&token);
+        let session = client.open_session(token);
         let res = session.project_sessions_scale_teams(req).await;
         assert!(res.is_ok());
     }

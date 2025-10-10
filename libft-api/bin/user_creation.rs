@@ -66,7 +66,7 @@ async fn assign_group(id: FtUserId) -> Result<FtApiGroupsUsersPostResponse, FtCl
         .await
         .unwrap();
     let client = FtClient::new(FtClientReqwestConnector::new());
-    let session = Arc::new(client.open_session(&token));
+    let session = Arc::new(client.open_session(token));
 
     session
         .groups_users_post(FtApiGroupsUsersPostRequest::new(FtApiGroupsUsersPostBody {
@@ -84,7 +84,7 @@ async fn add_cursus(
         .await
         .unwrap();
     let client = FtClient::new(FtClientReqwestConnector::new());
-    let session = Arc::new(client.open_session(&token));
+    let session = Arc::new(client.open_session(token));
 
     session
         .users_id_cursus_users_post(FtApiUsersIdCursusUsersPostRequest::new(
@@ -107,7 +107,7 @@ async fn post_users(id: usize) -> Result<FtApiUserPostsResponse, FtClientError> 
         .unwrap();
     let client = FtClient::new(FtClientReqwestConnector::new());
 
-    let session = client.open_session(&token);
+    let session = client.open_session(token);
 
     session
         .users_post(FtApiUsersPostRequest::new(FtApiUserPostBody {

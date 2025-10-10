@@ -28,7 +28,7 @@ async fn main() {
                 .unwrap();
             let client = FtClient::new(FtClientReqwestConnector::new());
 
-            let session = client.open_session(&token);
+            let session = client.open_session(token);
 
             let exam_res = session
                 .exams_users_post(

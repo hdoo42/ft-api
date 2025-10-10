@@ -24,7 +24,7 @@ pub struct FtApiProjectDataResponse {
     pub project_data: Vec<FtProjectData>,
 }
 
-impl<'a, FCHC> FtClientSession<'a, FCHC>
+impl<FCHC> FtClientSession<'_, FCHC>
 where
     FCHC: FtClientHttpConnector + Send + Sync,
 {
@@ -79,7 +79,7 @@ mod tests {
             reqwest::Client::new(),
         ));
 
-        let session = client.open_session(&token);
+        let session = client.open_session(token);
 
         let res = session.project_data(FtApiProjectDataRequest::new()).await;
 

@@ -53,7 +53,7 @@ where
     ///         reqwest::Client::new(),
     ///     ));
     ///
-    ///     let session = client.open_session(&token);
+    ///     let session = client.open_session(token);
     ///
     ///     let res = session
     ///         .exams_users_post(
@@ -126,7 +126,7 @@ mod tests {
             reqwest::Client::new(),
         ));
 
-        let session = client.open_session(&token);
+        let session = client.open_session(token);
 
         session.exams(FtApiExamsRequest::new()).await.unwrap();
     }

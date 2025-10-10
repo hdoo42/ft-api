@@ -24,7 +24,7 @@ pub struct FtApiCursusIdProjectsResponse {
     pub projects: Vec<FtProject>,
 }
 
-impl<'a, FCHC> FtClientSession<'a, FCHC>
+impl<FCHC> FtClientSession<'_, FCHC>
 where
     FCHC: FtClientHttpConnector + Send + Sync,
 {
@@ -80,7 +80,7 @@ mod tests {
             reqwest::Client::new(),
         ));
 
-        let session = client.open_session(&token);
+        let session = client.open_session(token);
         let res = session
             .cursus_id_projects(FtApiCursusIdProjectsRequest::new(FtCursusId::new(
                 FT_CURSUS_ID,

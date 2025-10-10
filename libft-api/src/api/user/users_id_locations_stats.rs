@@ -74,7 +74,7 @@ mod tests {
             reqwest::Client::new(),
         ));
 
-        let session = client.open_session(&token);
+        let session = client.open_session(token);
         let end_at = Local::now().date_naive();
         let begin_at = end_at
             .checked_sub_days(Days::new(5))

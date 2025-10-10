@@ -10,7 +10,7 @@ async fn main() {
         .unwrap();
 
     let client = FtClient::new(FtClientReqwestConnector::new());
-    let session = client.open_session(&token);
+    let session = client.open_session(token);
 
     let mut page = 1;
     println!("login|project|final_mark|retriable_at|status|team_mate");

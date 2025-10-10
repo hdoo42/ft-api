@@ -1,7 +1,3 @@
-use std::collections::HashMap;
-
-use chrono::Days;
-use chrono::NaiveDate;
 use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
 
@@ -77,7 +73,7 @@ mod tests {
             reqwest::Client::new(),
         ));
 
-        let session = client.open_session(&token);
+        let session = client.open_session(token);
         let res = session
             .users_id_locations(
                 FtApiUsersIdLocationsRequest::new(FtUserId::new(TEST_USER_YONDOO_ID)).with_filter(

@@ -43,7 +43,7 @@ async fn main() {
                 .unwrap();
             let client = FtClient::new(FtClientReqwestConnector::new());
 
-            let session = client.open_session(&token);
+            let session = client.open_session(token);
 
             for exam_set in exam_sets.iter() {
                 let project_res = session

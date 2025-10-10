@@ -76,7 +76,7 @@ mod tests {
             reqwest::Client::new(),
         ));
 
-        let session = client.open_session(&token);
+        let session = client.open_session(token);
         let res = session.campus_users(FtApiCampusUsersRequest::new()).await;
 
         assert!(res.is_ok());

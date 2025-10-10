@@ -23,7 +23,7 @@ pub struct FtApiProjectSessionsTeamsRequest {
     pub per_page: Option<u8>,
 }
 
-impl<'a, FCHC> FtClientSession<'a, FCHC>
+impl<FCHC> FtClientSession<'_, FCHC>
 where
     FCHC: FtClientHttpConnector + Send + Sync,
 {
@@ -82,7 +82,7 @@ mod tests {
 
         let reqest = FtApiProjectSessionsTeamsRequest::new(FtProjectSessionId::new(LIBFT));
 
-        let session = client.open_session(&token);
+        let session = client.open_session(token);
         let result = session.project_sessions_id_teams(reqest).await;
         assert!(result.is_ok());
     }
@@ -97,7 +97,7 @@ mod tests {
             reqwest::Client::new(),
         ));
 
-        let session = client.open_session(&token);
+        let session = client.open_session(token);
         let res = session
             .project_sessions_id_teams(
                 FtApiProjectSessionsTeamsRequest::new(FtProjectSessionId::new(LIBFT)).with_filter(

@@ -23,7 +23,7 @@ pub struct FtApiUsersIdCorrectionPointHistoricsResponse {
     pub historics: Vec<FtCorrectionPointHistory>,
 }
 
-impl<'a, FCHC> FtClientSession<'a, FCHC>
+impl<FCHC> FtClientSession<'_, FCHC>
 where
     FCHC: FtClientHttpConnector + Send + Sync,
 {
@@ -77,7 +77,7 @@ mod tests {
             reqwest::Client::new(),
         ));
 
-        let session = client.open_session(&token);
+        let session = client.open_session(token);
         let res = session
             .users_id_correction_point_historics(FtApiUsersIdCorrectionPointHistoricsRequest::new(
                 FtUserId::new(TEST_USER_YONDOO_ID),

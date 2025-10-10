@@ -76,7 +76,7 @@ mod tests {
             reqwest::Client::new(),
         ));
 
-        let session = client.open_session(&token);
+        let session = client.open_session(token);
         /* let res = */
         session
             .users_id(FtApiUsersIdRequest::new(FtUserIdentifier::Login(

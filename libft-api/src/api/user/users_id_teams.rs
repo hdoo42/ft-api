@@ -26,7 +26,7 @@ pub struct FtApiUsersIdTeamsResponse {
     pub teams: Vec<FtTeam>,
 }
 
-impl<'a, FCHC> FtClientSession<'a, FCHC>
+impl<FCHC> FtClientSession<'_, FCHC>
 where
     FCHC: FtClientHttpConnector + Send + Sync,
 {
@@ -84,7 +84,7 @@ mod tests {
             reqwest::Client::new(),
         ));
 
-        let session = client.open_session(&token);
+        let session = client.open_session(token);
         let res = session
             .users_id_teams(FtApiUsersIdTeamsRequest::new(FtUserId::new(
                 TEST_USER_YONDOO_ID,

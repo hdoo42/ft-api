@@ -83,7 +83,7 @@ async fn get_user_info(id: FtUserId) -> ControlFlow<Option<FtUser>> {
         .await
         .unwrap();
     let client = FtClient::new(FtClientReqwestConnector::new());
-    let session = Arc::new(client.open_session(&token));
+    let session = Arc::new(client.open_session(token));
     let res = session
         .users_id(FtApiUsersIdRequest::new(FtUserIdentifier::UserId(id)))
         .await;

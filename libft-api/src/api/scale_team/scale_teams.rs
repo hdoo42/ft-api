@@ -35,7 +35,7 @@ pub struct FtApiScaleTeamsMultipleCreateResponse {
     pub scale_teams: Vec<FtScaleTeam>,
 }
 
-impl<'a, FCHC> FtClientSession<'a, FCHC>
+impl<FCHC> FtClientSession<'_, FCHC>
 where
     FCHC: FtClientHttpConnector + Send + Sync,
 {
@@ -102,7 +102,7 @@ mod tests {
             reqwest::Client::new(),
         ));
 
-        let session = client.open_session(&token);
+        let session = client.open_session(token);
         let res = session
             .scale_teams(FtApiScaleTeamsRequest::new().with_filter(vec![
                 FtFilterOption::new(FtFilterField::CampusId, vec![GYEONGSAN.to_string()]),

@@ -19,7 +19,7 @@ async fn main() {
                     .unwrap();
 
                 let client = FtClient::new(FtClientReqwestConnector::new());
-                let session = Arc::new(client.open_session(&token));
+                let session = Arc::new(client.open_session(token));
                 let res = session
                     .campus_id_journals(
                         FtApiCampusIdJournalsRequest::new(

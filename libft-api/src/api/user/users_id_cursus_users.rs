@@ -97,7 +97,7 @@ where
     ///         reqwest::Client::new(),
     ///     ));
     ///
-    ///     let session = client.open_session(&token);
+    ///     let session = client.open_session(token);
     ///
     ///     let req = FtApiUsersIdCursusUsersRequest::new(FtUserId::new(TEST_USER_YONDOO06_ID))
     ///         .with_page(1)
@@ -158,7 +158,7 @@ where
         &self,
         req: FtApiUsersIdCursusUsersPostRequest,
     ) -> ClientResult<FtApiUsersIdCursusUsersPostResponse> {
-        let url = &format!("users/{}/cursus_users", req.cursus_user.user_id.clone());
+        let url = &format!("users/{}/cursus_users", req.cursus_user.user_id);
 
         self.http_session_api.http_post(url, &req).await
     }
@@ -179,7 +179,7 @@ mod tests {
     //         reqwest::Client::new(),
     //     ));
     //
-    //     let session = client.open_session(&token);
+    //     let session = client.open_session(token);
     //     let res = session
     //         .users_id_cursus_users_post(FtApiUsersIdCursusUsersPostRequest::new(
     //             FtApiCursusUsersBody {
@@ -208,7 +208,7 @@ mod tests {
             reqwest::Client::new(),
         ));
 
-        let session = client.open_session(&token);
+        let session = client.open_session(token);
         let res = session
             .users_id_cursus_users(FtApiUsersIdCursusUsersRequest::new(FtUserId::new(174_083)))
             .await;

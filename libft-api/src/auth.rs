@@ -9,6 +9,7 @@ use std::{
 use chrono::{DateTime, TimeZone, Utc};
 use serde::{Deserialize, Serialize};
 
+// TODO: add scope
 pub struct AuthInfo {
     uid: String,
     secret: String,
@@ -27,6 +28,7 @@ impl AuthInfo {
     }
 
     #[inline]
+    // TODO: replace scope to field 'scope'
     pub fn get_params(&self) -> [(&str, &str); 4] {
         [
             ("grant_type", "client_credentials"),

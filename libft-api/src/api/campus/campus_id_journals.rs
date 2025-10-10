@@ -27,7 +27,7 @@ pub struct FtApiCampusIdJournalsResponse {
     pub journals: Vec<FtJournal>,
 }
 
-impl<'a, FCHC> FtClientSession<'a, FCHC>
+impl<FCHC> FtClientSession<'_, FCHC>
 where
     FCHC: FtClientHttpConnector + Send + Sync,
 {
@@ -84,7 +84,7 @@ mod tests {
             reqwest::Client::new(),
         ));
 
-        let session = client.open_session(&token);
+        let session = client.open_session(token);
         let res = session
             .campus_id_journals(FtApiCampusIdJournalsRequest::new(
                 FtCampusId::new(GYEONGSAN),

@@ -128,10 +128,10 @@ async fn get_projects_users(
         .await
         .unwrap();
     let client = FtClient::new(FtClientReqwestConnector::new());
-    let session = Arc::new(client.open_session(&token));
+    let session = Arc::new(client.open_session(token));
     let res = session
         .users_id_projects_users(
-            FtApiUsersIdProjectsUsersRequest::new(id.clone())
+            FtApiUsersIdProjectsUsersRequest::new(*id)
                 .with_per_page(100)
                 .with_page(*page as u16),
         )
@@ -162,7 +162,7 @@ async fn get_projects_users(
 //         .await
 //         .unwrap();
 //     let client = FtClient::new(FtClientReqwestConnector::new());
-//     let session = Arc::new(client.open_session(&token));
+//     let session = Arc::new(client.open_sssion(token));
 //     let res = session
 //         .users(
 //             FtApiUsersRequest::new()
@@ -175,7 +175,7 @@ async fn get_projects_users(
 //                 .with_filter(vec![
 //                     FtFilterOption::new(
 //                         FtFilterField::PrimaryCampusId,
-//                         vec![GYEONGSAN.to_string()],
+//                         vec![GYONGSAN.to_string()],
 //                     ),
 //                     FtFilterOption::new(FtFilterField::Kind, vec!["student".to_string()]),
 //                 ]),

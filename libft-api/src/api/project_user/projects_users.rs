@@ -36,7 +36,7 @@ pub struct FtApiProjectsUsersResponse {
     pub projects_users: Vec<FtProjectsUser>,
 }
 
-impl<'a, FCHC> FtClientSession<'a, FCHC>
+impl<FCHC> FtClientSession<'_, FCHC>
 where
     FCHC: FtClientHttpConnector + Send + Sync,
 {
@@ -101,7 +101,7 @@ mod tests {
             reqwest::Client::new(),
         ));
 
-        let session = client.open_session(&token);
+        let session = client.open_session(token);
         let project_ids = ALL_INNER_SUBJECTS_ID
             .into_iter()
             .map(|id| id.to_string())

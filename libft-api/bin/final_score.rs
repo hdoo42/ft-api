@@ -53,7 +53,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     while let Some(Ok(res)) = teams_task.join_next().await {
         for team in res {
             tracing::info!("{}", team.id.0);
-            teams_by_id.entry(team.id.clone()).or_insert(team);
+            teams_by_id.entry(team.id).or_insert(team);
         }
     }
 
@@ -166,7 +166,7 @@ async fn get_user_id_teams(
         .await
         .unwrap();
     let client = FtClient::new(FtClientReqwestConnector::new());
-    let session = Arc::new(client.open_session(&token));
+    let session = Arc::new(client.open_session(token));
     let res = session
         .users_id_teams(
             FtApiUsersIdTeamsRequest::new(id)
@@ -208,7 +208,7 @@ async fn get_scale_teams(
         .await
         .unwrap();
     let client = FtClient::new(FtClientReqwestConnector::new());
-    let session = Arc::new(client.open_session(&token));
+    let session = Arc::new(client.open_session(token));
     let res = session
         .scale_teams(
             FtApiScaleTeamsRequest::new()

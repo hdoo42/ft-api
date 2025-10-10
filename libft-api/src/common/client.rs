@@ -41,7 +41,7 @@ pub struct FtClientHttpSessionApi<'a, FCHC>
 where
     FCHC: FtClientHttpConnector + Send,
 {
-    token: &'a FtApiToken,
+    token: FtApiToken,
     pub client: &'a FtClient<FCHC>,
 }
 
@@ -176,8 +176,7 @@ where
         }
     }
 
-    #[must_use]
-    pub fn open_session<'a>(&'a self, token: &'a FtApiToken) -> FtClientSession<'a, FCHC> {
+    pub fn open_session(&self, token: FtApiToken) -> FtClientSession<FCHC> {
         // TODO: Add tracer for LOGGING
         // let http_session_span = span!(Level::DEBUG, "Ft API request",);
 
@@ -201,7 +200,7 @@ where
     }
 }
 
-impl<'a, FCHC> FtClientHttpSessionApi<'a, FCHC>
+impl<FCHC> FtClientHttpSessionApi<'_, FCHC>
 where
     FCHC: FtClientHttpConnector + Send + Sync,
 {
@@ -212,7 +211,7 @@ where
         self.client
             .http_api
             .connector
-            .http_get_uri(full_uri, self.token)
+            .http_get_uri(full_uri, &self.token)
             .await
     }
 
@@ -229,7 +228,7 @@ where
         self.client
             .http_api
             .connector
-            .http_get(method_relative_uri, self.token, params)
+            .http_get(method_relative_uri, &self.token, params)
             .await
     }
 
@@ -245,7 +244,7 @@ where
         self.client
             .http_api
             .connector
-            .http_post(method_relative_uri, self.token, request)
+            .http_post(method_relative_uri, &self.token, request)
             .await
     }
 
@@ -257,7 +256,7 @@ where
         self.client
             .http_api
             .connector
-            .http_post_uri(full_uri, self.token, request)
+            .http_post_uri(full_uri, &self.token, request)
             .await
     }
 
@@ -273,7 +272,7 @@ where
         self.client
             .http_api
             .connector
-            .http_delete(method_relative_uri, self.token, request)
+            .http_delete(method_relative_uri, &self.token, request)
             .await
     }
 
@@ -285,7 +284,7 @@ where
         self.client
             .http_api
             .connector
-            .http_delete_uri(full_uri, self.token, request)
+            .http_delete_uri(full_uri, &self.token, request)
             .await
     }
 }

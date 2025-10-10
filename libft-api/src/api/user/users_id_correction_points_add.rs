@@ -22,7 +22,7 @@ pub struct FtCorrectionPointsReason(String);
 
 #[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtCorrectionPointsAmount(i32);
-impl<'a, FCHC> FtClientSession<'a, FCHC>
+impl<FCHC> FtClientSession<'_, FCHC>
 where
     FCHC: FtClientHttpConnector + Send + Sync,
 {
@@ -68,7 +68,7 @@ mod tests {
             reqwest::Client::new(),
         ));
 
-        let session = client.open_session(&token);
+        let session = client.open_session(token);
         let res = session
             .users_id_correction_points_add(FtApiUsersIdCorrectionPointsAddRequest {
                 id: FtUserId::new(crate::info::TEST_USER_YONDOO_ID),

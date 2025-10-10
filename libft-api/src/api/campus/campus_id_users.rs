@@ -24,7 +24,7 @@ pub struct FtApiCampusIdUsersResponse {
     pub users: Vec<FtUser>,
 }
 
-impl<'a, FCHC> FtClientSession<'a, FCHC>
+impl<FCHC> FtClientSession<'_, FCHC>
 where
     FCHC: FtClientHttpConnector + Send + Sync,
 {
@@ -77,7 +77,7 @@ mod tests {
             reqwest::Client::new(),
         ));
 
-        let session = client.open_session(&token);
+        let session = client.open_session(token);
         let res = session
             .campus_id_users(FtApiCampusIdUsersRequest::new(FtCampusId::new(GYEONGSAN)))
             .await;

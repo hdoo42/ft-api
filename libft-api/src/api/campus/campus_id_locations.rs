@@ -25,7 +25,7 @@ pub struct FtApiCampusIdLocationsResponse {
     pub location: Vec<FtLocation>,
 }
 
-impl<'a, FCHC> FtClientSession<'a, FCHC>
+impl<FCHC> FtClientSession<'_, FCHC>
 where
     FCHC: FtClientHttpConnector + Send + Sync,
 {
@@ -80,7 +80,7 @@ mod tests {
             reqwest::Client::new(),
         ));
 
-        let session = client.open_session(&token);
+        let session = client.open_session(token);
         let res = session
             .campus_id_locations(
                 FtApiCampusIdLocationsRequest::new(FtCampusId::new(GYEONGSAN)).with_per_page(100),

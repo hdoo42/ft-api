@@ -120,10 +120,10 @@
 //         .await
 //         .unwrap();
 //     let client = FtClient::new(FtClientReqwestConnector::new());
-//     let session = Arc::new(client.open_session(&token));
+//     let session = Arc::new(client.open_session(token));
 //     let res = session
 //         .users_id_locations_stats(
-//             FtApiUsersIdLocationsStatsRequest::new(id.clone())
+//             FtApiUsersIdLocationsStatsRequest::new(id)
 //                 .with_begin_at("2024-1-1".parse().unwrap())
 //                 .with_end_at("2025-3-1".parse().unwrap()),
 //         )
