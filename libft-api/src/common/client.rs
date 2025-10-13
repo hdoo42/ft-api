@@ -4,8 +4,8 @@ use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 use url::Url;
 
-use crate::common::ratelimiter::RateLimiter;
-use crate::{FtApiToken, FtClientError, FtClientReqwestConnector};
+use crate::common::ratelimiter::HeaderMetaData;
+use crate::{FtApiToken, FtClientError, FtClientReqwestConnector, RateLimiter};
 
 pub type ClientResult<T> = std::result::Result<T, FtClientError>;
 
@@ -17,7 +17,7 @@ where
     FCHC: FtClientHttpConnector + Send,
 {
     pub http_api: FtClientHttpApi<FCHC>,
-    pub ratelimiter: RateLimiter,
+    pub meta: HeaderMetaData,
 }
 
 #[derive(Clone, Debug)]
@@ -60,7 +60,7 @@ pub trait FtClientHttpConnector {
         &'a self,
         full_uri: Url,
         token: &'a FtApiToken,
-        ratelimiter: &'a RateLimiter,
+        ratelimiter: &'a HeaderMetaData,
     ) -> BoxFuture<'a, ClientResult<RS>>
     where
         RS: for<'de> serde::de::Deserialize<'de> + Send + 'a;
@@ -69,7 +69,7 @@ pub trait FtClientHttpConnector {
         &'a self,
         method_relative_uri: &str,
         token: &'a FtApiToken,
-        ratelimiter: &'a RateLimiter,
+        ratelimiter: &'a HeaderMetaData,
         params: &'p PT,
     ) -> BoxFuture<'a, ClientResult<RS>>
     where
@@ -177,14 +177,14 @@ where
     pub fn new(http_connector: FCHC) -> Self {
         Self {
             http_api: FtClientHttpApi::new(Arc::new(http_connector)),
-            ratelimiter: RateLimiter::new(2, 1200),
+            meta: HeaderMetaData::new(RateLimiter::new(2, 1200)),
         }
     }
 
     pub fn with_ratelimits(http_connector: FCHC, secondly: u64, hourly: u64) -> Self {
         Self {
             http_api: FtClientHttpApi::new(Arc::new(http_connector)),
-            ratelimiter: RateLimiter::new(secondly, hourly),
+            meta: HeaderMetaData::new(RateLimiter::new(secondly, hourly)),
         }
     }
 
@@ -223,7 +223,7 @@ where
         self.client
             .http_api
             .connector
-            .http_get_uri(full_uri, &self.token, &self.client.ratelimiter)
+            .http_get_uri(full_uri, &self.token, &self.client.meta)
             .await
     }
 
@@ -240,12 +240,7 @@ where
         self.client
             .http_api
             .connector
-            .http_get(
-                method_relative_uri,
-                &self.token,
-                &self.client.ratelimiter,
-                params,
-            )
+            .http_get(method_relative_uri, &self.token, &self.client.meta, params)
             .await
     }
 

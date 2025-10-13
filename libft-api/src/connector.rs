@@ -11,7 +11,7 @@ use url::Url;
 use crate::{
     map_serde_error, ClientResult, FtApiToken, FtClientError, FtClientHttpApiUri,
     FtClientHttpConnector, FtEnvelopeMessage, FtHttpError, FtRateLimitError, FtReqwestError,
-    RateLimiter,
+    HeaderMetaData,
 };
 
 pub struct FtClientReqwestConnector {
@@ -58,13 +58,13 @@ impl FtClientReqwestConnector {
         &'a self,
         reqwest: RequestBuilder,
         url: Url,
-        ratelimiter: Option<&'a RateLimiter>,
+        meta: Option<&'a HeaderMetaData>,
     ) -> ClientResult<RS>
     where
         RS: for<'de> serde::de::Deserialize<'de>,
     {
-        if let Some(ratelimiter) = ratelimiter {
-            ratelimiter.acquire().await;
+        if let Some(meta) = meta {
+            meta.ratelimiter.acquire().await;
         }
         let url_str = url.to_string();
         info!(ft_url = url_str, "Sending HTTP request to");
@@ -74,8 +74,8 @@ impl FtClientReqwestConnector {
             .map_err(|error| FtReqwestError { error })?;
         let http_status = http_res.status();
         let http_headers = http_res.headers();
-        if let Some(ratelimiter) = ratelimiter {
-            ratelimiter.update_from_headers(http_headers);
+        if let Some(meta) = meta {
+            meta.update_from_headers(http_headers);
         }
         debug!("headers: {:#?}", http_headers);
         let http_content_type = http_headers.get(header::CONTENT_TYPE);
@@ -141,7 +141,7 @@ impl FtClientHttpConnector for FtClientReqwestConnector {
         &'a self,
         full_uri: url::Url,
         token: &'a FtApiToken,
-        ratelimiter: &'a RateLimiter,
+        ratelimiter: &'a HeaderMetaData,
     ) -> futures::prelude::future::BoxFuture<'a, ClientResult<RS>>
     where
         RS: for<'de> serde::de::Deserialize<'de> + Send + 'a,

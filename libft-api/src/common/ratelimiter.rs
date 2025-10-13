@@ -4,8 +4,53 @@ use std::time::{Duration, SystemTime};
 use tokio::time::sleep;
 
 #[derive(Debug, Clone)]
+pub struct HeaderMetaData {
+    pub ratelimiter: RateLimiter,
+    pub total_page: Arc<Mutex<u64>>,
+}
+
+impl HeaderMetaData {
+    pub fn new(ratelimiter: RateLimiter) -> Self {
+        Self {
+            ratelimiter,
+            total_page: Arc::new(Mutex::new(0)),
+        }
+    }
+
+    pub fn update_from_headers(&self, headers: &HeaderMap) {
+        let parse_header = |name: &str| -> Option<u64> {
+            headers
+                .get(name)
+                .and_then(|v| v.to_str().ok())
+                .and_then(|s| s.parse::<u64>().ok())
+        };
+
+        if let Some(total) = parse_header("x-total") {
+            *self.total_page.lock().unwrap() = total;
+        }
+        if let Some(remaining) = parse_header("x-secondly-ratelimit-remaining") {
+            *self
+                .ratelimiter
+                .secondly_ratelimit_remaining
+                .lock()
+                .unwrap() = remaining;
+        }
+
+        if let Some(remaining) = parse_header("x-hourly-ratelimit-remaining") {
+            *self.ratelimiter.hourly_ratelimit_remaining.lock().unwrap() = remaining;
+        }
+
+        if let Some(retry_seconds) = parse_header("retry-after") {
+            let wait_duration = Duration::from_secs(retry_seconds);
+            let new_retry_time = SystemTime::now() + wait_duration;
+            *self.ratelimiter.retry_after.lock().unwrap() = new_retry_time;
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
 pub struct RateLimiter {
-    secondly_ratelimit_limit: u64,
+    pub secondly_ratelimit_limit: u64,
     hourly_ratelimit_limit: u64,
     secondly_ratelimit_remaining: Arc<Mutex<u64>>,
     hourly_ratelimit_remaining: Arc<Mutex<u64>>,
@@ -81,29 +126,6 @@ impl RateLimiter {
                 sleep(wait_duration).await;
             }
             // 대기 후, 다른 스레드가 먼저 토큰을 가져갔을 수 있으므로 loop를 다시 돕니다.
-        }
-    }
-
-    pub fn update_from_headers(&self, headers: &HeaderMap) {
-        let parse_header = |name: &str| -> Option<u64> {
-            headers
-                .get(name)
-                .and_then(|v| v.to_str().ok())
-                .and_then(|s| s.parse::<u64>().ok())
-        };
-
-        if let Some(remaining) = parse_header("x-secondly-ratelimit-remaining") {
-            *self.secondly_ratelimit_remaining.lock().unwrap() = remaining;
-        }
-
-        if let Some(remaining) = parse_header("x-hourly-ratelimit-remaining") {
-            *self.hourly_ratelimit_remaining.lock().unwrap() = remaining;
-        }
-
-        if let Some(retry_seconds) = parse_header("retry-after") {
-            let wait_duration = Duration::from_secs(retry_seconds);
-            let new_retry_time = SystemTime::now() + wait_duration;
-            *self.retry_after.lock().unwrap() = new_retry_time;
         }
     }
 }
@@ -213,7 +235,7 @@ mod tests {
     /// 테스트 5: 정상 응답(200 OK) 헤더를 받았을 때 상태가 올바르게 업데이트되는지 확인
     #[test]
     fn test_update_from_successful_response() {
-        let limiter = RateLimiter::new(2, 1200); // 초기값: 초당 2, 시간당 1200
+        let meta = HeaderMetaData::new(RateLimiter::new(2, 1200));
 
         // 시뮬레이션할 헤더 생성
         let mut headers = HeaderMap::new();
@@ -227,11 +249,15 @@ mod tests {
         );
 
         // 상태 업데이트
-        limiter.update_from_headers(&headers);
+        meta.update_from_headers(&headers);
 
         // 상태 검증
-        let secondly_remaining = *limiter.secondly_ratelimit_remaining.lock().unwrap();
-        let hourly_remaining = *limiter.hourly_ratelimit_remaining.lock().unwrap();
+        let secondly_remaining = *meta
+            .ratelimiter
+            .secondly_ratelimit_remaining
+            .lock()
+            .unwrap();
+        let hourly_remaining = *meta.ratelimiter.hourly_ratelimit_remaining.lock().unwrap();
 
         assert_eq!(
             secondly_remaining, 0,
@@ -246,7 +272,7 @@ mod tests {
     /// 테스트 6: 속도 제한 응답(429) 헤더를 받았을 때 retry_after가 올바르게 설정되는지 확인
     #[test]
     fn test_update_from_ratelimited_response() {
-        let limiter = RateLimiter::new(2, 1200);
+        let meta = HeaderMetaData::new(RateLimiter::new(2, 1200));
         let before_update = SystemTime::now();
 
         // 429 응답 시뮬레이션 헤더
@@ -254,10 +280,10 @@ mod tests {
         headers.insert("retry-after", HeaderValue::from_static("1"));
 
         // 상태 업데이트
-        limiter.update_from_headers(&headers);
+        meta.update_from_headers(&headers);
 
         // 상태 검증
-        let retry_time = *limiter.retry_after.lock().unwrap();
+        let retry_time = *meta.ratelimiter.retry_after.lock().unwrap();
 
         // retry_time이 업데이트 이전 시간보다 미래인지 확인
         assert!(
