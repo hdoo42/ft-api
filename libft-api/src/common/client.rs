@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 use url::Url;
 
+use crate::common::ratelimiter::RateLimiter;
 use crate::{FtApiToken, FtClientError, FtClientReqwestConnector};
 
 pub type ClientResult<T> = std::result::Result<T, FtClientError>;
@@ -16,6 +17,7 @@ where
     FCHC: FtClientHttpConnector + Send,
 {
     pub http_api: FtClientHttpApi<FCHC>,
+    pub ratelimiter: RateLimiter,
 }
 
 #[derive(Clone, Debug)]
@@ -29,11 +31,11 @@ where
 pub struct FtClientHttpApiUri;
 
 #[derive(Debug)]
-pub struct FtClientSession<'a, SCHC>
+pub struct FtClientSession<'a, FCHC>
 where
-    SCHC: FtClientHttpConnector + Send,
+    FCHC: FtClientHttpConnector + Send,
 {
-    pub http_session_api: FtClientHttpSessionApi<'a, SCHC>,
+    pub http_session_api: FtClientHttpSessionApi<'a, FCHC>,
 }
 
 #[derive(Debug)]
@@ -58,6 +60,7 @@ pub trait FtClientHttpConnector {
         &'a self,
         full_uri: Url,
         token: &'a FtApiToken,
+        ratelimiter: &'a RateLimiter,
     ) -> BoxFuture<'a, ClientResult<RS>>
     where
         RS: for<'de> serde::de::Deserialize<'de> + Send + 'a;
@@ -66,6 +69,7 @@ pub trait FtClientHttpConnector {
         &'a self,
         method_relative_uri: &str,
         token: &'a FtApiToken,
+        ratelimiter: &'a RateLimiter,
         params: &'p PT,
     ) -> BoxFuture<'a, ClientResult<RS>>
     where
@@ -78,7 +82,7 @@ pub trait FtClientHttpConnector {
             .and_then(|url| FtClientHttpApiUri::create_url_with_params(url, params));
 
         match full_uri {
-            Ok(full_uri) => self.http_get_uri(full_uri, token),
+            Ok(full_uri) => self.http_get_uri(full_uri, token, ratelimiter),
             Err(err) => std::future::ready(Err(err)).boxed(),
         }
     }
@@ -173,10 +177,18 @@ where
     pub fn new(http_connector: FCHC) -> Self {
         Self {
             http_api: FtClientHttpApi::new(Arc::new(http_connector)),
+            ratelimiter: RateLimiter::new(2, 1200),
         }
     }
 
-    pub fn open_session(&self, token: FtApiToken) -> FtClientSession<FCHC> {
+    pub fn with_ratelimits(http_connector: FCHC, secondly: u64, hourly: u64) -> Self {
+        Self {
+            http_api: FtClientHttpApi::new(Arc::new(http_connector)),
+            ratelimiter: RateLimiter::new(secondly, hourly),
+        }
+    }
+
+    pub fn open_session(&'_ self, token: FtApiToken) -> FtClientSession<'_, FCHC> {
         // TODO: Add tracer for LOGGING
         // let http_session_span = span!(Level::DEBUG, "Ft API request",);
 
@@ -211,7 +223,7 @@ where
         self.client
             .http_api
             .connector
-            .http_get_uri(full_uri, &self.token)
+            .http_get_uri(full_uri, &self.token, &self.client.ratelimiter)
             .await
     }
 
@@ -228,7 +240,12 @@ where
         self.client
             .http_api
             .connector
-            .http_get(method_relative_uri, &self.token, params)
+            .http_get(
+                method_relative_uri,
+                &self.token,
+                &self.client.ratelimiter,
+                params,
+            )
             .await
     }
 

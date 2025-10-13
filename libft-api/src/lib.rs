@@ -1,5 +1,5 @@
-#![warn(clippy::pedantic)]
-#![feature(concat_idents)]
+// #![warn(clippy::pedantic)]
+#![feature(macro_metavar_expr_concat)]
 
 pub use api::*;
 mod api;

@@ -1,8 +1,7 @@
-use std::{io::Write, ops::ControlFlow, sync::Arc, time::Duration};
-
 use chrono::Utc;
 use libft_api::prelude::*;
 use rvstruct::ValueStruct;
+use std::{io::Write, ops::ControlFlow, sync::Arc, time::Duration};
 use tokio::{sync::Semaphore, task::JoinSet, time::sleep};
 use tracing::info;
 
@@ -11,6 +10,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     tracing_subscriber::fmt::init();
     let thread_num = 4;
     let permit = Arc::new(Semaphore::new(thread_num));
+    // 3기 2차?
     let ids = [
         212531, 212530, 212529, 212528, 212527, 212526, 212525, 212524, 212523, 212522, 212521,
         212520, 212519, 212518, 212517, 212516, 212515, 212514, 212513, 212512, 212511, 212510,
@@ -85,10 +85,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let mut file = std::fs::File::create(&file_path).expect("Failed to create output file");
 
-    file.write_all(
-        "user_id,login,project_name,marked_at,created_at,final_mark,updated_at\n".as_bytes(),
-    )?;
+    file.write_all(&serde_json::to_vec(&result).unwrap());
 
+    /*
     for projects_user in result {
         let (id, login) = {
             let user = projects_user
@@ -114,6 +113,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         )
         .expect("Failed to write record");
     }
+    */
 
     println!("Output written to: {}", file_path);
     Ok(())

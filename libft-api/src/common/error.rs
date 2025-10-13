@@ -11,11 +11,11 @@ macro_rules! enum_into {
 	($vis:vis $enum_ty:ident $($enum_item:ident $(,)?)*) => {
 		#[derive(Debug)]
 		$vis enum $enum_ty {
-			$($enum_item(concat_idents!(Ft,$enum_item))),*
+			$($enum_item(${concat(Ft,$enum_item)})),*
 		}
 
-		$(impl From<concat_idents!(Ft,$enum_item)> for $enum_ty {
-			fn from(err: concat_idents!(Ft,$enum_item)) -> Self {
+		$(impl From<${concat(Ft,$enum_item)}> for $enum_ty {
+			fn from(err: ${concat(Ft,$enum_item)}) -> Self {
 				$enum_ty::$enum_item(err)
 			}
 		})*

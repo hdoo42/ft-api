@@ -11,6 +11,7 @@ use url::Url;
 use crate::{
     map_serde_error, ClientResult, FtApiToken, FtClientError, FtClientHttpApiUri,
     FtClientHttpConnector, FtEnvelopeMessage, FtHttpError, FtRateLimitError, FtReqwestError,
+    RateLimiter,
 };
 
 pub struct FtClientReqwestConnector {
@@ -57,10 +58,14 @@ impl FtClientReqwestConnector {
         &'a self,
         reqwest: RequestBuilder,
         url: Url,
+        ratelimiter: Option<&'a RateLimiter>,
     ) -> ClientResult<RS>
     where
         RS: for<'de> serde::de::Deserialize<'de>,
     {
+        if let Some(ratelimiter) = ratelimiter {
+            ratelimiter.acquire().await;
+        }
         let url_str = url.to_string();
         info!(ft_url = url_str, "Sending HTTP request to");
         let http_res = reqwest
@@ -68,19 +73,26 @@ impl FtClientReqwestConnector {
             .await
             .map_err(|error| FtReqwestError { error })?;
         let http_status = http_res.status();
-        let http_headers = http_res.headers().clone();
+        let http_headers = http_res.headers();
+        if let Some(ratelimiter) = ratelimiter {
+            ratelimiter.update_from_headers(http_headers);
+        }
         debug!("headers: {:#?}", http_headers);
         let http_content_type = http_headers.get(header::CONTENT_TYPE);
+        let http_retry_after = http_headers
+            .get(header::RETRY_AFTER)
+            .and_then(|ra| ra.to_str().ok().and_then(|s| s.parse().ok()))
+            .map(Duration::from_secs);
+        let http_content_is_json = matches!(
+            http_content_type.map(|content_type| content_type.to_str()),
+            Some(Ok("application/json; charset=utf-8"))
+        );
         let http_body_str = http_res
             .text()
             .await
             .map_err(|error| FtReqwestError { error })?;
 
         info!(ft_url = url_str, "Received HTTP response {}", http_status);
-        let http_content_is_json = matches!(
-            http_content_type.map(|content_type| content_type.to_str()),
-            Some(Ok("application/json; charset=utf-8"))
-        );
 
         match http_status {
             StatusCode::OK if http_content_is_json => {
@@ -102,12 +114,7 @@ impl FtClientReqwestConnector {
 
                 Err(FtClientError::RateLimitError(
                     FtRateLimitError::new()
-                        .opt_retry_after(
-                            http_headers
-                                .get(header::RETRY_AFTER)
-                                .and_then(|ra| ra.to_str().ok().and_then(|s| s.parse().ok()))
-                                .map(Duration::from_secs),
-                        )
+                        .opt_retry_after(http_retry_after)
                         .opt_code(ft_message.error)
                         .opt_warnings(ft_message.warnings)
                         .with_http_response_body(http_body_str),
@@ -115,12 +122,7 @@ impl FtClientReqwestConnector {
             }
             StatusCode::TOO_MANY_REQUESTS => Err(FtClientError::RateLimitError(
                 FtRateLimitError::new()
-                    .opt_retry_after(
-                        http_headers
-                            .get(header::RETRY_AFTER)
-                            .and_then(|ra| ra.to_str().ok().and_then(|s| s.parse().ok()))
-                            .map(Duration::from_secs),
-                    )
+                    .opt_retry_after(http_retry_after)
                     .with_http_response_body(http_body_str),
             )),
             _ => Err(FtClientError::HttpError(
@@ -139,6 +141,7 @@ impl FtClientHttpConnector for FtClientReqwestConnector {
         &'a self,
         full_uri: url::Url,
         token: &'a FtApiToken,
+        ratelimiter: &'a RateLimiter,
     ) -> futures::prelude::future::BoxFuture<'a, ClientResult<RS>>
     where
         RS: for<'de> serde::de::Deserialize<'de> + Send + 'a,
@@ -150,7 +153,8 @@ impl FtClientHttpConnector for FtClientReqwestConnector {
                 .get(full_uri.clone())
                 .header(AUTHORIZATION, token.get_token_value());
 
-            self.send_http_request(request, full_uri).await
+            self.send_http_request(request, full_uri, Some(ratelimiter))
+                .await
         }
         .boxed()
     }
@@ -173,7 +177,7 @@ impl FtClientHttpConnector for FtClientReqwestConnector {
                 .header(AUTHORIZATION, token.get_token_value())
                 .json(&request_body);
 
-            self.send_http_request(request, full_uri).await
+            self.send_http_request(request, full_uri, None).await
         }
         .boxed()
     }
@@ -196,7 +200,7 @@ impl FtClientHttpConnector for FtClientReqwestConnector {
                 .header(AUTHORIZATION, token.get_token_value())
                 .json(&request_body);
 
-            self.send_http_request(request, full_uri).await
+            self.send_http_request(request, full_uri, None).await
         }
         .boxed()
     }
@@ -219,7 +223,7 @@ impl FtClientHttpConnector for FtClientReqwestConnector {
                 .header(AUTHORIZATION, token.get_token_value())
                 .json(&request_body);
 
-            self.send_http_request(request, full_uri).await
+            self.send_http_request(request, full_uri, None).await
         }
         .boxed()
     }
