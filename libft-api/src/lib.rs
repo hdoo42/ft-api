@@ -57,7 +57,8 @@ pub mod models;
 
 pub mod auth;
 mod common;
+
 pub mod info;
 pub mod prelude;
 
-mod connector;
+pub mod connector;
