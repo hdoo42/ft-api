@@ -1,7 +1,6 @@
+use crate::models::prelude::*;
 use rvstruct::ValueStruct;
 use serde::{Deserialize, Serialize};
-
-use super::{FtCampusId, FtCursusId, FtDateTimeUtc, FtUserId};
 
 #[derive(Debug, PartialEq, PartialOrd, Serialize, Deserialize)]
 pub struct FtJournal {

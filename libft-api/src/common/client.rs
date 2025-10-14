@@ -4,44 +4,119 @@ use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 use url::Url;
 
-use crate::{FtApiToken, FtClientError, FtClientReqwestConnector};
+use crate::auth::FtApiToken;
+use crate::common::*;
+use crate::connector::*;
 
+/// Type alias for client operation results.
+/// 
+/// This is a convenience type alias that represents the result of API operations,
+/// returning either a success value of type T or an error of type FtClientError.
 pub type ClientResult<T> = std::result::Result<T, FtClientError>;
 
+/// Type alias for the default reqwest-based client implementation.
+/// 
+/// This is a convenience type alias that represents an FtClient configured with the
+/// FtClientReqwestConnector, which uses the reqwest HTTP client library.
 pub type FtReqwestClient = FtClient<FtClientReqwestConnector>;
 
+/// The main client for interacting with the 42 Intra API.
+/// 
+/// The FtClient is the primary entry point for making API requests to the 42 Intra API.
+/// It manages the HTTP connector, rate limiting, and provides methods to open sessions
+/// for making authenticated API calls.
+/// 
+/// # Example
+/// ```rust
+/// use libft_api::prelude::*;
+/// 
+/// async fn example() -> ClientResult<()> {
+///     let client = FtClient::new(FtClientReqwestConnector::new());
+///     let token = FtApiToken::try_get(AuthInfo::build_from_env()?).await?;
+///     let session = client.open_session(token);
+///     
+///     // Use the session to make API calls
+///     let users = session.users(FtApiUsersRequest::new()).await?;
+///     println!("Found {} users", users.users.len());
+///     
+///     Ok(())
+/// }
+/// ```
 #[derive(Clone, Debug)]
 pub struct FtClient<FCHC>
 where
     FCHC: FtClientHttpConnector + Send,
 {
     pub http_api: FtClientHttpApi<FCHC>,
+    pub meta: HeaderMetaData,
 }
 
+/// The HTTP API client.
+/// 
+/// This structure wraps the HTTP connector and provides the core functionality
+/// for making HTTP requests to the 42 Intra API. It is contained within the FtClient
+/// and is responsible for managing the underlying HTTP connection.
 #[derive(Clone, Debug)]
 pub struct FtClientHttpApi<FCHC>
 where
     FCHC: FtClientHttpConnector + Send,
 {
+    /// The HTTP connector.
     pub connector: Arc<FCHC>,
 }
 
+/// URI utilities for the 42 API.
+/// 
+/// This structure provides static methods for constructing URLs and handling
+/// API endpoints, ensuring consistent URL formatting for all API requests.
 pub struct FtClientHttpApiUri;
 
+/// A session for making authenticated API requests.
+/// 
+/// An FtClientSession represents an authenticated session with a valid API token.
+/// It provides methods for making API calls that require authentication.
+/// 
+/// The session is created by calling `FtClient::open_session` and holds a reference
+/// to the parent client and the authentication token.
+/// 
+/// # Example
+/// ```rust
+/// use libft_api::prelude::*;
+/// 
+/// async fn example() -> ClientResult<()> {
+///     let client = FtClient::new(FtClientReqwestConnector::new());
+///     let token = FtApiToken::try_get(AuthInfo::build_from_env()?).await?;
+///     let session = client.open_session(token);
+///     
+///     // Use the session to make authenticated API calls
+///     let user = session.users_id(FtUsersIdRequest::new(FtUserIdentifier::Login(
+///         FtLoginId::new("user_login".to_string())
+///     ))).await?;
+///     
+///     println!("User login: {:?}", user.login);
+///     
+///     Ok(())
+/// }
+/// ```
 #[derive(Debug)]
-pub struct FtClientSession<'a, SCHC>
+pub struct FtClientSession<'a, FCHC>
 where
-    SCHC: FtClientHttpConnector + Send,
+    FCHC: FtClientHttpConnector + Send,
 {
-    pub http_session_api: FtClientHttpSessionApi<'a, SCHC>,
+    pub http_session_api: FtClientHttpSessionApi<'a, FCHC>,
 }
 
+/// The HTTP session API for authenticated requests.
+/// 
+/// This structure provides the underlying HTTP functionality for authenticated
+/// API requests. It holds the authentication token and a reference to the parent
+/// client, allowing for authenticated API calls.
 #[derive(Debug)]
 pub struct FtClientHttpSessionApi<'a, FCHC>
 where
     FCHC: FtClientHttpConnector + Send,
 {
-    token: &'a FtApiToken,
+    token: FtApiToken,
     pub client: &'a FtClient<FCHC>,
 }
 
@@ -53,19 +128,24 @@ pub struct FtEnvelopeMessage {
     pub warnings: Option<Vec<String>>,
 }
 
+/// A trait for an HTTP client that can connect to the 42 API.
 pub trait FtClientHttpConnector {
+    /// Send an HTTP GET request to the given URI.
     fn http_get_uri<'a, RS>(
         &'a self,
         full_uri: Url,
         token: &'a FtApiToken,
+        ratelimiter: &'a HeaderMetaData,
     ) -> BoxFuture<'a, ClientResult<RS>>
     where
         RS: for<'de> serde::de::Deserialize<'de> + Send + 'a;
 
+    /// Send an HTTP GET request to the given relative URI.
     fn http_get<'a, 'p, RS, PT, TS>(
         &'a self,
         method_relative_uri: &str,
         token: &'a FtApiToken,
+        ratelimiter: &'a HeaderMetaData,
         params: &'p PT,
     ) -> BoxFuture<'a, ClientResult<RS>>
     where
@@ -78,11 +158,12 @@ pub trait FtClientHttpConnector {
             .and_then(|url| FtClientHttpApiUri::create_url_with_params(url, params));
 
         match full_uri {
-            Ok(full_uri) => self.http_get_uri(full_uri, token),
+            Ok(full_uri) => self.http_get_uri(full_uri, token, ratelimiter),
             Err(err) => std::future::ready(Err(err)).boxed(),
         }
     }
 
+    /// Send an HTTP POST request to the given URI.
     fn http_post_uri<'a, RQ, RS>(
         &'a self,
         full_uri: Url,
@@ -93,6 +174,7 @@ pub trait FtClientHttpConnector {
         RQ: serde::ser::Serialize + Send + Sync,
         RS: for<'de> serde::de::Deserialize<'de> + Send + 'a;
 
+    /// Send an HTTP POST request to the given relative URI.
     fn http_post<'a, RQ, RS>(
         &'a self,
         method_relative_uri: &str,
@@ -109,6 +191,7 @@ pub trait FtClientHttpConnector {
         }
     }
 
+    /// Send an HTTP PATCH request to the given URI.
     fn http_patch_uri<'a, RQ, RS>(
         &'a self,
         full_uri: Url,
@@ -119,6 +202,7 @@ pub trait FtClientHttpConnector {
         RQ: serde::ser::Serialize + Send + Sync,
         RS: for<'de> serde::de::Deserialize<'de> + Send + 'a;
 
+    /// Send an HTTP PATCH request to the given relative URI.
     fn http_patch<'a, RQ, RS>(
         &'a self,
         method_relative_uri: &str,
@@ -135,6 +219,7 @@ pub trait FtClientHttpConnector {
         }
     }
 
+    /// Send an HTTP DELETE request to the given URI.
     fn http_delete_uri<'a, RQ, RS>(
         &'a self,
         full_uri: Url,
@@ -145,6 +230,7 @@ pub trait FtClientHttpConnector {
         RQ: serde::ser::Serialize + Send + Sync,
         RS: for<'de> serde::de::Deserialize<'de> + Send + 'a;
 
+    /// Send an HTTP DELETE request to the given relative URI.
     fn http_delete<'a, RQ, RS>(
         &'a self,
         method_relative_uri: &str,
@@ -161,6 +247,7 @@ pub trait FtClientHttpConnector {
         }
     }
 
+    /// Create a new `Url` from a relative URI.
     fn create_method_uri_path(&self, method_relative_uri: &str) -> ClientResult<Url> {
         Ok(FtClientHttpApiUri::create_method_uri_path(method_relative_uri).parse()?)
     }
@@ -170,13 +257,24 @@ impl<FCHC> FtClient<FCHC>
 where
     FCHC: FtClientHttpConnector + Send + Sync,
 {
+    /// Create a new `FtClient` with the given HTTP connector.
     pub fn new(http_connector: FCHC) -> Self {
         Self {
             http_api: FtClientHttpApi::new(Arc::new(http_connector)),
+            meta: HeaderMetaData::new(RateLimiter::new(2, 1200)),
         }
     }
 
-    pub fn open_session<'a>(&'a self, token: &'a FtApiToken) -> FtClientSession<'a, FCHC> {
+    /// Create a new `FtClient` with the given HTTP connector and rate limits.
+    pub fn with_ratelimits(http_connector: FCHC, secondly: u64, hourly: u64) -> Self {
+        Self {
+            http_api: FtClientHttpApi::new(Arc::new(http_connector)),
+            meta: HeaderMetaData::new(RateLimiter::new(secondly, hourly)),
+        }
+    }
+
+    /// Open a new session for the client.
+    pub fn open_session(&'_ self, token: FtApiToken) -> FtClientSession<'_, FCHC> {
         // TODO: Add tracer for LOGGING
         // let http_session_span = span!(Level::DEBUG, "Ft API request",);
 
@@ -200,7 +298,7 @@ where
     }
 }
 
-impl<'a, FCHC> FtClientHttpSessionApi<'a, FCHC>
+impl<FCHC> FtClientHttpSessionApi<'_, FCHC>
 where
     FCHC: FtClientHttpConnector + Send + Sync,
 {
@@ -211,7 +309,7 @@ where
         self.client
             .http_api
             .connector
-            .http_get_uri(full_uri, self.token)
+            .http_get_uri(full_uri, &self.token, &self.client.meta)
             .await
     }
 
@@ -228,7 +326,7 @@ where
         self.client
             .http_api
             .connector
-            .http_get(method_relative_uri, self.token, params)
+            .http_get(method_relative_uri, &self.token, &self.client.meta, params)
             .await
     }
 
@@ -244,7 +342,7 @@ where
         self.client
             .http_api
             .connector
-            .http_post(method_relative_uri, self.token, request)
+            .http_post(method_relative_uri, &self.token, request)
             .await
     }
 
@@ -256,7 +354,7 @@ where
         self.client
             .http_api
             .connector
-            .http_post_uri(full_uri, self.token, request)
+            .http_post_uri(full_uri, &self.token, request)
             .await
     }
 
@@ -272,7 +370,7 @@ where
         self.client
             .http_api
             .connector
-            .http_delete(method_relative_uri, self.token, request)
+            .http_delete(method_relative_uri, &self.token, request)
             .await
     }
 
@@ -284,7 +382,7 @@ where
         self.client
             .http_api
             .connector
-            .http_delete_uri(full_uri, self.token, request)
+            .http_delete_uri(full_uri, &self.token, request)
             .await
     }
 }

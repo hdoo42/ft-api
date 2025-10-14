@@ -1,7 +1,6 @@
+use crate::models::prelude::*;
 use rvstruct::ValueStruct;
 use serde::{Deserialize, Serialize};
-
-use crate::{FtDateTimeUtc, FtLanguage, FtUrl};
 
 #[derive(Debug, PartialEq, PartialOrd, Serialize, Deserialize)]
 pub struct FtCampus {

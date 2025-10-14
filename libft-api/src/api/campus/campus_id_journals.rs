@@ -2,11 +2,10 @@ use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
 use tracing::debug;
 
-use crate::{
-    convert_filter_option_to_tuple, convert_range_option_to_tuple, to_param, ClientResult,
-    FtCampusId, FtClientHttpConnector, FtClientSession, FtFilterOption, FtJournal, FtRangeOption,
-    FtSortOption, FtUserId,
-};
+use crate::prelude::*;
+use crate::to_param;
+
+use libft_api_derive::HasVector;
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
 pub struct FtApiCampusIdJournalsRequest {
@@ -17,20 +16,41 @@ pub struct FtApiCampusIdJournalsRequest {
     pub sort: Option<Vec<FtSortOption>>,
     pub range: Option<Vec<FtRangeOption>>,
     pub filter: Option<Vec<FtFilterOption>>,
-    pub page: Option<u16>,
+    pub page: Option<usize>,
     pub per_page: Option<u8>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Builder)]
+#[derive(Debug, Serialize, Deserialize, Builder, HasVector)]
 #[serde(transparent)]
 pub struct FtApiCampusIdJournalsResponse {
     pub journals: Vec<FtJournal>,
 }
 
-impl<'a, FCHC> FtClientSession<'a, FCHC>
+impl<FCHC> FtClientSession<'_, FCHC>
 where
     FCHC: FtClientHttpConnector + Send + Sync,
 {
+    /// Get journals for a specific campus.
+    ///
+    /// This action requires the 'Advanced staff' role.
+    /// This resource is paginated, with a default of 30 items per page.
+    /// You have to provide parameters with FtApiCampusIdJournalsRequest structure
+    ///
+    /// # Parameters
+    ///
+    /// *   `begin_at`: **Required** (`String`). Must be before or equal to `end_at`. The date range must be 124 days maximum.
+    /// *   `end_at`: **Required** (`String`). Must be after or equal to `begin_at`. The date range must be 124 days maximum.
+    /// *   `campus_id`: **Required** (`String`). The campus ID or slug.
+    /// *   `sort`: Optional. The sort field. Sorted by `id` desc by default.
+    ///     Must be one of: `id`, `user_id`, `item_type`, `item_id`, `cursus_id`, `campus_id`, `reason`, `created_at`, `updated_at`, `event_at`, `alumni`, `closed`.
+    /// *   `filter`: Optional. Filtering on one or more fields.
+    ///     Must be one of: `id`, `user_id`, `item_type`, `item_id`, `cursus_id`, `campus_id`, `reason`, `created_at`, `updated_at`, `event_at`, `alumni`, `closed`, `event`.
+    /// *   `page[size]`: Optional (`Integer`). The number of items per page. Defaults to 30, maximum 100.
+    /// *   `page[number]`: Optional (`Integer`). The current page number.
+    ///
+    /// # Errors
+    ///
+    /// * This function will return an error if the authenticated user does not have the [`Advanced staff`] role.
     pub async fn campus_id_journals(
         &self,
         req: FtApiCampusIdJournalsRequest,
@@ -72,11 +92,14 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::{campus_id::GYEONGSAN, prelude::*};
+
+    use crate::info::ft_campus_id::GYEONGSAN;
+
+    use super::*;
 
     #[tokio::test]
     async fn location_with_params() {
-        let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
+        let token = FtApiToken::try_get(AuthInfo::build_from_env().unwrap())
             .await
             .unwrap();
 
@@ -84,7 +107,7 @@ mod tests {
             reqwest::Client::new(),
         ));
 
-        let session = client.open_session(&token);
+        let session = client.open_session(token);
         let res = session
             .campus_id_journals(FtApiCampusIdJournalsRequest::new(
                 FtCampusId::new(GYEONGSAN),

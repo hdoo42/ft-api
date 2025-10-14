@@ -1,7 +1,9 @@
 use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
 
-use crate::{prelude::*, to_param};
+use crate::prelude::*;
+use crate::to_param;
+use libft_api_derive::HasVector;
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
 pub struct FtApiUsersIdCursusUsersRequest {
@@ -26,7 +28,7 @@ pub struct FtApiCursusUsersBody {
     pub has_coalition: bool,
 }
 
-#[derive(Debug, Serialize, Deserialize, Builder)]
+#[derive(Debug, Serialize, Deserialize, Builder, HasVector)]
 #[serde(transparent)]
 pub struct FtApiUsersIdCursusUsersResponse {
     pub cursus_user: Vec<FtCursusUser>,
@@ -89,7 +91,7 @@ where
     ///
     /// #[tokio::main]
     /// async fn main() {
-    ///     let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
+    ///     let token = FtApiToken::try_get(AuthInfo::build_from_env().unwrap())
     ///         .await
     ///         .unwrap();
     ///
@@ -97,7 +99,7 @@ where
     ///         reqwest::Client::new(),
     ///     ));
     ///
-    ///     let session = client.open_session(&token);
+    ///     let session = client.open_session(token);
     ///
     ///     let req = FtApiUsersIdCursusUsersRequest::new(FtUserId::new(TEST_USER_YONDOO06_ID))
     ///         .with_page(1)
@@ -158,7 +160,7 @@ where
         &self,
         req: FtApiUsersIdCursusUsersPostRequest,
     ) -> ClientResult<FtApiUsersIdCursusUsersPostResponse> {
-        let url = &format!("users/{}/cursus_users", req.cursus_user.user_id.clone());
+        let url = &format!("users/{}/cursus_users", req.cursus_user.user_id);
 
         self.http_session_api.http_post(url, &req).await
     }
@@ -171,7 +173,7 @@ mod tests {
 
     // #[tokio::test]
     // async fn add_cursus() {
-    //     let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
+    //     let token = FtApiToken::try_get(AuthInfo::build_from_env().unwrap())
     //         .await
     //         .unwrap();
     //
@@ -179,7 +181,7 @@ mod tests {
     //         reqwest::Client::new(),
     //     ));
     //
-    //     let session = client.open_session(&token);
+    //     let session = client.open_session(token);
     //     let res = session
     //         .users_id_cursus_users_post(FtApiUsersIdCursusUsersPostRequest::new(
     //             FtApiCursusUsersBody {
@@ -200,7 +202,7 @@ mod tests {
 
     #[tokio::test]
     async fn basic() {
-        let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
+        let token = FtApiToken::try_get(AuthInfo::build_from_env().unwrap())
             .await
             .unwrap();
 
@@ -208,7 +210,7 @@ mod tests {
             reqwest::Client::new(),
         ));
 
-        let session = client.open_session(&token);
+        let session = client.open_session(token);
         let res = session
             .users_id_cursus_users(FtApiUsersIdCursusUsersRequest::new(FtUserId::new(174_083)))
             .await;

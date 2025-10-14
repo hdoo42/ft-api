@@ -1,9 +1,6 @@
+use crate::models::prelude::*;
 use rvstruct::ValueStruct;
 use serde::{Deserialize, Serialize};
-
-use crate::{FtFinalMark, FtProjectId, FtProjectSessionId, FtScaleTeam, FtUrl, FtUser};
-
-use super::FtDateTimeUtc;
 
 #[derive(Debug, PartialEq, PartialOrd, Serialize, Deserialize)]
 pub struct FtTeam {
@@ -2225,8 +2222,6 @@ fn test_ft_team_deserialization() {
         ],
         "corrector": {
           "id": 51965,
-          "login": "supervisor",
-          "url": "https://api.intra.42.fr/v2/users/supervisor"
         },
         "truant": {},
         "filled_at": null,
@@ -2292,8 +2287,6 @@ fn test_ft_team_deserialization() {
         ],
         "corrector": {
           "id": 51965,
-          "login": "supervisor",
-          "url": "https://api.intra.42.fr/v2/users/supervisor"
         },
         "truant": {},
         "filled_at": null,

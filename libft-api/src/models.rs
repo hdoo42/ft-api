@@ -1,95 +1,55 @@
-use chrono::{DateTime, FixedOffset, Utc};
-use rvstruct::ValueStruct;
-use serde::{Deserialize, Serialize};
+//! Data structures for 42 Intra API entities.
+//!
+//! This module contains all the data structures that represent entities from the 42 Intra API.
+//! Each submodule corresponds to a specific type of entity, such as users, projects, campuses,
+//! cursus, and more. These structures are used for serialization and deserialization of API
+//! requests and responses.
+//!
+//! The models follow a consistent naming convention where each entity has:
+//! * A main struct (e.g., `FtUser`, `FtProject`) that represents the entity
+//! * Value structs (e.g., `FtUserId`, `FtLoginId`) for strongly-typed identifiers
+//! * Enum types (e.g., `FtKind`, `FtPoolMonth`) for categorical values
+//!
+//! Most models implement serialization traits to support JSON conversion for API interactions.
+//! The data structures are designed to closely match the structure of the 42 Intra API responses
+//! while providing type safety and ergonomic access to the data.
+//!
+//! # Example
+//!
+//! ```rust
+//! use libft_api::models::user::{FtUser, FtUserId};
+//!
+//! // Example of how a user model might be used
+//! fn process_user(user: FtUser) {
+//!     if let Some(user_id) = user.id {
+//!         println!("Processing user with ID: {}", user_id.value());
+//!     }
+//! }
+//! ```
 
-pub use locations::*;
-mod locations;
-pub use scale_teams::*;
-mod scale_teams;
-pub use flag::*;
-mod flag;
-pub use project_session::*;
-mod project_session;
-pub use project::*;
-mod project;
-pub use project_data::*;
-mod project_data;
-pub use projects_users::*;
-mod projects_users;
-pub use scale::*;
-mod scale;
-pub use feedback::*;
-mod feedback;
-pub use team::*;
-mod team;
-pub use language::*;
-mod language;
-pub use image::*;
-mod image;
-pub use user::*;
-mod user;
-pub use campus::*;
-mod campus;
-pub use correction_point_history::*;
-mod correction_point_history;
-mod cursus_user;
-pub use cursus_user::*;
-mod campus_user;
-pub use campus_user::*;
-mod journals;
-pub use journals::*;
-mod group;
-pub use group::*;
-mod exam;
-pub use exam::*;
-mod achievement;
-pub use achievement::*;
-mod title;
-pub use title::*;
-mod role;
-pub use role::*;
+pub mod achievement;
+pub mod campus;
+pub mod campus_user;
+pub mod correction_point_history;
+pub mod cursus_user;
+pub mod datetime;
+pub mod exam;
+pub mod feedback;
+pub mod flag;
+pub mod group;
+pub mod image;
+pub mod journals;
+pub mod language;
+pub mod locations;
+pub mod project;
+pub mod project_data;
+pub mod project_session;
+pub mod projects_users;
+pub mod role;
+pub mod scale;
+pub mod scale_teams;
+pub mod team;
+pub mod title;
+pub mod user;
 
-mod common;
-
-#[derive(Serialize, PartialEq, PartialOrd, Deserialize, Debug, ValueStruct)]
-pub struct FtDateTimeUtc(pub DateTime<Utc>);
-
-#[derive(Serialize, PartialEq, PartialOrd, Deserialize, Debug, ValueStruct)]
-pub struct FtDateTimeFixedOffset(DateTime<FixedOffset>);
-
-pub type Seresult<T> = Result<T, serde_json::Error>;
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use serde_json::from_str;
-
-    #[derive(Debug, PartialEq, PartialOrd, Clone, Serialize, Deserialize)]
-    struct FtTestUser {
-        user: FtLoginId,
-    }
-
-    #[test]
-    fn test_loginid() {
-        let json_user = r#"{ "user": "hdoo"}"#;
-        let expected_user = FtTestUser {
-            user: FtLoginId("hdoo".to_string()),
-        };
-        let deserialize_login: FtTestUser = from_str(json_user).unwrap();
-        assert_eq!(deserialize_login, expected_user);
-    }
-
-    #[test]
-    fn partial_user() {
-        let raw_partial_user = r#"
-      {
-        "id": 183812,
-        "login": "nkanaan",
-        "url": "https://api.intra.42.fr/v2/users/nkanaan"
-      }
-        "#;
-
-        let res: Result<FtUser, serde_json::Error> = serde_json::from_str(raw_partial_user);
-        assert!(res.is_ok(), "{:?}", res);
-    }
-}
+pub mod prelude;

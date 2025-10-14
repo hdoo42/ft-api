@@ -5,7 +5,7 @@ pub const TEST_USER_YONDOO_ID: i32 = 180_844;
 pub const FT_GROUP_ID_TEST_ACCOUNT: i32 = 119;
 pub const FT_GROUP_ID_STAFF: i32 = 1;
 
-pub mod campus_id {
+pub mod ft_campus_id {
     pub const RABAT: i32 = 75;
     pub const ISKANDARPUTERI: i32 = 73;
     pub const MILANO: i32 = 72;
@@ -60,10 +60,9 @@ pub mod campus_id {
     pub const LYON: i32 = 9;
     pub const PARIS: i32 = 1;
 }
-pub use ft_cursus::*;
-mod ft_cursus {
+pub mod ft_cursus {
     pub use inner::*;
-    pub const ALL_INNER_SUBJECTS_ID: [u16; 33] = [
+    pub const COMMON_CORE_SUBJECTS: [u16; 33] = [
         LIBFT,
         FT_PRINTF,
         GET_NEXT_LINE,

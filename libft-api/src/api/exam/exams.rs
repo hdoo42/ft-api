@@ -1,11 +1,9 @@
 use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
 
-use crate::{
-    convert_filter_option_to_tuple, convert_range_option_to_tuple, to_param, ClientResult,
-    FtClientHttpConnector, FtClientSession, FtExam, FtExamId, FtExamUser, FtFilterOption,
-    FtRangeOption, FtSortOption, FtUserId,
-};
+use crate::prelude::*;
+use crate::to_param;
+use libft_api_derive::HasVector;
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
 pub struct FtApiExamsRequest {
@@ -26,7 +24,7 @@ pub struct FtApiExamsUsersPostBody {
     pub user_id: FtUserId,
 }
 
-#[derive(Debug, Serialize, Deserialize, Builder)]
+#[derive(Debug, Serialize, Deserialize, Builder, HasVector)]
 #[serde(transparent)]
 pub struct FtApiExamsResponse {
     pub exams: Vec<FtExam>,
@@ -42,30 +40,42 @@ impl<FCHC> FtClientSession<'_, FCHC>
 where
     FCHC: FtClientHttpConnector + Send + Sync,
 {
-    /// ```
-    /// #[tokio::test]
-    /// async fn post_exams() {
-    ///     let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
-    ///         .await
-    ///         .unwrap();
+    /// Retrieves a list of exams from the 42 Intra API.
     ///
-    ///     let client = FtClient::new(FtClientReqwestConnector::with_connector(
-    ///         reqwest::Client::new(),
-    ///     ));
+    /// This method fetches information about exams with various filtering and pagination options.
     ///
-    ///     let session = client.open_session(&token);
+    /// # Parameters
+    /// - `req`: A `FtApiExamsRequest` struct containing the query parameters.
     ///
-    ///     let res = session
-    ///         .exams_users_post(
-    ///             FtApiExamsUsersPostRequest::new(FtApiExamsUsersPostBody {
-    ///                 user_id: FtUserId::new(212_750),
-    ///             }),
-    ///             FtExamId::new(22085),
+    /// # Query Parameters
+    /// - `sort`: Optional vector of sort options to order the results
+    /// - `range`: Optional vector of range options to filter results by date ranges
+    /// - `filter`: Optional vector of filter options to filter the results
+    /// - `page`: Optional page number for pagination
+    /// - `per_page`: Optional number of items per page for pagination
+    ///
+    /// # Returns
+    /// - `ClientResult<FtApiExamsResponse>`: Contains a vector of `FtExam` objects
+    ///
+    /// # Example
+    /// ```rust
+    /// use libft_api::prelude::*;
+    ///
+    /// async fn example() -> ClientResult<()> {
+    ///     let token = FtApiToken::try_get(AuthInfo::build_from_env()?).await?;
+    ///     let client = FtClient::new(FtClientReqwestConnector::new());
+    ///     let session = client.open_session(token);
+    ///
+    ///     // Get all exams with pagination
+    ///     let exams_response = session
+    ///         .exams(
+    ///             FtApiExamsRequest::new()
+    ///                 .with_per_page(20)
     ///         )
-    ///         .await
-    ///         .unwrap();
+    ///         .await?;
+    ///     println!("Found {} exams", exams_response.exams.len());
     ///
-    ///     assert_eq!(res.group.id, FtGroupId::new(FT_GROUP_ID_TEST_ACCOUNT));
+    ///     Ok(())
     /// }
     /// ```
     pub async fn exams(&self, req: FtApiExamsRequest) -> ClientResult<FtApiExamsResponse> {
@@ -99,6 +109,41 @@ where
             .await
     }
 
+    /// Creates an association between a user and an exam from the 42 Intra API.
+    ///
+    /// This method creates an exam-user association, typically used to register a user for an exam.
+    ///
+    /// # Parameters
+    /// - `req`: A `FtApiExamsUsersPostRequest` struct containing the exam-user association data.
+    /// - `exam_id`: The ID of the exam to create the association for (required)
+    ///
+    /// # Returns
+    /// - `ClientResult<FtApiExamsUsersPostResponse>`: Contains the created `FtExamUser` object
+    ///
+    /// # Example
+    /// ```rust
+    /// use libft_api::prelude::*;
+    ///
+    /// async fn example() -> ClientResult<()> {
+    ///     let token = FtApiToken::try_get(AuthInfo::build_from_env()?).await?;
+    ///     let client = FtClient::new(FtClientReqwestConnector::new());
+    ///     let session = client.open_session(token);
+    ///
+    ///     // Create an exam-user association (requires appropriate permissions)
+    ///     // let exam_user_request = FtApiExamsUsersPostRequest::new(
+    ///     //     FtApiExamsUsersPostBody {
+    ///     //         user_id: FtUserId::new(12345),
+    ///     //     }
+    ///     // );
+    ///     // let exam_user_response = session
+    ///     //     .exams_users_post(exam_user_request, FtExamId::new(12345))
+    ///     //     .await?;
+    ///     //
+    ///     // println!("Created exam-user association with ID: {:?}", exam_user_response.exam.id);
+    ///
+    ///     Ok(())
+    /// }
+    /// ```
     pub async fn exams_users_post(
         &self,
         req: FtApiExamsUsersPostRequest,
@@ -112,13 +157,13 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::*;
+    
 
     use super::*;
 
     #[tokio::test]
     async fn get_exams() {
-        let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
+        let token = FtApiToken::try_get(AuthInfo::build_from_env().unwrap())
             .await
             .unwrap();
 
@@ -126,7 +171,7 @@ mod tests {
             reqwest::Client::new(),
         ));
 
-        let session = client.open_session(&token);
+        let session = client.open_session(token);
 
         session.exams(FtApiExamsRequest::new()).await.unwrap();
     }

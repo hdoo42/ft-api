@@ -1,9 +1,7 @@
+use crate::models::prelude::*;
+use rvstruct::ValueStruct;
 use serde::{Deserialize, Serialize};
 use std::option::Option;
-
-use crate::api::prelude::*;
-
-use super::{FtDateTimeUtc, FtScaleTeamId};
 
 #[derive(Debug, PartialEq, PartialOrd, Serialize, Deserialize)]
 pub struct FtCorrectionPointHistory {
@@ -15,6 +13,12 @@ pub struct FtCorrectionPointHistory {
     pub total: FtCorrectionpointsTotal,
     pub updated_at: FtDateTimeUtc,
 }
+
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ValueStruct)]
+pub struct FtCorrectionPointsAmount(i32);
+
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ValueStruct)]
+pub struct FtCorrectionPointsReason(String);
 
 #[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize)]
 pub struct FtCorrectionPointHistoryId(u64);

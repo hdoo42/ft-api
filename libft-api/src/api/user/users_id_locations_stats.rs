@@ -5,8 +5,7 @@ use chrono::NaiveDate;
 use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
 
-use crate::to_param;
-use crate::{ClientResult, FtClientHttpConnector, FtClientSession, FtUserId};
+use crate::{prelude::*, to_param};
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
 pub struct FtApiUsersIdLocationsStatsRequest {
@@ -61,12 +60,12 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::{prelude::*, TEST_USER_YONDOO_ID};
+    use crate::prelude::*;
     use chrono::{Days, Local};
 
     #[tokio::test]
     async fn specific_date_range() {
-        let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
+        let token = FtApiToken::try_get(AuthInfo::build_from_env().unwrap())
             .await
             .unwrap();
 
@@ -74,7 +73,7 @@ mod tests {
             reqwest::Client::new(),
         ));
 
-        let session = client.open_session(&token);
+        let session = client.open_session(token);
         let end_at = Local::now().date_naive();
         let begin_at = end_at
             .checked_sub_days(Days::new(5))

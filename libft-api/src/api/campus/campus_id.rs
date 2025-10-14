@@ -1,11 +1,8 @@
+use crate::prelude::*;
+use crate::to_param;
+use libft_api_derive::HasVector;
 use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
-
-use crate::{
-    convert_filter_option_to_tuple, convert_range_option_to_tuple, to_param, ClientResult,
-    FtCampus, FtCampusId, FtClientHttpConnector, FtClientSession, FtFilterOption, FtRangeOption,
-    FtSortOption,
-};
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
 pub struct FtApiCampusIdRequest {
@@ -17,16 +14,54 @@ pub struct FtApiCampusIdRequest {
     pub per_page: Option<u8>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Builder)]
+#[derive(Debug, Serialize, Deserialize, Builder, HasVector)]
 #[serde(transparent)]
 pub struct FtApiCampusIdResponse {
     pub campus: Vec<FtCampus>,
 }
 
-impl<'a, FCHC> FtClientSession<'a, FCHC>
+impl<FCHC> FtClientSession<'_, FCHC>
 where
     FCHC: FtClientHttpConnector + Send + Sync,
 {
+    /// Retrieves information about campuses from the 42 Intra API.
+    ///
+    /// # Parameters
+    /// - `req`: A `FtApiCampusIdRequest` struct containing the query parameters.
+    ///
+    /// # Query Parameters
+    /// - `campus_id`: Optional campus ID to retrieve information about a specific campus
+    /// - `sort`: Optional vector of sort options to order the results
+    /// - `range`: Optional vector of range options to filter results by date ranges
+    /// - `filter`: Optional vector of filter options to filter the results
+    /// - `page`: Optional page number for pagination
+    /// - `per_page`: Optional number of items per page for pagination
+    ///
+    /// # Returns
+    /// - `ClientResult<FtApiCampusIdResponse>`: Contains a vector of `FtCampus` objects
+    ///
+    /// # Example
+    /// ```rust
+    /// use libft_api::prelude::*;
+    ///
+    /// async fn example() -> ClientResult<()> {
+    ///     let token = FtApiToken::try_get(AuthInfo::build_from_env()?).await?;
+    ///     let client = FtClient::new(FtClientReqwestConnector::new());
+    ///     let session = client.open_session(token);
+    ///
+    ///     // Get all campuses
+    ///     let response = session.campus_id(FtApiCampusIdRequest::new()).await?;
+    ///     println!("Total campuses: {}", response.campus.len());
+    ///
+    ///     // Get a specific campus (e.g., Paris campus with ID 1)
+    ///     let paris_response = session
+    ///         .campus_id(FtApiCampusIdRequest::new().with_campus_id(FtCampusId::new(1)))
+    ///         .await?;
+    ///     println!("Paris campus name: {:?}", paris_response.campus.first().unwrap().name);
+    ///
+    ///     Ok(())
+    /// }
+    /// ```
     pub async fn campus_id(
         &self,
         req: FtApiCampusIdRequest,
@@ -67,11 +102,11 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::prelude::*;
+    use super::*;
 
     #[tokio::test]
     async fn basic() {
-        let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
+        let token = FtApiToken::try_get(AuthInfo::build_from_env().unwrap())
             .await
             .unwrap();
 
@@ -79,7 +114,7 @@ mod tests {
             reqwest::Client::new(),
         ));
 
-        let session = client.open_session(&token);
+        let session = client.open_session(token);
         let res = session.campus_id(FtApiCampusIdRequest::new()).await;
 
         assert!(res.is_ok());

@@ -1,11 +1,9 @@
+use crate::prelude::*;
+use libft_api_derive::HasVector;
 use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
 
-use crate::{
-    ClientResult, FtClientHttpConnector, FtClientSession, FtProjectSessionId, FtScaleTeam,
-};
-
-#[derive(Debug, Serialize, Deserialize, Builder)]
+#[derive(Debug, Serialize, Deserialize, Builder, HasVector)]
 #[serde(transparent)]
 pub struct FtApiProjectSessionsScaleTeamsResponse {
     pub scale_teams: Vec<FtScaleTeam>,
@@ -16,7 +14,7 @@ pub struct FtApiProjectSessionsScaleTeamsRequest {
     pub project_session_id: FtProjectSessionId,
 }
 
-impl<'a, FCHC> FtClientSession<'a, FCHC>
+impl<FCHC> FtClientSession<'_, FCHC>
 where
     FCHC: FtClientHttpConnector + Send + Sync,
 {
@@ -36,11 +34,11 @@ where
 mod tests {
     use ft_project_session_ids::ft_cursus::inner::LIBFT;
 
-    use crate::prelude::*;
+    use super::*;
 
     #[tokio::test]
     async fn location_deserialize() {
-        let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
+        let token = FtApiToken::try_get(AuthInfo::build_from_env().unwrap())
             .await
             .unwrap();
 
@@ -50,7 +48,7 @@ mod tests {
 
         let req = FtApiProjectSessionsScaleTeamsRequest::new(FtProjectSessionId::new(LIBFT));
 
-        let session = client.open_session(&token);
+        let session = client.open_session(token);
         let res = session.project_sessions_scale_teams(req).await;
         assert!(res.is_ok());
     }

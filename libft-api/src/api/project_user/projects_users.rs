@@ -1,7 +1,8 @@
+use crate::prelude::*;
+use crate::to_param;
+use libft_api_derive::HasVector;
 use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
-
-use crate::{prelude::*, to_param};
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
 pub struct FtApiProjectsUsersPostRequest {
@@ -30,13 +31,13 @@ pub struct FtApiProjectsUsersRequest {
     pub per_page: Option<u8>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Builder)]
+#[derive(Debug, Serialize, Deserialize, Builder, HasVector)]
 #[serde(transparent)]
 pub struct FtApiProjectsUsersResponse {
     pub projects_users: Vec<FtProjectsUser>,
 }
 
-impl<'a, FCHC> FtClientSession<'a, FCHC>
+impl<FCHC> FtClientSession<'_, FCHC>
 where
     FCHC: FtClientHttpConnector + Send + Sync,
 {
@@ -87,13 +88,13 @@ where
 #[cfg(test)]
 mod tests {
 
-    use crate::*;
+    use crate::info::ft_cursus::COMMON_CORE_SUBJECTS;
 
     use super::*;
 
     #[tokio::test]
     async fn basic() {
-        let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
+        let token = FtApiToken::try_get(AuthInfo::build_from_env().unwrap())
             .await
             .unwrap();
 
@@ -101,8 +102,8 @@ mod tests {
             reqwest::Client::new(),
         ));
 
-        let session = client.open_session(&token);
-        let project_ids = ALL_INNER_SUBJECTS_ID
+        let session = client.open_session(token);
+        let project_ids = COMMON_CORE_SUBJECTS
             .into_iter()
             .map(|id| id.to_string())
             .collect();

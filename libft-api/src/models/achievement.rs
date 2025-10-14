@@ -1,9 +1,9 @@
+use crate::models::prelude::*;
 use rvstruct::ValueStruct;
 use serde::{Deserialize, Serialize};
 
-use super::FtUrl;
+// use crate::models::prelude::*;
 
-//
 // FtAchievement and its field structs
 //
 

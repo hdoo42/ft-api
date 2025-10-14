@@ -1,13 +1,11 @@
 use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
 
-use crate::{
-    convert_filter_option_to_tuple, convert_range_option_to_tuple, to_param, ClientResult,
-    FtClientHttpConnector, FtClientSession, FtFilterOption, FtProjectSessionId, FtRangeOption,
-    FtSortOption, FtTeam,
-};
+use crate::prelude::*;
+use crate::to_param;
+use libft_api_derive::HasVector;
 
-#[derive(Debug, Serialize, Deserialize, Builder)]
+#[derive(Debug, Serialize, Deserialize, Builder, HasVector)]
 #[serde(transparent)]
 pub struct FtApiProjectSessionsTeamsResponse {
     pub teams: Vec<FtTeam>,
@@ -23,7 +21,7 @@ pub struct FtApiProjectSessionsTeamsRequest {
     pub per_page: Option<u8>,
 }
 
-impl<'a, FCHC> FtClientSession<'a, FCHC>
+impl<FCHC> FtClientSession<'_, FCHC>
 where
     FCHC: FtClientHttpConnector + Send + Sync,
 {
@@ -64,15 +62,13 @@ where
 
 #[cfg(test)]
 mod tests {
+    use crate::prelude::ft_project_session_ids::ft_cursus::inner::LIBFT;
+
     use super::*;
-    use crate::{
-        ft_project_session_ids::ft_cursus::inner::LIBFT, AuthInfo, FtApiToken, FtClient,
-        FtClientReqwestConnector, FtFilterField, FtProjectSessionId,
-    };
 
     #[tokio::test]
     async fn location_deserialize() {
-        let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
+        let token = FtApiToken::try_get(AuthInfo::build_from_env().unwrap())
             .await
             .unwrap();
 
@@ -82,14 +78,14 @@ mod tests {
 
         let reqest = FtApiProjectSessionsTeamsRequest::new(FtProjectSessionId::new(LIBFT));
 
-        let session = client.open_session(&token);
+        let session = client.open_session(token);
         let result = session.project_sessions_id_teams(reqest).await;
         assert!(result.is_ok());
     }
 
     #[tokio::test]
     async fn location_deserialize_with_filter() {
-        let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
+        let token = FtApiToken::try_get(AuthInfo::build_from_env().unwrap())
             .await
             .unwrap();
 
@@ -97,7 +93,7 @@ mod tests {
             reqwest::Client::new(),
         ));
 
-        let session = client.open_session(&token);
+        let session = client.open_session(token);
         let res = session
             .project_sessions_id_teams(
                 FtApiProjectSessionsTeamsRequest::new(FtProjectSessionId::new(LIBFT)).with_filter(

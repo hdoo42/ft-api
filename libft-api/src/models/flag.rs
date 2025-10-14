@@ -1,6 +1,5 @@
+use crate::models::prelude::*;
 use serde::{Deserialize, Serialize};
-
-use crate::FtDateTimeUtc;
 
 #[derive(Debug, PartialEq, PartialOrd, Serialize, Deserialize)]
 pub struct FtFlag {
@@ -80,7 +79,6 @@ pub struct FtFlagName(String);
 //
 // #[cfg(test)]
 // mod tests {
-//     use super::*;
 //     #[test]
 //     fn deserialize_flag() {
 //         let raw_string = r#"[

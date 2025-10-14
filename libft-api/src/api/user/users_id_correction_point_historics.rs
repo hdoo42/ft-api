@@ -1,11 +1,9 @@
 use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
 
-use crate::{
-    convert_filter_option_to_tuple, convert_range_option_to_tuple, to_param, ClientResult,
-    FtClientHttpConnector, FtClientSession, FtCorrectionPointHistory, FtFilterOption,
-    FtRangeOption, FtSortOption, FtUserId,
-};
+use crate::prelude::*;
+use crate::to_param;
+use libft_api_derive::HasVector;
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
 pub struct FtApiUsersIdCorrectionPointHistoricsRequest {
@@ -17,13 +15,13 @@ pub struct FtApiUsersIdCorrectionPointHistoricsRequest {
     pub per_page: Option<u8>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Builder)]
+#[derive(Debug, Serialize, Deserialize, Builder, HasVector)]
 #[serde(transparent)]
 pub struct FtApiUsersIdCorrectionPointHistoricsResponse {
     pub historics: Vec<FtCorrectionPointHistory>,
 }
 
-impl<'a, FCHC> FtClientSession<'a, FCHC>
+impl<FCHC> FtClientSession<'_, FCHC>
 where
     FCHC: FtClientHttpConnector + Send + Sync,
 {
@@ -65,11 +63,11 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::*;
+    
 
     #[tokio::test]
     async fn basic() {
-        let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
+        let token = FtApiToken::try_get(AuthInfo::build_from_env().unwrap())
             .await
             .unwrap();
 
@@ -77,7 +75,7 @@ mod tests {
             reqwest::Client::new(),
         ));
 
-        let session = client.open_session(&token);
+        let session = client.open_session(token);
         let res = session
             .users_id_correction_point_historics(FtApiUsersIdCorrectionPointHistoricsRequest::new(
                 FtUserId::new(TEST_USER_YONDOO_ID),

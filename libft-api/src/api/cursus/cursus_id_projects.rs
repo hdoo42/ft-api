@@ -1,11 +1,9 @@
 use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
 
-use crate::{
-    convert_filter_option_to_tuple, convert_range_option_to_tuple, to_param, ClientResult,
-    FtClientHttpConnector, FtClientSession, FtCursusId, FtFilterOption, FtProject, FtProjectId,
-    FtRangeOption, FtSortOption,
-};
+use crate::prelude::*;
+use crate::to_param;
+use libft_api_derive::HasVector;
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
 pub struct FtApiCursusIdProjectsRequest {
@@ -18,16 +16,53 @@ pub struct FtApiCursusIdProjectsRequest {
     pub per_page: Option<u8>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Builder)]
+#[derive(Debug, Serialize, Deserialize, Builder, HasVector)]
 #[serde(transparent)]
 pub struct FtApiCursusIdProjectsResponse {
     pub projects: Vec<FtProject>,
 }
 
-impl<'a, FCHC> FtClientSession<'a, FCHC>
+impl<FCHC> FtClientSession<'_, FCHC>
 where
     FCHC: FtClientHttpConnector + Send + Sync,
 {
+    /// Retrieves projects associated with a specific cursus from the 42 Intra API.
+    ///
+    /// # Parameters
+    /// - `req`: A `FtApiCursusIdProjectsRequest` struct containing the query parameters.
+    ///
+    /// # Query Parameters
+    /// - `cursus_id`: The ID of the cursus to retrieve projects for (required)
+    /// - `project_id`: Optional project ID to filter results
+    /// - `sort`: Optional vector of sort options
+    /// - `range`: Optional vector of range options
+    /// - `filter`: Optional vector of filter options
+    /// - `page`: Optional page number for pagination
+    /// - `per_page`: Optional number of items per page for pagination
+    ///
+    /// # Returns
+    /// - `ClientResult<FtApiCursusIdProjectsResponse>`: Contains a vector of `FtProject` objects
+    ///
+    /// # Example
+    /// ```rust
+    /// use libft_api::prelude::*;
+    ///
+    /// async fn example() -> ClientResult<()> {
+    ///     let token = FtApiToken::try_get(AuthInfo::build_from_env()?).await?;
+    ///     let client = FtClient::new(FtClientReqwestConnector::new());
+    ///     let session = client.open_session(token);
+    ///
+    ///     // Get projects for the common core cursus
+    ///     let projects = session
+    ///         .cursus_id_projects(
+    ///             FtApiCursusIdProjectsRequest::new(FtCursusId::new(FT_CURSUS_ID))
+    ///         )
+    ///         .await?;
+    ///     println!("Found {} projects", projects.projects.len());
+    ///
+    ///     Ok(())
+    /// }
+    /// ```
     pub async fn cursus_id_projects(
         &self,
         req: FtApiCursusIdProjectsRequest,
@@ -66,13 +101,10 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{
-        AuthInfo, FtApiToken, FtClient, FtClientReqwestConnector, FtCursusId, FT_CURSUS_ID,
-    };
 
     #[tokio::test]
     async fn basic() {
-        let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
+        let token = FtApiToken::try_get(AuthInfo::build_from_env().unwrap())
             .await
             .unwrap();
 
@@ -80,7 +112,7 @@ mod tests {
             reqwest::Client::new(),
         ));
 
-        let session = client.open_session(&token);
+        let session = client.open_session(token);
         let res = session
             .cursus_id_projects(FtApiCursusIdProjectsRequest::new(FtCursusId::new(
                 FT_CURSUS_ID,

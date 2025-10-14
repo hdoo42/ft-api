@@ -1,7 +1,7 @@
+use crate::models::prelude::*;
 use rvstruct::ValueStruct;
 use serde::{Deserialize, Serialize};
 
-use super::FtDateTimeUtc;
 //
 // FtTitle and its field structs
 //

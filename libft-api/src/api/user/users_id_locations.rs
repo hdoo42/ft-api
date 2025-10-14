@@ -1,11 +1,9 @@
-use std::collections::HashMap;
-
-use chrono::Days;
-use chrono::NaiveDate;
 use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
 
-use crate::{prelude::*, to_param};
+use crate::prelude::*;
+use crate::to_param;
+use libft_api_derive::HasVector;
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
 pub struct FtApiUsersIdLocationsRequest {
@@ -17,7 +15,7 @@ pub struct FtApiUsersIdLocationsRequest {
     pub per_page: Option<u8>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Builder)]
+#[derive(Debug, Serialize, Deserialize, Builder, HasVector)]
 #[serde(transparent)]
 pub struct FtApiUsersIdLocationsResponse {
     pub locations: Vec<FtLocation>,
@@ -64,12 +62,12 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::{prelude::*, TEST_USER_YONDOO_ID};
+    use crate::prelude::*;
 
     /// Checks the filter[active] is working properly.
     #[tokio::test]
     async fn is_active() {
-        let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
+        let token = FtApiToken::try_get(AuthInfo::build_from_env().unwrap())
             .await
             .unwrap();
 
@@ -77,7 +75,7 @@ mod tests {
             reqwest::Client::new(),
         ));
 
-        let session = client.open_session(&token);
+        let session = client.open_session(token);
         let res = session
             .users_id_locations(
                 FtApiUsersIdLocationsRequest::new(FtUserId::new(TEST_USER_YONDOO_ID)).with_filter(

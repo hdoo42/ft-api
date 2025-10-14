@@ -1,11 +1,8 @@
+use crate::prelude::*;
+use crate::to_param;
+use libft_api_derive::HasVector;
 use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
-
-use crate::{
-    convert_filter_option_to_tuple, convert_range_option_to_tuple, to_param, ClientResult,
-    FtCampusId, FtClientHttpConnector, FtClientSession, FtFilterOption, FtRangeOption,
-    FtSortOption, FtUser, FtUserId,
-};
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
 pub struct FtApiCampusIdUsersRequest {
@@ -18,16 +15,64 @@ pub struct FtApiCampusIdUsersRequest {
     pub per_page: Option<u8>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Builder)]
+#[derive(Debug, Serialize, Deserialize, Builder, HasVector)]
 #[serde(transparent)]
 pub struct FtApiCampusIdUsersResponse {
     pub users: Vec<FtUser>,
 }
 
-impl<'a, FCHC> FtClientSession<'a, FCHC>
+impl<FCHC> FtClientSession<'_, FCHC>
 where
     FCHC: FtClientHttpConnector + Send + Sync,
 {
+    /// Retrieves user information for a specific campus from the 42 Intra API.
+    ///
+    /// This method fetches information about users associated with a specific campus.
+    ///
+    /// # Parameters
+    /// - `req`: A `FtApiCampusIdUsersRequest` struct containing the query parameters.
+    ///
+    /// # Query Parameters
+    /// - `campus_id`: The ID of the campus to retrieve users for (required)
+    /// - `user_id`: Optional user ID to filter results for a specific user
+    /// - `sort`: Optional vector of sort options to order the results
+    /// - `range`: Optional vector of range options to filter results by date ranges
+    /// - `filter`: Optional vector of filter options to filter the results
+    /// - `page`: Optional page number for pagination
+    /// - `per_page`: Optional number of items per page for pagination
+    ///
+    /// # Returns
+    /// - `ClientResult<FtApiCampusIdUsersResponse>`: Contains a vector of `FtUser` objects
+    ///
+    /// # Example
+    /// ```rust
+    /// use libft_api::prelude::*;
+    ///
+    /// async fn example() -> ClientResult<()> {
+    ///     let token = FtApiToken::try_get(AuthInfo::build_from_env()?).await?;
+    ///     let client = FtClient::new(FtClientReqwestConnector::new());
+    ///     let session = client.open_session(token);
+    ///
+    ///     // Get all users for a specific campus (e.g., GyeongSan campus with ID 69)
+    ///     let users_response = session
+    ///         .campus_id_users(
+    ///             FtApiCampusIdUsersRequest::new(FtCampusId::new(69))
+    ///                 .with_per_page(100)
+    ///         )
+    ///         .await?;
+    ///     println!("Found {} users in the campus", users_response.users.len());
+    ///
+    ///     // Get a specific user in a specific campus
+    ///     let specific_user = session
+    ///         .campus_id_users(
+    ///             FtApiCampusIdUsersRequest::new(FtCampusId::new(69))
+    ///                 .with_user_id(FtUserId::new(12345))
+    ///         )
+    ///         .await?;
+    ///
+    ///     Ok(())
+    /// }
+    /// ```
     pub async fn campus_id_users(
         &self,
         req: FtApiCampusIdUsersRequest,
@@ -65,11 +110,12 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::{campus_id::GYEONGSAN, prelude::*};
+    use super::*;
+    use crate::info::ft_campus_id::GYEONGSAN;
 
     #[tokio::test]
     async fn basic() {
-        let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
+        let token = FtApiToken::try_get(AuthInfo::build_from_env().unwrap())
             .await
             .unwrap();
 
@@ -77,7 +123,7 @@ mod tests {
             reqwest::Client::new(),
         ));
 
-        let session = client.open_session(&token);
+        let session = client.open_session(token);
         let res = session
             .campus_id_users(FtApiCampusIdUsersRequest::new(FtCampusId::new(GYEONGSAN)))
             .await;
