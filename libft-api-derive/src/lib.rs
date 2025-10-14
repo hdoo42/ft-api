@@ -2,43 +2,86 @@ extern crate proc_macro;
 
 use proc_macro::TokenStream;
 use quote::quote;
-use syn::{parse_macro_input, Data, DeriveInput, Fields, GenericArgument, PathArguments, Type};
+use syn::{
+    parse_macro_input, spanned::Spanned, Data, DeriveInput, Error, Fields, GenericArgument,
+    PathArguments, Type,
+};
 
 #[proc_macro_derive(HasVector)]
 pub fn has_vec_derive(input: TokenStream) -> TokenStream {
     let ast = parse_macro_input!(input as DeriveInput);
-    let struct_name = &ast.ident;
-    let (field_name, vec_inner_type) = find_vec_field(&ast.data);
-    let gen = quote! {
-        impl HasVec<#vec_inner_type> for #struct_name {
-            fn get_vec(&self) -> &Vec<#vec_inner_type> {
-                &self.#field_name
-            }
-            fn take_vec(self) -> Vec<#vec_inner_type> {
-                self.#field_name
-            }
-        }
-    };
-    gen.into()
+    expand_has_vec(ast)
+        .unwrap_or_else(|e| e.to_compile_error())
+        .into()
 }
 
-fn find_vec_field(data: &Data) -> (proc_macro2::Ident, &Type) {
-    if let Data::Struct(s) = data {
-        if let Fields::Named(fields) = &s.fields {
-            for field in &fields.named {
-                if let Type::Path(type_path) = &field.ty {
-                    if let Some(last_segment) = type_path.path.segments.last() {
-                        if last_segment.ident == "Vec" {
-                            if let PathArguments::AngleBracketed(args) = &last_segment.arguments {
-                                if let Some(GenericArgument::Type(inner_type)) = args.args.first() {
-                                    return (field.ident.clone().unwrap(), inner_type);
-                                }
-                            }
-                        }
+fn expand_has_vec(ast: DeriveInput) -> Result<proc_macro2::TokenStream, syn::Error> {
+    let struct_name = &ast.ident;
+
+    let field = match &ast.data {
+        Data::Struct(s) => match &s.fields {
+            Fields::Named(named) => {
+                named.named.iter().find(|f| is_vec(&f.ty)).ok_or_else(|| {
+                    Error::new(
+                        s.fields.span(),
+                        "HasVector requires exactly one named field of type Vec<T>",
+                    )
+                })?
+            }
+            _ => {
+                return Err(Error::new(
+                    s.fields.span(),
+                    "HasVector currently supports only named-field structs",
+                ))
+            }
+        },
+        _ => {
+            return Err(Error::new(
+                ast.span(),
+                "HasVector can only be derived for structs",
+            ))
+        }
+    };
+
+    let field_ident = field
+        .ident
+        .clone()
+        .ok_or_else(|| Error::new(field.span(), "expected a named field"))?;
+
+    let inner_ty = extract_vec_inner_ty(&field.ty).ok_or_else(|| {
+        Error::new(
+            field.ty.span(),
+            "field must be exactly Vec<T> (no aliases or refs)",
+        )
+    })?;
+
+    Ok(quote! {
+        impl HasVec<#inner_ty> for #struct_name {
+            fn get_vec(&self) -> &Vec<#inner_ty> { &self.#field_ident }
+            fn take_vec(self) -> Vec<#inner_ty> { self.#field_ident }
+        }
+    })
+}
+
+fn is_vec(ty: &Type) -> bool {
+    matches!(
+        ty,
+        Type::Path(tp)
+            if tp.path.segments.last().map(|s| s.ident == "Vec").unwrap_or(false)
+    )
+}
+
+fn extract_vec_inner_ty(ty: &Type) -> Option<Type> {
+    if let Type::Path(tp) = ty {
+        if let Some(seg) = tp.path.segments.last() {
+            if seg.ident == "Vec" {
+                if let PathArguments::AngleBracketed(args) = &seg.arguments {
+                    if let Some(GenericArgument::Type(inner)) = args.args.first() {
+                        return Some(inner.clone());
                     }
                 }
             }
         }
     }
-    panic!("HasVec derive macro requires a field of type Vec<T>");
+    None
 }
