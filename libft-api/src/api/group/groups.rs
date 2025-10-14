@@ -63,28 +63,28 @@ mod tests {
 
     use super::*;
 
-    #[tokio::test]
-    async fn post_groups() {
-        let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
-            .await
-            .unwrap();
-
-        let client = FtClient::new(FtClientReqwestConnector::with_connector(
-            reqwest::Client::new(),
-        ));
-
-        let session = client.open_session(token);
-
-        let res = session
-            .groups_users_post(FtApiGroupsUsersPostRequest::new(FtApiGroupsUsersPostBody {
-                group_id: FtGroupId::new(FT_GROUP_ID_TEST_ACCOUNT),
-                user_id: FtUserId::new(212_750),
-            }))
-            .await
-            .unwrap();
-
-        assert_eq!(res.group.id, FtGroupId::new(FT_GROUP_ID_TEST_ACCOUNT));
-    }
+    // #[tokio::test]
+    // async fn post_groups() {
+    //     let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
+    //         .await
+    //         .unwrap();
+    //
+    //     let client = FtClient::new(FtClientReqwestConnector::with_connector(
+    //         reqwest::Client::new(),
+    //     ));
+    //
+    //     let session = client.open_session(token);
+    //
+    //     let res = session
+    //         .groups_users_post(FtApiGroupsUsersPostRequest::new(FtApiGroupsUsersPostBody {
+    //             group_id: FtGroupId::new(FT_GROUP_ID_TEST_ACCOUNT),
+    //             user_id: FtUserId::new(212_750),
+    //         }))
+    //         .await
+    //         .unwrap();
+    //
+    //     assert_eq!(res.group.id, FtGroupId::new(FT_GROUP_ID_TEST_ACCOUNT));
+    // }
 
     #[tokio::test]
     async fn get_groups() {

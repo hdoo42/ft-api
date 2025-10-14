@@ -65,7 +65,7 @@ serde_json = { version = "1.0.145", features = ["std"] }
 serde_plain = "1.0.2"
 reqwest = { version = "0.12.24", features = ["json"] }
 rvstruct = "0.3.2"
-tokio = { version = "1.47.1", features = ["full", "tracing"] }
+tokio = { version = "1.47.1", features = ["full", "tracing", "test-util"] }
 chrono = { version = "0.4.42", features = ["serde"] }
 rsb_derive = "0.5.1"
 url = { version = "2.5.7", features = ["serde"] }

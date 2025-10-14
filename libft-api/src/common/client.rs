@@ -20,11 +20,13 @@ where
     pub meta: HeaderMetaData,
 }
 
+/// The HTTP API client.
 #[derive(Clone, Debug)]
 pub struct FtClientHttpApi<FCHC>
 where
     FCHC: FtClientHttpConnector + Send,
 {
+    /// The HTTP connector.
     pub connector: Arc<FCHC>,
 }
 
@@ -55,7 +57,9 @@ pub struct FtEnvelopeMessage {
     pub warnings: Option<Vec<String>>,
 }
 
+/// A trait for an HTTP client that can connect to the 42 API.
 pub trait FtClientHttpConnector {
+    /// Send an HTTP GET request to the given URI.
     fn http_get_uri<'a, RS>(
         &'a self,
         full_uri: Url,
@@ -65,6 +69,7 @@ pub trait FtClientHttpConnector {
     where
         RS: for<'de> serde::de::Deserialize<'de> + Send + 'a;
 
+    /// Send an HTTP GET request to the given relative URI.
     fn http_get<'a, 'p, RS, PT, TS>(
         &'a self,
         method_relative_uri: &str,
@@ -87,6 +92,7 @@ pub trait FtClientHttpConnector {
         }
     }
 
+    /// Send an HTTP POST request to the given URI.
     fn http_post_uri<'a, RQ, RS>(
         &'a self,
         full_uri: Url,
@@ -97,6 +103,7 @@ pub trait FtClientHttpConnector {
         RQ: serde::ser::Serialize + Send + Sync,
         RS: for<'de> serde::de::Deserialize<'de> + Send + 'a;
 
+    /// Send an HTTP POST request to the given relative URI.
     fn http_post<'a, RQ, RS>(
         &'a self,
         method_relative_uri: &str,
@@ -113,6 +120,7 @@ pub trait FtClientHttpConnector {
         }
     }
 
+    /// Send an HTTP PATCH request to the given URI.
     fn http_patch_uri<'a, RQ, RS>(
         &'a self,
         full_uri: Url,
@@ -123,6 +131,7 @@ pub trait FtClientHttpConnector {
         RQ: serde::ser::Serialize + Send + Sync,
         RS: for<'de> serde::de::Deserialize<'de> + Send + 'a;
 
+    /// Send an HTTP PATCH request to the given relative URI.
     fn http_patch<'a, RQ, RS>(
         &'a self,
         method_relative_uri: &str,
@@ -139,6 +148,7 @@ pub trait FtClientHttpConnector {
         }
     }
 
+    /// Send an HTTP DELETE request to the given URI.
     fn http_delete_uri<'a, RQ, RS>(
         &'a self,
         full_uri: Url,
@@ -149,6 +159,7 @@ pub trait FtClientHttpConnector {
         RQ: serde::ser::Serialize + Send + Sync,
         RS: for<'de> serde::de::Deserialize<'de> + Send + 'a;
 
+    /// Send an HTTP DELETE request to the given relative URI.
     fn http_delete<'a, RQ, RS>(
         &'a self,
         method_relative_uri: &str,
@@ -165,6 +176,7 @@ pub trait FtClientHttpConnector {
         }
     }
 
+    /// Create a new `Url` from a relative URI.
     fn create_method_uri_path(&self, method_relative_uri: &str) -> ClientResult<Url> {
         Ok(FtClientHttpApiUri::create_method_uri_path(method_relative_uri).parse()?)
     }
@@ -174,6 +186,7 @@ impl<FCHC> FtClient<FCHC>
 where
     FCHC: FtClientHttpConnector + Send + Sync,
 {
+    /// Create a new `FtClient` with the given HTTP connector.
     pub fn new(http_connector: FCHC) -> Self {
         Self {
             http_api: FtClientHttpApi::new(Arc::new(http_connector)),
@@ -181,6 +194,7 @@ where
         }
     }
 
+    /// Create a new `FtClient` with the given HTTP connector and rate limits.
     pub fn with_ratelimits(http_connector: FCHC, secondly: u64, hourly: u64) -> Self {
         Self {
             http_api: FtClientHttpApi::new(Arc::new(http_connector)),
@@ -188,6 +202,7 @@ where
         }
     }
 
+    /// Open a new session for the client.
     pub fn open_session(&'_ self, token: FtApiToken) -> FtClientSession<'_, FCHC> {
         // TODO: Add tracer for LOGGING
         // let http_session_span = span!(Level::DEBUG, "Ft API request",);

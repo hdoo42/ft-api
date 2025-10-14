@@ -14,6 +14,7 @@ use crate::{
     HeaderMetaData,
 };
 
+/// A client for the 42 API that uses `reqwest` as the underlying HTTP client.
 pub struct FtClientReqwestConnector {
     reqwest_connector: Client,
     ft_api_url: String,
@@ -25,18 +26,23 @@ impl Default for FtClientReqwestConnector {
     }
 }
 
+/// A context for a single API call.
 #[derive(Debug, Clone)]
 pub struct FtClientApiCallContext<'a> {
+    /// The tracing span for the call.
     pub tracing_span: &'a Span,
+    /// The current page number, if the call is paginated.
     pub current_page: Option<usize>,
 }
 
 impl FtClientReqwestConnector {
+    /// Create a new `FtClientReqwestConnector` with a default `reqwest` client.
     #[must_use]
     pub fn new() -> Self {
         Self::with_connector(reqwest::Client::new())
     }
 
+    /// Create a new `FtClientReqwestConnector` with the given `reqwest` client.
     #[must_use]
     pub fn with_connector(connector: Client) -> Self {
         Self {
@@ -45,6 +51,7 @@ impl FtClientReqwestConnector {
         }
     }
 
+    /// Set the 42 API URL for the client.
     #[must_use]
     pub fn with_ft_api_url(self, ft_api_url: &str) -> Self {
         Self {

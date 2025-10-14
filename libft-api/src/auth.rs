@@ -10,16 +10,23 @@ use chrono::{DateTime, TimeZone, Utc};
 use serde::{Deserialize, Serialize};
 
 // TODO: add scope
+/// Authentication information for the 42 API.
 pub struct AuthInfo {
     uid: String,
     secret: String,
 }
 
 impl AuthInfo {
+    /// Create a new `AuthInfo` from the given UID and secret.
     pub fn from_env(uid: String, secret: String) -> AuthInfo {
         AuthInfo { uid, secret }
     }
 
+    /// Build `AuthInfo` from environment variables.
+    ///
+    /// # Errors
+    ///
+    /// This function will return an error if the `FT_API_CLIENT_UID` or `FT_API_CLIENT_SECRET` environment variables are not set.
     pub fn build_from_env() -> Result<AuthInfo, String> {
         let uid = config_env_var("FT_API_CLIENT_UID")?;
         let secret = config_env_var("FT_API_CLIENT_SECRET")?;
@@ -29,6 +36,7 @@ impl AuthInfo {
 
     #[inline]
     // TODO: replace scope to field 'scope'
+    /// Get the parameters for the API token request.
     pub fn get_params(&self) -> [(&str, &str); 4] {
         [
             ("grant_type", "client_credentials"),
@@ -40,6 +48,7 @@ impl AuthInfo {
 }
 
 #[derive(Debug, PartialEq, PartialOrd, Clone, Serialize, Deserialize)]
+/// Represents an API token from the 42 API.
 pub struct FtApiToken {
     access_token: String,
     token_type: AccessTokenType,
@@ -50,6 +59,7 @@ pub struct FtApiToken {
 }
 
 impl FtApiToken {
+    /// Get the token value as a string.
     pub fn get_token_value(&self) -> String {
         format!("{} {}", self.token_type, self.access_token)
     }
@@ -68,12 +78,19 @@ impl Display for AccessTokenType {
 }
 
 #[derive(Debug)]
+/// Represents an error that can occur when handling an API token.
 pub enum TokenError {
+    /// An I/O error occurred.
     IOError(io::Error),
+    /// An error occurred during JSON serialization or deserialization.
     SerdeError(SerdeError),
+    /// The token has expired.
     TokenExpired,
+    /// The token lifetime could not be parsed.
     TokenLifeTimeParsingFailed,
+    /// The temporary token was not found.
     TempTokenNotFound,
+    /// An error occurred while building the token.
     BuildError(String),
 }
 impl From<io::Error> for TokenError {
@@ -115,6 +132,11 @@ impl FtApiToken {
         }
     }
 
+    /// Try to get a token from the cache, or build a new one if it's not available.
+    ///
+    /// # Errors
+    ///
+    /// This function will return an error if it fails to build a new token.
     pub async fn try_get(info: AuthInfo) -> Result<FtApiToken, TokenError> {
         if let Ok(token) = Self::__try_get() {
             return Ok(token);
@@ -131,6 +153,11 @@ impl FtApiToken {
         Ok(token)
     }
 
+    /// Save the token to the cache.
+    ///
+    /// # Errors
+    ///
+    /// This function will return an error if it fails to create the cache file or write to it.
     pub fn save(&self) -> Result<(), TokenError> {
         let tmpdir = std::env::temp_dir().join(".ft_api_auth_token");
         let mut token = File::create_new(tmpdir)?;
@@ -138,6 +165,11 @@ impl FtApiToken {
         Ok(())
     }
 
+    /// Build a new token from the given `AuthInfo`.
+    ///
+    /// # Errors
+    ///
+    /// This function will return an error if the request to the API fails or if the response cannot be parsed.
     pub async fn build(info: AuthInfo) -> Result<FtApiToken, String> {
         let params = info.get_params();
 
