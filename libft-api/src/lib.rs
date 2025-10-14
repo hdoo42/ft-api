@@ -30,11 +30,22 @@
 //! token. The default `FtClientReqwestConnector` reuses a shared `reqwest` client and applies the
 //! crate's rate limiter, so you stay within the platform quotas.
 //!
+//! ## Features
+//! * **Strong Typing**: All API requests and responses are strongly typed using Rust structs
+//! * **Rate Limiting**: Automatic handling of API rate limits
+//! * **Session Management**: Reusable sessions for making multiple API calls
+//! * **Async Support**: Fully asynchronous API calls using async/await
+//! * **Caching**: Automatic token caching and refresh
+//! * **Error Handling**: Comprehensive error types for different failure scenarios
+//!
 //! ## Modules
 //! * `api` — high-level endpoint clients grouped by 42 domain (campus, user, projects, exams).
 //! * `models` — serde-powered representations of request and response payloads.
 //! * `auth` — helpers for building OAuth tokens and refreshing sessions.
-//! * `axum_support` — Axum extractors and middleware for wiring the client into services.
+//! * `common` — shared utilities, error types, parameters, rate limiters, and pagination.
+//! * `connector` — HTTP connector implementations (currently reqwest-based).
+//! * `info` — constants and information about 42 campuses and cursus.
+//! * `prelude` — convenient glob imports for common functionality.
 //!
 //! Explore the `bin/` directory for runnable examples of each workflow, and enable tracing with
 //! `RUST_LOG=info` to inspect HTTP activity during development.
@@ -44,7 +55,7 @@
 pub mod api;
 pub mod models;
 
-mod auth;
+pub mod auth;
 mod common;
 pub mod info;
 pub mod prelude;

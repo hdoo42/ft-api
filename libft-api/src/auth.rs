@@ -1,3 +1,11 @@
+//! Authentication module for the 42 Intra API.
+//!
+//! This module provides functionality for:
+//! * Managing OAuth2 client credentials
+//! * Building API tokens from environment variables
+//! * Caching tokens to disk
+//! * Handling token expiration and renewal
+
 use serde_json::Error as SerdeError;
 use std::{
     fmt::Display,
@@ -9,8 +17,25 @@ use std::{
 use chrono::{DateTime, TimeZone, Utc};
 use serde::{Deserialize, Serialize};
 
-// TODO: add scope
+//   TODO: add scope
 /// Authentication information for the 42 API.
+///
+/// Contains the client credentials (UID and secret) required to obtain an API token.
+///
+/// # Example
+///
+/// ```rust
+/// use libft_api::prelude::*;
+///
+/// // Create from environment variables
+/// let auth_info = AuthInfo::build_from_env().unwrap();
+///
+/// // Or create directly with credentials
+/// let auth_info = AuthInfo::from_env(
+///     "your_client_id".to_string(),
+///     "your_client_secret".to_string()
+/// );
+/// ```
 pub struct AuthInfo {
     uid: String,
     secret: String,
@@ -18,15 +43,48 @@ pub struct AuthInfo {
 
 impl AuthInfo {
     /// Create a new `AuthInfo` from the given UID and secret.
+    ///
+    /// # Arguments
+    ///
+    /// * `uid` - The client ID for the 42 API application
+    /// * `secret` - The client secret for the 42 API application
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use libft_api::auth::AuthInfo;
+    ///
+    /// let auth_info = AuthInfo::from_env(
+    ///     "your_client_id".to_string(),
+    ///     "your_client_secret".to_string()
+    /// );
+    /// ```
     pub fn from_env(uid: String, secret: String) -> AuthInfo {
         AuthInfo { uid, secret }
     }
 
     /// Build `AuthInfo` from environment variables.
     ///
+    /// This function reads the `FT_API_CLIENT_UID` and `FT_API_CLIENT_SECRET` environment variables
+    /// to create an `AuthInfo` instance.
+    ///
+    /// # Environment Variables
+    ///
+    /// * `FT_API_CLIENT_UID` - The client ID for the 42 API application
+    /// * `FT_API_CLIENT_SECRET` - The client secret for the 42 API application
+    ///
     /// # Errors
     ///
     /// This function will return an error if the `FT_API_CLIENT_UID` or `FT_API_CLIENT_SECRET` environment variables are not set.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use libft_api::auth::AuthInfo;
+    ///
+    /// // Requires FT_API_CLIENT_UID and FT_API_CLIENT_SECRET to be set in the environment
+    /// let auth_info = AuthInfo::build_from_env().unwrap();
+    /// ```
     pub fn build_from_env() -> Result<AuthInfo, String> {
         let uid = config_env_var("FT_API_CLIENT_UID")?;
         let secret = config_env_var("FT_API_CLIENT_SECRET")?;
@@ -37,6 +95,12 @@ impl AuthInfo {
     #[inline]
     // TODO: replace scope to field 'scope'
     /// Get the parameters for the API token request.
+    ///
+    /// Returns the form parameters required to request an OAuth2 token from the 42 API.
+    ///
+    /// # Returns
+    ///
+    /// An array of key-value pairs representing the form parameters for the token request.
     pub fn get_params(&self) -> [(&str, &str); 4] {
         [
             ("grant_type", "client_credentials"),
@@ -49,6 +113,11 @@ impl AuthInfo {
 
 #[derive(Debug, PartialEq, PartialOrd, Clone, Serialize, Deserialize)]
 /// Represents an API token from the 42 API.
+///
+/// This struct holds the OAuth2 access token and related metadata required to make authenticated
+/// requests to the 42 Intra API. It includes expiration information and token type.
+///
+/// The token is automatically cached to disk and reused until expiration.
 pub struct FtApiToken {
     access_token: String,
     token_type: AccessTokenType,
@@ -60,6 +129,13 @@ pub struct FtApiToken {
 
 impl FtApiToken {
     /// Get the token value as a string.
+    ///
+    /// Returns the token in the format "TokenType AccessToken", which is the format required
+    /// for the Authorization header in API requests.
+    ///
+    /// # Returns
+    ///
+    /// A formatted string containing the token type and access token.
     pub fn get_token_value(&self) -> String {
         format!("{} {}", self.token_type, self.access_token)
     }
@@ -79,6 +155,9 @@ impl Display for AccessTokenType {
 
 #[derive(Debug)]
 /// Represents an error that can occur when handling an API token.
+///
+/// This enum covers various error conditions that can occur during token management,
+/// including I/O errors, serialization errors, token expiration, and build failures.
 pub enum TokenError {
     /// An I/O error occurred.
     IOError(io::Error),
@@ -93,6 +172,7 @@ pub enum TokenError {
     /// An error occurred while building the token.
     BuildError(String),
 }
+
 impl From<io::Error> for TokenError {
     fn from(err: io::Error) -> Self {
         TokenError::IOError(err)
