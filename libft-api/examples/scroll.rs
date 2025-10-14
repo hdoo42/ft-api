@@ -1,7 +1,7 @@
 use std::{io::Write, sync::Arc};
 
 use futures::FutureExt;
-use libft_api::{info::campus_id::SEOUL, prelude::*};
+use libft_api::{info::ft_campus_id::SEOUL, prelude::*};
 use tokio::task::JoinSet;
 use tracing::info_span;
 

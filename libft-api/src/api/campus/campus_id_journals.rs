@@ -93,7 +93,7 @@ where
 #[cfg(test)]
 mod tests {
 
-    use crate::info::campus_id::GYEONGSAN;
+    use crate::info::ft_campus_id::GYEONGSAN;
 
     use super::*;
 

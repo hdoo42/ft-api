@@ -26,6 +26,44 @@ impl<FCHC> FtClientSession<'_, FCHC>
 where
     FCHC: FtClientHttpConnector + Send + Sync,
 {
+    /// Retrieves a list of projects from the 42 Intra API.
+    ///
+    /// # Parameters
+    /// - `req`: A `FtApiProjectRequest` struct containing the query parameters.
+    ///
+    /// # Query Parameters
+    /// - `cursus_id`: Optional cursus ID to filter projects by cursus
+    /// - `project_id`: Optional project ID to filter results
+    /// - `sort`: Optional vector of sort options
+    /// - `range`: Optional vector of range options
+    /// - `filter`: Optional vector of filter options
+    /// - `page`: Optional page number for pagination
+    /// - `per_page`: Optional number of items per page for pagination
+    ///
+    /// # Returns
+    /// - `ClientResult<FtApiProjectResponse>`: Contains a vector of `FtProject` objects
+    ///
+    /// # Example
+    /// ```rust
+    /// use libft_api::prelude::*;
+    ///
+    /// async fn example() -> ClientResult<()> {
+    ///     let token = FtApiToken::try_get(AuthInfo::build_from_env()?).await?;
+    ///     let client = FtClient::new(FtClientReqwestConnector::new());
+    ///     let session = client.open_session(token);
+    ///
+    ///     // Get all projects with pagination
+    ///     let projects = session
+    ///         .projects(
+    ///             FtApiProjectRequest::new()
+    ///                 .with_per_page(50)
+    ///         )
+    ///         .await?;
+    ///     println!("Found {} projects", projects.projects.len());
+    ///
+    ///     Ok(())
+    /// }
+    /// ```
     pub async fn projects(&self, req: FtApiProjectRequest) -> ClientResult<FtApiProjectResponse> {
         let url = "projects";
 

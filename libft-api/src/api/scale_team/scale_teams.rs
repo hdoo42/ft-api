@@ -88,10 +88,9 @@ where
 #[cfg(test)]
 mod tests {
 
-    use campus_id::GYEONGSAN;
+    use crate::info::ft_campus_id::GYEONGSAN;
 
     use super::*;
-    
 
     #[tokio::test]
     async fn basic() {

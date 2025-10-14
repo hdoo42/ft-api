@@ -26,6 +26,43 @@ impl<FCHC> FtClientSession<'_, FCHC>
 where
     FCHC: FtClientHttpConnector + Send + Sync,
 {
+    /// Retrieves projects associated with a specific cursus from the 42 Intra API.
+    ///
+    /// # Parameters
+    /// - `req`: A `FtApiCursusIdProjectsRequest` struct containing the query parameters.
+    ///
+    /// # Query Parameters
+    /// - `cursus_id`: The ID of the cursus to retrieve projects for (required)
+    /// - `project_id`: Optional project ID to filter results
+    /// - `sort`: Optional vector of sort options
+    /// - `range`: Optional vector of range options
+    /// - `filter`: Optional vector of filter options
+    /// - `page`: Optional page number for pagination
+    /// - `per_page`: Optional number of items per page for pagination
+    ///
+    /// # Returns
+    /// - `ClientResult<FtApiCursusIdProjectsResponse>`: Contains a vector of `FtProject` objects
+    ///
+    /// # Example
+    /// ```rust
+    /// use libft_api::prelude::*;
+    ///
+    /// async fn example() -> ClientResult<()> {
+    ///     let token = FtApiToken::try_get(AuthInfo::build_from_env()?).await?;
+    ///     let client = FtClient::new(FtClientReqwestConnector::new());
+    ///     let session = client.open_session(token);
+    ///
+    ///     // Get projects for the common core cursus
+    ///     let projects = session
+    ///         .cursus_id_projects(
+    ///             FtApiCursusIdProjectsRequest::new(FtCursusId::new(FT_CURSUS_ID))
+    ///         )
+    ///         .await?;
+    ///     println!("Found {} projects", projects.projects.len());
+    ///
+    ///     Ok(())
+    /// }
+    /// ```
     pub async fn cursus_id_projects(
         &self,
         req: FtApiCursusIdProjectsRequest,

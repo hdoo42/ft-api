@@ -111,7 +111,7 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::info::campus_id::GYEONGSAN;
+    use crate::info::ft_campus_id::GYEONGSAN;
 
     #[tokio::test]
     async fn basic() {

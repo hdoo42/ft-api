@@ -40,6 +40,40 @@ impl<FCHC> FtClientSession<'_, FCHC>
 where
     FCHC: FtClientHttpConnector + Send + Sync,
 {
+    /// Retrieves a list of groups from the 42 Intra API.
+    ///
+    /// # Parameters
+    /// - `req`: A `FtApiGroupsRequest` struct containing the query parameters.
+    ///
+    /// # Query Parameters
+    /// - `user_id`: Optional user ID to filter groups associated with a specific user
+    /// - `page`: Optional page number for pagination
+    /// - `per_page`: Optional number of items per page for pagination
+    ///
+    /// # Returns
+    /// - `ClientResult<FtApiGroupsResponse>`: Contains a vector of `FtGroup` objects
+    ///
+    /// # Example
+    /// ```rust
+    /// use libft_api::prelude::*;
+    ///
+    /// async fn example() -> ClientResult<()> {
+    ///     let token = FtApiToken::try_get(AuthInfo::build_from_env()?).await?;
+    ///     let client = FtClient::new(FtClientReqwestConnector::new());
+    ///     let session = client.open_session(token);
+    ///
+    ///     // Get all groups with pagination
+    ///     let groups = session
+    ///         .groups(
+    ///             FtApiGroupsRequest::new()
+    ///                 .with_per_page(50)
+    ///         )
+    ///         .await?;
+    ///     println!("Found {} groups", groups.groups.len());
+    ///
+    ///     Ok(())
+    /// }
+    /// ```
     pub async fn groups(&self, req: FtApiGroupsRequest) -> ClientResult<FtApiGroupsResponse> {
         let url = "groups";
 
@@ -48,6 +82,35 @@ where
         self.http_session_api.http_get(url, &params).await
     }
 
+    /// Creates a group-user association in the 42 Intra API.
+    ///
+    /// # Parameters
+    /// - `req`: A `FtApiGroupsUsersPostRequest` struct containing the group-user association data.
+    ///
+    /// # Returns
+    /// - `ClientResult<FtApiGroupsUsersPostResponse>`: Contains the created association details
+    ///
+    /// # Example
+    /// ```rust
+    /// use libft_api::prelude::*;
+    ///
+    /// async fn example() -> ClientResult<()> {
+    ///     let token = FtApiToken::try_get(AuthInfo::build_from_env()?).await?;
+    ///     let client = FtClient::new(FtClientReqwestConnector::new());
+    ///     let session = client.open_session(token);
+    ///
+    ///     // Create a group-user association (requires appropriate permissions)
+    ///     // let association_request = FtApiGroupsUsersPostRequest::new(
+    ///     //     FtApiGroupsUsersPostBody {
+    ///     //         group_id: FtGroupId::new(123),
+    ///     //         user_id: FtUserId::new(456),
+    ///     //     }
+    ///     // );
+    ///     // let result = session.groups_users_post(association_request).await?;
+    ///
+    ///     Ok(())
+    /// }
+    /// ```
     pub async fn groups_users_post(
         &self,
         req: FtApiGroupsUsersPostRequest,
