@@ -1,9 +1,8 @@
+use crate::models::prelude::*;
 use rvstruct::ValueStruct;
 use serde::{Deserialize, Serialize};
 
-use crate::FtDateTimeUtc;
-
-use super::{FtCampusId, FtUserId};
+// use crate::models::prelude::*;
 
 #[derive(Debug, PartialEq, PartialOrd, Serialize, Deserialize)]
 pub struct FtCampusUser {

@@ -8,11 +8,8 @@ use reqwest::{
 use tracing::{debug, info, Span};
 use url::Url;
 
-use crate::{
-    map_serde_error, ClientResult, FtApiToken, FtClientError, FtClientHttpApiUri,
-    FtClientHttpConnector, FtEnvelopeMessage, FtHttpError, FtRateLimitError, FtReqwestError,
-    HeaderMetaData,
-};
+use crate::auth::FtApiToken;
+use crate::common::*;
 
 /// A client for the 42 API that uses `reqwest` as the underlying HTTP client.
 pub struct FtClientReqwestConnector {

@@ -60,10 +60,9 @@ pub mod campus_id {
     pub const LYON: i32 = 9;
     pub const PARIS: i32 = 1;
 }
-pub use ft_cursus::*;
-mod ft_cursus {
+pub mod ft_cursus {
     pub use inner::*;
-    pub const ALL_INNER_SUBJECTS_ID: [u16; 33] = [
+    pub const COMMON_CORE_SUBJECTS: [u16; 33] = [
         LIBFT,
         FT_PRINTF,
         GET_NEXT_LINE,

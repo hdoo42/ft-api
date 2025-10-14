@@ -1,4 +1,5 @@
-use crate::{prelude::*, to_param, HasVec};
+use crate::prelude::*;
+use crate::to_param;
 use libft_api_derive::HasVector;
 use rsb_derive::Builder;
 
@@ -95,7 +96,7 @@ mod tests {
     #[tokio::test]
     async fn basic() {
         tracing_subscriber::fmt::init();
-        let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
+        let token = FtApiToken::try_get(AuthInfo::build_from_env().unwrap())
             .await
             .unwrap();
 

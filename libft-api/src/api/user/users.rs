@@ -1,7 +1,8 @@
 use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
 
-use crate::{prelude::*, to_param, HasVec};
+use crate::prelude::*;
+use crate::to_param;
 use libft_api_derive::HasVector;
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
@@ -91,11 +92,10 @@ where
 mod tests {
 
     use super::*;
-    use crate::*;
 
     #[tokio::test]
     async fn basic() {
-        let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
+        let token = FtApiToken::try_get(AuthInfo::build_from_env().unwrap())
             .await
             .unwrap();
 
@@ -108,31 +108,4 @@ mod tests {
 
         assert!(res.is_ok());
     }
-
-    // #[tokio::test]
-    // async fn user_creation() {
-    //     let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
-    //         .await
-    //         .unwrap();
-    //
-    //     let client = FtClient::new(FtClientReqwestConnector::with_connector(
-    //         reqwest::Client::new(),
-    //     ));
-    //
-    //     let session = client.open_session(token);
-    //     let res = session
-    //         .users_post(FtApiUsersPostRequest::new(FtApiUserPostBody {
-    //             email: "yondoo@42gyeongsan.kr".to_string(),
-    //             campus_id: FtCampusId::new(GYEONGSAN),
-    //             first_name: "TEST".to_string(),
-    //             last_name: "ACCOUNT".to_string(),
-    //             login: "exam-gs03".to_string(),
-    //             password: "Exam-gs03@4242".to_string(),
-    //             kind: FtKind::Student,
-    //             pool_month: "january".to_string(),
-    //             pool_year: 2025,
-    //         }))
-    //         .await
-    //         .unwrap();
-    // }
 }

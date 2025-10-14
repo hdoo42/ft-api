@@ -1,7 +1,7 @@
 use std::{io::Write, sync::Arc};
 
 use futures::FutureExt;
-use libft_api::{campus_id::*, prelude::*};
+use libft_api::{info::campus_id::SEOUL, prelude::*};
 use tokio::task::JoinSet;
 use tracing::info_span;
 
@@ -41,6 +41,7 @@ async fn main() {
         let client = Arc::clone(&client);
         handles.spawn(async move { scroller(&client, thread_num, i, request_builder).await });
     }
+
     let mut all = Vec::<FtUser>::new();
     while let Some(res) = handles.join_next().await {
         match res {

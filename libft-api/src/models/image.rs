@@ -1,6 +1,5 @@
+use crate::models::prelude::*;
 use serde::{Deserialize, Serialize};
-
-use crate::FtUrl;
 
 #[derive(Debug, PartialEq, PartialOrd, Serialize, Deserialize)]
 pub struct FtImage {

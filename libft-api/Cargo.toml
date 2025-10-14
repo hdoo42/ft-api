@@ -10,53 +10,8 @@ exclude = ["src/main.rs"]
 [lib]
 path="src/lib.rs"
 
-[[bin]]
-name="project_stats"
-path="bin/project_stats.rs"
-
-[[bin]]
-name="locations"
-path="bin/locations.rs"
-
-[[bin]]
-name="blackholed"
-path="bin/blackholed.rs"
-
-[[bin]]
-name="journals"
-path="bin/journals.rs"
-
-[[bin]]
-name="campus_users"
-path="bin/campus_users.rs"
-
-[[bin]]
-name="user_creation"
-path="bin/user_creation.rs"
-
-[[bin]]
-name="evaluation"
-path="bin/evaluation.rs"
-
-[[bin]]
-name="user_subscribe"
-path="bin/user_subscribe.rs"
-
-[[bin]]
-name="teams"
-path="bin/teams.rs"
-
-[[bin]]
-name="get_user_ext"
-path="bin/get_user_ext.rs"
-
-[[bin]]
-name="exam_resubscribe"
-path="bin/exam_resubscribe.rs"
-
-# [[bin]]
-# name="location_stat"
-# path="bin/location_stat.rs"
+[[example]]
+name = "scroll"
 
 [dependencies]
 serde = { version = "1.0.228", features = ["derive"] }

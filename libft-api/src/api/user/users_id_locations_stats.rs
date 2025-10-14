@@ -60,12 +60,12 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::{prelude::*, TEST_USER_YONDOO_ID};
+    use crate::prelude::*;
     use chrono::{Days, Local};
 
     #[tokio::test]
     async fn specific_date_range() {
-        let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
+        let token = FtApiToken::try_get(AuthInfo::build_from_env().unwrap())
             .await
             .unwrap();
 

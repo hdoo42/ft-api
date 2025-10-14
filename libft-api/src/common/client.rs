@@ -4,8 +4,9 @@ use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 use url::Url;
 
-use crate::common::ratelimiter::HeaderMetaData;
-use crate::{FtApiToken, FtClientError, FtClientReqwestConnector, RateLimiter};
+use crate::auth::FtApiToken;
+use crate::common::*;
+use crate::connector::*;
 
 pub type ClientResult<T> = std::result::Result<T, FtClientError>;
 

@@ -44,9 +44,13 @@ pub struct FtSkillName(String);
 #[derive(Debug, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ValueStruct)]
 pub struct FtSkillLevel(f64);
 
-#[test]
-fn parse_to_struct() {
-    let raw = r#"[
+#[cfg(test)]
+mod tests {
+    use crate::api::prelude::*;
+
+    #[test]
+    fn parse_to_struct() {
+        let raw = r#"[
 	{
 		"grade": null,
 		"level": 0.0,
@@ -277,5 +281,6 @@ fn parse_to_struct() {
 ]
     "#;
 
-    serde_json::from_str::<FtApiUsersIdCursusUsersResponse>(raw).unwrap();
+        serde_json::from_str::<FtApiUsersIdCursusUsersResponse>(raw).unwrap();
+    }
 }

@@ -1,11 +1,8 @@
+use crate::prelude::*;
+use crate::to_param;
+use libft_api_derive::HasVector;
 use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
-
-use crate::{
-    convert_filter_option_to_tuple, convert_range_option_to_tuple, to_param, ClientResult,
-    FtClientHttpConnector, FtClientSession, FtCursusId, FtFilterOption, FtProjectId, FtRangeOption,
-    FtSortOption, FtTeam,
-};
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
 pub struct FtApiProjectsIdTeamsRequest {
@@ -18,7 +15,7 @@ pub struct FtApiProjectsIdTeamsRequest {
     pub per_page: Option<u8>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Builder)]
+#[derive(Debug, Serialize, Deserialize, Builder, HasVector)]
 #[serde(transparent)]
 pub struct FtApiProjectsIdTeamsResponse {
     pub teams: Vec<FtTeam>,
@@ -72,7 +69,7 @@ mod tests {
 
     #[tokio::test]
     async fn projects_id_teams_basic_test() {
-        let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
+        let token = FtApiToken::try_get(AuthInfo::build_from_env().unwrap())
             .await
             .unwrap();
 

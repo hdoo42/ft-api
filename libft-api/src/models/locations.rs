@@ -1,7 +1,6 @@
+use crate::models::prelude::*;
 use rvstruct::ValueStruct;
 use serde::{Deserialize, Serialize};
-
-use crate::models::{FtCampusId, FtDateTimeUtc, FtUser};
 
 #[derive(Debug, PartialEq, PartialOrd, Serialize, Deserialize)]
 pub struct FtLocation {

@@ -1,4 +1,5 @@
-use crate::{prelude::*, HasVec};
+use crate::prelude::*;
+use crate::to_param;
 use libft_api_derive::HasVector;
 use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
@@ -34,11 +35,11 @@ where
 mod tests {
     use ft_project_session_ids::ft_cursus::inner::LIBFT;
 
-    use crate::prelude::*;
+    use super::*;
 
     #[tokio::test]
     async fn location_deserialize() {
-        let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
+        let token = FtApiToken::try_get(AuthInfo::build_from_env().unwrap())
             .await
             .unwrap();
 

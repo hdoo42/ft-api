@@ -1,7 +1,8 @@
 use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
 
-use crate::{prelude::*, to_param, HasVec};
+use crate::prelude::*;
+use crate::to_param;
 use libft_api_derive::HasVector;
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
@@ -90,7 +91,7 @@ where
     ///
     /// #[tokio::main]
     /// async fn main() {
-    ///     let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
+    ///     let token = FtApiToken::try_get(AuthInfo::build_from_env().unwrap())
     ///         .await
     ///         .unwrap();
     ///
@@ -172,7 +173,7 @@ mod tests {
 
     // #[tokio::test]
     // async fn add_cursus() {
-    //     let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
+    //     let token = FtApiToken::try_get(AuthInfo::build_from_env().unwrap())
     //         .await
     //         .unwrap();
     //
@@ -201,7 +202,7 @@ mod tests {
 
     #[tokio::test]
     async fn basic() {
-        let token = FtApiToken::build(AuthInfo::build_from_env().unwrap())
+        let token = FtApiToken::try_get(AuthInfo::build_from_env().unwrap())
             .await
             .unwrap();
 

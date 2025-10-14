@@ -1,7 +1,6 @@
+use crate::models::prelude::*;
 use rvstruct::ValueStruct;
 use serde::{Deserialize, Serialize};
-
-use crate::{FtComment, FtDateTimeUtc, FtUser};
 
 #[derive(Debug, PartialEq, PartialOrd, Serialize, Deserialize)]
 pub struct FtFeedback {
@@ -36,7 +35,6 @@ pub struct FtRating(i32);
 
 #[test]
 fn deser_feedbacks() {
-    use crate::Seresult;
     let raw_feedbacks = r#"
     [
       {

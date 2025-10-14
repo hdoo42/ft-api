@@ -1,8 +1,7 @@
+use crate::models::prelude::*;
 use rsb_derive::Builder;
 use rvstruct::ValueStruct;
 use serde::{Deserialize, Serialize};
-
-use crate::prelude::*;
 
 #[derive(Debug, PartialEq, PartialOrd, Serialize, Deserialize, Builder)]
 pub struct FtUser {

@@ -1,8 +1,7 @@
 use rsb_derive::Builder;
-use rvstruct::ValueStruct;
 use serde::{Deserialize, Serialize};
 
-use crate::prelude::*;
+use crate::{prelude::*, to_param};
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
 #[serde(transparent)]
@@ -17,20 +16,11 @@ pub struct FtApiUsersIdCorrectionPointsAddRequest {
     pub amount: FtCorrectionPointsAmount,
 }
 
-#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ValueStruct)]
-pub struct FtCorrectionPointsReason(String);
-
-#[derive(Debug, Eq, Hash, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ValueStruct)]
-pub struct FtCorrectionPointsAmount(i32);
 impl<FCHC> FtClientSession<'_, FCHC>
 where
     FCHC: FtClientHttpConnector + Send + Sync,
 {
-    ///
-    ///
-    /// # Errors
-    ///
-    /// This function will return an error if
+    /// You need a roles `Advanced tutor` to use this API
     pub async fn users_id_correction_points_add(
         &self,
         request: FtApiUsersIdCorrectionPointsAddRequest,
@@ -43,7 +33,7 @@ where
 
 #[cfg(test)]
 mod tests {
-    use crate::prelude::*;
+    use super::*;
 
     #[test]
     fn correction_points_add_request_serde() {
@@ -75,8 +65,7 @@ mod tests {
                 reason: FtCorrectionPointsReason::new("test".to_owned()),
                 amount: FtCorrectionPointsAmount::new(42),
             })
-            .await;
-
-        assert!(res.is_ok());
+            .await
+            .unwrap();
     }
 }
