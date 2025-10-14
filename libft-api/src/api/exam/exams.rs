@@ -1,11 +1,8 @@
 use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
 
-use crate::{
-    convert_filter_option_to_tuple, convert_range_option_to_tuple, to_param, ClientResult,
-    FtClientHttpConnector, FtClientSession, FtExam, FtExamId, FtExamUser, FtFilterOption,
-    FtRangeOption, FtSortOption, FtUserId,
-};
+use crate::{prelude::*, to_param, HasVec};
+use libft_api_derive::HasVector;
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
 pub struct FtApiExamsRequest {
@@ -26,7 +23,7 @@ pub struct FtApiExamsUsersPostBody {
     pub user_id: FtUserId,
 }
 
-#[derive(Debug, Serialize, Deserialize, Builder)]
+#[derive(Debug, Serialize, Deserialize, Builder, HasVector)]
 #[serde(transparent)]
 pub struct FtApiExamsResponse {
     pub exams: Vec<FtExam>,

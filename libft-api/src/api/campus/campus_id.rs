@@ -1,13 +1,7 @@
-use crate::HasVec;
+use crate::{prelude::*, to_param, HasVec};
 use libft_api_derive::HasVector;
 use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
-
-use crate::{
-    convert_filter_option_to_tuple, convert_range_option_to_tuple, to_param, ClientResult,
-    FtCampus, FtCampusId, FtClientHttpConnector, FtClientSession, FtFilterOption, FtRangeOption,
-    FtSortOption,
-};
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
 pub struct FtApiCampusIdRequest {
@@ -19,7 +13,7 @@ pub struct FtApiCampusIdRequest {
     pub per_page: Option<u8>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Builder)]
+#[derive(Debug, Serialize, Deserialize, Builder, HasVector)]
 #[serde(transparent)]
 pub struct FtApiCampusIdResponse {
     pub campus: Vec<FtCampus>,

@@ -1,7 +1,8 @@
+use crate::{prelude::*, to_param, HasVec};
+use libft_api_derive::HasVector;
 use rsb_derive::Builder;
-use serde::{Deserialize, Serialize};
 
-use crate::{prelude::*, to_param};
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
 pub struct FtApiScaleTeamsRequest {
@@ -12,7 +13,7 @@ pub struct FtApiScaleTeamsRequest {
     pub per_page: Option<u8>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Builder)]
+#[derive(Debug, Serialize, Deserialize, Builder, HasVector)]
 #[serde(transparent)]
 pub struct FtApiScaleTeamsResponse {
     pub scale_teams: Vec<FtScaleTeam>,
@@ -29,7 +30,7 @@ pub struct FtApiScaleTeamsMultipleCreateBody {
     pub team_id: FtTeamId,
 }
 
-#[derive(Debug, Serialize, Deserialize, Builder)]
+#[derive(Debug, Serialize, Deserialize, Builder, HasVector)]
 #[serde(transparent)]
 pub struct FtApiScaleTeamsMultipleCreateResponse {
     pub scale_teams: Vec<FtScaleTeam>,
@@ -103,7 +104,7 @@ mod tests {
         ));
 
         let session = client.open_session(token);
-        let res = session
+        let _ = session
             .scale_teams(FtApiScaleTeamsRequest::new().with_filter(vec![
                 FtFilterOption::new(FtFilterField::CampusId, vec![GYEONGSAN.to_string()]),
                 FtFilterOption::new(

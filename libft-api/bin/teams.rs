@@ -1,4 +1,4 @@
-use std::{io::Write, sync::Arc};
+use std::sync::Arc;
 
 use chrono::{TimeDelta, TimeZone, Utc};
 use ft_project_session_ids::c_piscine::C_PISCINE_RUSH_02;

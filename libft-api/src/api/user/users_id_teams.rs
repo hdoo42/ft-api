@@ -1,11 +1,8 @@
 use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
 
-use crate::{
-    convert_filter_option_to_tuple, convert_range_option_to_tuple, to_param, ClientResult,
-    FtClientHttpConnector, FtClientSession, FtCursusId, FtFilterOption, FtProjectId,
-    FtProjectSessionId, FtRangeOption, FtSortOption, FtTeam, FtUserId,
-};
+use crate::{prelude::*, to_param, HasVec};
+use libft_api_derive::HasVector;
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
 pub struct FtApiUsersIdTeamsRequest {
@@ -20,7 +17,7 @@ pub struct FtApiUsersIdTeamsRequest {
     pub per_page: Option<u8>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Builder)]
+#[derive(Debug, Serialize, Deserialize, Builder, HasVector)]
 #[serde(transparent)]
 pub struct FtApiUsersIdTeamsResponse {
     pub teams: Vec<FtTeam>,
@@ -85,7 +82,7 @@ mod tests {
         ));
 
         let session = client.open_session(token);
-        let res = session
+        let _ = session
             .users_id_teams(FtApiUsersIdTeamsRequest::new(FtUserId::new(
                 TEST_USER_YONDOO_ID,
             )))

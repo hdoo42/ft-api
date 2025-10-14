@@ -1,7 +1,8 @@
 use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
 
-use crate::{api::HasVec, prelude::*, to_param};
+use crate::{prelude::*, to_param, HasVec};
+use libft_api_derive::HasVector;
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
 pub struct FtApiUsersPostRequest {
@@ -36,19 +37,10 @@ pub struct FtApiUserPostsResponse {
     pub user: FtUser,
 }
 
-#[derive(Debug, Serialize, Deserialize, Builder)]
+#[derive(Debug, Serialize, Deserialize, Builder, HasVector)]
 #[serde(transparent)]
 pub struct FtApiUsersResponse {
     pub users: Vec<FtUser>,
-}
-
-impl HasVec<FtUser> for FtApiUsersResponse {
-    fn get_vec(&self) -> &Vec<FtUser> {
-        &self.users
-    }
-    fn take_vec(self) -> Vec<FtUser> {
-        self.users
-    }
 }
 
 impl<FCHC> FtClientSession<'_, FCHC>

@@ -5,8 +5,7 @@ use chrono::NaiveDate;
 use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
 
-use crate::to_param;
-use crate::{ClientResult, FtClientHttpConnector, FtClientSession, FtUserId};
+use crate::{prelude::*, to_param};
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
 pub struct FtApiUsersIdLocationsStatsRequest {

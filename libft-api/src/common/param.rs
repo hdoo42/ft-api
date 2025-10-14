@@ -141,6 +141,8 @@ impl ToQueryParam for FtRangeField {
     }
 }
 
+type QueryParam = Result<Vec<(String, Option<String>)>, Box<dyn Error>>;
+
 /// Converts a list of options into query parameter tuples.
 ///
 /// # Arguments
@@ -154,9 +156,7 @@ impl ToQueryParam for FtRangeField {
 /// # Errors
 ///
 /// Returns an error if converting a field to a query key fails.
-pub fn convert_options_to_tuple<T: ToQueryParam>(
-    options: Vec<(T, Vec<String>)>,
-) -> Result<Vec<(String, Option<String>)>, Box<dyn Error>> {
+pub fn convert_options_to_tuple<T: ToQueryParam>(options: Vec<(T, Vec<String>)>) -> QueryParam {
     options
         .into_iter()
         .map(|(field, values)| {
@@ -180,9 +180,7 @@ pub fn convert_options_to_tuple<T: ToQueryParam>(
 /// # Errors
 ///
 /// Returns an error if converting a field to a query key fails.
-pub fn convert_filter_option_to_tuple(
-    filter_options: Vec<FtFilterOption>,
-) -> Result<Vec<(String, Option<String>)>, Box<dyn Error>> {
+pub fn convert_filter_option_to_tuple(filter_options: Vec<FtFilterOption>) -> QueryParam {
     let options = filter_options
         .into_iter()
         .map(|option| (option.field, option.value))
@@ -199,9 +197,7 @@ pub fn convert_filter_option_to_tuple(
 /// # Errors
 ///
 /// Returns an error if converting a field to a query key fails.
-pub fn convert_range_option_to_tuple(
-    range_options: Vec<FtRangeOption>,
-) -> Result<Vec<(String, Option<String>)>, Box<dyn Error>> {
+pub fn convert_range_option_to_tuple(range_options: Vec<FtRangeOption>) -> QueryParam {
     let options = range_options
         .into_iter()
         .map(|option| (option.range, option.value))

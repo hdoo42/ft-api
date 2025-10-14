@@ -56,17 +56,6 @@ impl FtApiToken {
 }
 
 #[derive(Debug, PartialEq, PartialOrd, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
-enum AccessTokenScope {
-    Public,
-    Projects,
-    Profile,
-    Elearning,
-    Tig,
-    Forum,
-}
-
-#[derive(Debug, PartialEq, PartialOrd, Clone, Serialize, Deserialize)]
 enum AccessTokenType {
     #[serde(rename = "bearer")]
     Bearer,

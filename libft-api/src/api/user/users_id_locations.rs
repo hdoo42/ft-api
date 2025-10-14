@@ -1,7 +1,8 @@
 use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
 
-use crate::{prelude::*, to_param};
+use crate::{prelude::*, to_param, HasVec};
+use libft_api_derive::HasVector;
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
 pub struct FtApiUsersIdLocationsRequest {
@@ -13,7 +14,7 @@ pub struct FtApiUsersIdLocationsRequest {
     pub per_page: Option<u8>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Builder)]
+#[derive(Debug, Serialize, Deserialize, Builder, HasVector)]
 #[serde(transparent)]
 pub struct FtApiUsersIdLocationsResponse {
     pub locations: Vec<FtLocation>,

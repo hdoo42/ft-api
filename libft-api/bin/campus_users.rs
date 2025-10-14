@@ -1,6 +1,5 @@
 use chrono::Utc;
 use libft_api::prelude::*;
-use rvstruct::ValueStruct;
 use std::{io::Write, ops::ControlFlow, sync::Arc, time::Duration};
 use tokio::{sync::Semaphore, task::JoinSet, time::sleep};
 use tracing::info;

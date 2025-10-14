@@ -1,7 +1,8 @@
 use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
 
-use crate::{prelude::*, to_param};
+use crate::{prelude::*, to_param, HasVec};
+use libft_api_derive::HasVector;
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
 pub struct FtApiUsersIdCursusUsersRequest {
@@ -26,7 +27,7 @@ pub struct FtApiCursusUsersBody {
     pub has_coalition: bool,
 }
 
-#[derive(Debug, Serialize, Deserialize, Builder)]
+#[derive(Debug, Serialize, Deserialize, Builder, HasVector)]
 #[serde(transparent)]
 pub struct FtApiUsersIdCursusUsersResponse {
     pub cursus_user: Vec<FtCursusUser>,

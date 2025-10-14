@@ -1,9 +1,8 @@
 use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
 
-use crate::{
-    to_param, ClientResult, FtClientHttpConnector, FtClientSession, FtGroup, FtGroupId, FtUserId,
-};
+use crate::{prelude::*, to_param, HasVec};
+use libft_api_derive::HasVector;
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
 pub struct FtApiGroupsRequest {
@@ -30,7 +29,7 @@ pub struct FtApiGroupsUsersPostResponse {
     pub group: FtGroup,
 }
 
-#[derive(Debug, Serialize, Deserialize, Builder)]
+#[derive(Debug, Serialize, Deserialize, Builder, HasVector)]
 #[serde(transparent)]
 pub struct FtApiGroupsResponse {
     pub groups: Vec<FtGroup>,
