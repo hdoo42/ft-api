@@ -1,7 +1,7 @@
 use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
 
-use crate::{prelude::*, to_param};
+use crate::prelude::*;
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
 #[serde(transparent)]

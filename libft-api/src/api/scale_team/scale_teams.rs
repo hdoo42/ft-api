@@ -91,7 +91,7 @@ mod tests {
     use campus_id::GYEONGSAN;
 
     use super::*;
-    use crate::*;
+    
 
     #[tokio::test]
     async fn basic() {

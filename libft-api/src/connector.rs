@@ -5,7 +5,7 @@ use reqwest::{
     header::{self, AUTHORIZATION},
     Client, RequestBuilder, StatusCode,
 };
-use tracing::{debug, info, Span};
+use tracing::{debug, info};
 use url::Url;
 
 use crate::auth::FtApiToken;
@@ -21,15 +21,6 @@ impl Default for FtClientReqwestConnector {
     fn default() -> Self {
         Self::new()
     }
-}
-
-/// A context for a single API call.
-#[derive(Debug, Clone)]
-pub struct FtClientApiCallContext<'a> {
-    /// The tracing span for the call.
-    pub tracing_span: &'a Span,
-    /// The current page number, if the call is paginated.
-    pub current_page: Option<usize>,
 }
 
 impl FtClientReqwestConnector {

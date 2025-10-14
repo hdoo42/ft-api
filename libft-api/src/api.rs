@@ -3,15 +3,15 @@
 //! Each submodule mirrors an API domain (campus, user, project, exam, and so on) and exposes
 //! request/response types plus the associated `FtClientSession` helpers for issuing calls.
 
-mod campus;
-mod cursus;
-mod exam;
-mod group;
-mod project;
-mod project_session;
-mod project_user;
-mod scale_team;
-mod user;
+pub mod campus;
+pub mod cursus;
+pub mod exam;
+pub mod group;
+pub mod project;
+pub mod project_session;
+pub mod project_user;
+pub mod scale_team;
+pub mod user;
 
 pub mod prelude;
 
