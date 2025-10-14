@@ -39,6 +39,7 @@
 //! Explore the `bin/` directory for runnable examples of each workflow, and enable tracing with
 //! `RUST_LOG=info` to inspect HTTP activity during development.
 #![feature(macro_metavar_expr_concat)]
+#![allow(unexpected_cfgs)]
 
 pub mod api;
 pub mod models;
