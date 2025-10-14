@@ -1,3 +1,31 @@
+//! Procedural macros for the `libft-api` crate.
+//!
+//! This crate provides procedural macros that are used to reduce boilerplate code
+//! in the main `libft-api` crate. The macros are implemented as derive macros
+//! that automatically generate trait implementations for data structures.
+//!
+//! # Available Macros
+//!
+//! * `HasVector` - Derives the `HasVec` trait for structs that contain exactly one `Vec<T>` field
+//!
+//! # Example
+//!
+//! ```rust
+//! use libft_api_derive::HasVector;
+//! use libft_api::api::HasVec;
+//!
+//! #[derive(HasVector)]
+//! struct FtApiUsersResponse {
+//!     users: Vec<String>,
+//! }
+//!
+//! // This generates an implementation of the HasVec trait automatically:
+//! // impl HasVec<String> for FtApiUsersResponse {
+//! //     fn get_vec(&self) -> &Vec<String> { &self.users }
+//! //     fn take_vec(self) -> Vec<String> { self.users }
+//! // }
+//! ```
+
 extern crate proc_macro;
 
 use proc_macro::TokenStream;
@@ -7,6 +35,34 @@ use syn::{
     PathArguments, Type,
 };
 
+/// Derives the `HasVec` trait for structs that contain exactly one `Vec<T>` field.
+///
+/// This macro automatically implements the `HasVec` trait for structs that have
+/// exactly one named field of type `Vec<T>`. The generated implementation provides
+/// methods to access and take ownership of the vector field.
+///
+/// # Requirements
+/// * The struct must have exactly one field of type `Vec<T>`
+/// * The struct must have named fields (not tuple or unit structs)
+/// * The field type must be exactly `Vec<T>`, not an alias or reference
+///
+/// # Example
+///
+/// ```rust
+/// use libft_api_derive::HasVector;
+/// use libft_api::api::HasVec;
+///
+/// #[derive(HasVector)]
+/// struct FtApiUsersResponse {
+///     users: Vec<String>,
+/// }
+///
+/// // This generates:
+/// // impl HasVec<String> for FtApiUsersResponse {
+/// //     fn get_vec(&self) -> &Vec<String> { &self.users }
+/// //     fn take_vec(self) -> Vec<String> { self.users }
+/// // }
+/// ```
 #[proc_macro_derive(HasVector)]
 pub fn has_vec_derive(input: TokenStream) -> TokenStream {
     let ast = parse_macro_input!(input as DeriveInput);

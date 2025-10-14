@@ -24,6 +24,44 @@ impl<FCHC> FtClientSession<'_, FCHC>
 where
     FCHC: FtClientHttpConnector + Send + Sync,
 {
+    /// Retrieves information about campuses from the 42 Intra API.
+    ///
+    /// # Parameters
+    /// - `req`: A `FtApiCampusIdRequest` struct containing the query parameters.
+    ///
+    /// # Query Parameters
+    /// - `campus_id`: Optional campus ID to retrieve information about a specific campus
+    /// - `sort`: Optional vector of sort options to order the results
+    /// - `range`: Optional vector of range options to filter results by date ranges
+    /// - `filter`: Optional vector of filter options to filter the results
+    /// - `page`: Optional page number for pagination
+    /// - `per_page`: Optional number of items per page for pagination
+    ///
+    /// # Returns
+    /// - `ClientResult<FtApiCampusIdResponse>`: Contains a vector of `FtCampus` objects
+    ///
+    /// # Example
+    /// ```rust
+    /// use libft_api::prelude::*;
+    ///
+    /// async fn example() -> ClientResult<()> {
+    ///     let token = FtApiToken::try_get(AuthInfo::build_from_env()?).await?;
+    ///     let client = FtClient::new(FtClientReqwestConnector::new());
+    ///     let session = client.open_session(token);
+    ///
+    ///     // Get all campuses
+    ///     let response = session.campus_id(FtApiCampusIdRequest::new()).await?;
+    ///     println!("Total campuses: {}", response.campus.len());
+    ///
+    ///     // Get a specific campus (e.g., Paris campus with ID 1)
+    ///     let paris_response = session
+    ///         .campus_id(FtApiCampusIdRequest::new().with_campus_id(FtCampusId::new(1)))
+    ///         .await?;
+    ///     println!("Paris campus name: {:?}", paris_response.campus.first().unwrap().name);
+    ///
+    ///     Ok(())
+    /// }
+    /// ```
     pub async fn campus_id(
         &self,
         req: FtApiCampusIdRequest,

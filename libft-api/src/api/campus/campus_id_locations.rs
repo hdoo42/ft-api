@@ -26,6 +26,55 @@ impl<FCHC> FtClientSession<'_, FCHC>
 where
     FCHC: FtClientHttpConnector + Send + Sync,
 {
+    /// Retrieves location information for a specific campus from the 42 Intra API.
+    ///
+    /// This method fetches location data for a specific campus, including information about
+    /// where users are currently located on that campus.
+    ///
+    /// # Parameters
+    /// - `req`: A `FtApiCampusIdLocationsRequest` struct containing the query parameters.
+    ///
+    /// # Query Parameters
+    /// - `campus_id`: The ID of the campus to retrieve location information for (required)
+    /// - `user_id`: Optional user ID to filter locations for a specific user
+    /// - `sort`: Optional vector of sort options to order the results
+    /// - `range`: Optional vector of range options to filter results by date ranges
+    /// - `filter`: Optional vector of filter options to filter the results
+    /// - `page`: Optional page number for pagination
+    /// - `per_page`: Optional number of items per page for pagination
+    ///
+    /// # Returns
+    /// - `ClientResult<FtApiCampusIdLocationsResponse>`: Contains a vector of `FtLocation` objects
+    ///
+    /// # Example
+    /// ```rust
+    /// use libft_api::prelude::*;
+    ///
+    /// async fn example() -> ClientResult<()> {
+    ///     let token = FtApiToken::try_get(AuthInfo::build_from_env()?).await?;
+    ///     let client = FtClient::new(FtClientReqwestConnector::new());
+    ///     let session = client.open_session(token);
+    ///
+    ///     // Get all locations for a specific campus (e.g., GyeongSan campus with ID 69)
+    ///     let locations_response = session
+    ///         .campus_id_locations(
+    ///             FtApiCampusIdLocationsRequest::new(FtCampusId::new(69))
+    ///                 .with_per_page(50)
+    ///         )
+    ///         .await?;
+    ///     println!("Found {} locations", locations_response.location.len());
+    ///
+    ///     // Get locations for a specific user in a specific campus
+    ///     let user_locations = session
+    ///         .campus_id_locations(
+    ///             FtApiCampusIdLocationsRequest::new(FtCampusId::new(69))
+    ///                 .with_user_id(FtUserId::new(12345))
+    ///         )
+    ///         .await?;
+    ///
+    ///     Ok(())
+    /// }
+    /// ```
     pub async fn campus_id_locations(
         &self,
         req: FtApiCampusIdLocationsRequest,

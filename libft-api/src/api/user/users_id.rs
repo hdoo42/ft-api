@@ -23,6 +23,55 @@ impl<FCHC> FtClientSession<'_, FCHC>
 where
     FCHC: FtClientHttpConnector + Send + Sync,
 {
+    /// Retrieves information about a specific user from the 42 Intra API.
+    ///
+    /// This method fetches detailed information about a user identified by either their user ID
+    /// or login name. The method supports various query parameters for filtering, sorting, and pagination.
+    ///
+    /// # Parameters
+    /// - `req`: A `FtApiUsersIdRequest` struct containing the query parameters, including the user identifier.
+    ///
+    /// # Query Parameters
+    /// - `id`: The identifier for the user (either user ID or login name)
+    /// - `sort`: Optional vector of sort options to order the results
+    /// - `range`: Optional vector of range options to filter results by date ranges
+    /// - `filter`: Optional vector of filter options to filter the results
+    /// - `page`: Optional page number for pagination
+    /// - `per_page`: Optional number of items per page for pagination
+    ///
+    /// # Returns
+    /// - `ClientResult<FtApiUsersIdResponse>`: Contains a `FtUser` object with detailed user information
+    ///
+    /// # Example
+    /// ```rust
+    /// use libft_api::prelude::*;
+    ///
+    /// async fn example() -> ClientResult<()> {
+    ///     let token = FtApiToken::try_get(AuthInfo::build_from_env()?).await?;
+    ///     let client = FtClient::new(FtClientReqwestConnector::new());
+    ///     let session = client.open_session(token);
+    ///
+    ///     // Get user by ID
+    ///     let user_by_id = session
+    ///         .users_id(
+    ///             FtApiUsersIdRequest::new(FtUserIdentifier::UserId(FtUserId::new(12345)))
+    ///         )
+    ///         .await?;
+    ///     println!("User name: {:?} {:?}", user_by_id.user.first_name, user_by_id.user.last_name);
+    ///
+    ///     // Get user by login
+    ///     let user_by_login = session
+    ///         .users_id(
+    ///             FtApiUsersIdRequest::new(FtUserIdentifier::Login(
+    ///                 FtLoginId::new("user_login".to_string())
+    ///             ))
+    ///         )
+    ///         .await?;
+    ///     println!("User login: {:?}", user_by_login.user.login);
+    ///
+    ///     Ok(())
+    /// }
+    /// ```
     pub async fn users_id(&self, req: FtApiUsersIdRequest) -> ClientResult<FtApiUsersIdResponse> {
         let url = &format!(
             "users/{}",
