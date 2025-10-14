@@ -1,3 +1,35 @@
+//! HTTP connector implementation for the 42 Intra API client.
+//!
+//! This module provides the HTTP connector implementation that handles actual network communication
+//! with the 42 Intra API using the `reqwest` HTTP client. It is responsible for:
+//! * Making HTTP requests to the API endpoints
+//! * Handling authentication via API tokens
+//! * Managing rate limits and retry logic
+//! * Parsing API responses and handling errors
+//! * Updating rate limit metadata from response headers
+//!
+//! The connector automatically handles:
+//! * Token-based authentication using Bearer tokens
+//! * Rate limiting based on response headers
+//! * JSON response deserialization
+//! * HTTP status code handling
+//! * Logging of API requests and responses
+//!
+//! # Example
+//!
+//! ```rust
+//! use libft_api::prelude::*;
+//! use reqwest::Client;
+//!
+//! // Create a custom connector with specific configuration
+//! let http_client = Client::builder()
+//!     .timeout(std::time::Duration::from_secs(30))
+//!     .build()
+//!     .unwrap();
+//! let connector = FtClientReqwestConnector::with_connector(http_client);
+//! let client = FtClient::new(connector);
+//! ```
+
 use std::time::Duration;
 
 use futures::FutureExt;

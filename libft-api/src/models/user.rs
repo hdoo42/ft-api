@@ -1,8 +1,17 @@
+//! Data structures for 42 API user-related entities.
+//!
+//! This module contains data structures that represent user information
+//! from the 42 Intra API, including user profiles and related identifiers.
+
 use crate::models::prelude::*;
 use rsb_derive::Builder;
 use rvstruct::ValueStruct;
 use serde::{Deserialize, Serialize};
 
+/// Represents a user from the 42 Intra API.
+/// 
+/// Contains comprehensive information about a 42 school user including personal details,
+/// academic information, achievements, and more.
 #[derive(Debug, PartialEq, PartialOrd, Serialize, Deserialize, Builder)]
 pub struct FtUser {
     pub achievements: Option<Vec<FtAchievement>>,
