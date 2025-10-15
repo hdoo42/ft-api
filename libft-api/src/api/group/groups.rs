@@ -58,7 +58,7 @@ where
     /// use libft_api::prelude::*;
     ///
     /// async fn example() -> ClientResult<()> {
-    ///     let token = FtApiToken::try_get(AuthInfo::build_from_env()?).await?;
+    ///     let token = FtApiToken::try_get(AuthInfo::build_from_env().unwrap()).await.unwrap();
     ///     let client = FtClient::new(FtClientReqwestConnector::new());
     ///     let session = client.open_session(token);
     ///
@@ -95,7 +95,7 @@ where
     /// use libft_api::prelude::*;
     ///
     /// async fn example() -> ClientResult<()> {
-    ///     let token = FtApiToken::try_get(AuthInfo::build_from_env()?).await?;
+    ///     let token = FtApiToken::try_get(AuthInfo::build_from_env().unwrap()).await.unwrap();
     ///     let client = FtClient::new(FtClientReqwestConnector::new());
     ///     let session = client.open_session(token);
     ///
