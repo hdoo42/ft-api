@@ -233,6 +233,25 @@ impl FtApiToken {
         Ok(token)
     }
 
+    /// This function always remove saved token, and try to build new token from given auth info.
+    ///
+    /// # Errors
+    ///
+    /// This function will return an error if it fails to build a new token.
+    /// This function will `NOT` return an error if it fails to remove `previous token` or to build a
+    /// `new token`.
+    pub async fn revoke(info: AuthInfo) -> Result<FtApiToken, TokenError> {
+        let _ = std::fs::remove_file(Self::__get_tmp_path());
+
+        let token = FtApiToken::build(info)
+            .await
+            .map_err(TokenError::BuildError)?;
+
+        let _ = token.save();
+
+        Ok(token)
+    }
+
     /// Save the token to the cache.
     ///
     /// # Errors

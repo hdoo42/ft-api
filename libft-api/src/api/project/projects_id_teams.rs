@@ -63,8 +63,6 @@ where
 #[cfg(test)]
 mod tests {
 
-    
-
     use super::*;
 
     #[tokio::test]
@@ -79,7 +77,9 @@ mod tests {
 
         let session = client.open_session(token);
         let res = session
-            .projects_id_teams(FtApiProjectsIdTeamsRequest::new(FtProjectId::new(1314)))
+            .projects_id_teams(
+                FtApiProjectsIdTeamsRequest::new(FtProjectId::new(1314)).with_per_page(1),
+            )
             .await;
 
         assert!(res.is_ok());

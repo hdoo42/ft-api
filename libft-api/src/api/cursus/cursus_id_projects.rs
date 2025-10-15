@@ -114,9 +114,9 @@ mod tests {
 
         let session = client.open_session(token);
         let res = session
-            .cursus_id_projects(FtApiCursusIdProjectsRequest::new(FtCursusId::new(
-                FT_CURSUS_ID,
-            )))
+            .cursus_id_projects(
+                FtApiCursusIdProjectsRequest::new(FtCursusId::new(FT_CURSUS_ID)).with_per_page(1),
+            )
             .await;
 
         assert!(res.is_ok());

@@ -61,9 +61,9 @@ mod tests {
         let session = client.open_session(token);
         let _ = session
             .users_id_correction_points_add(FtApiUsersIdCorrectionPointsAddRequest {
-                id: FtUserId::new(crate::info::TEST_USER_YONDOO_ID),
+                id: FtUserId::new(212750),
                 reason: FtCorrectionPointsReason::new("test".to_owned()),
-                amount: FtCorrectionPointsAmount::new(42),
+                amount: FtCorrectionPointsAmount::new(1),
             })
             .await
             .unwrap();

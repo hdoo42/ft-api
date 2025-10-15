@@ -1,4 +1,5 @@
 use crate::prelude::*;
+use crate::to_param;
 use libft_api_derive::HasVector;
 use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
@@ -12,6 +13,11 @@ pub struct FtApiProjectSessionsScaleTeamsResponse {
 #[derive(Debug, PartialEq, PartialOrd, Clone, Serialize, Deserialize, Builder)]
 pub struct FtApiProjectSessionsScaleTeamsRequest {
     pub project_session_id: FtProjectSessionId,
+    pub sort: Option<Vec<FtSortOption>>,
+    pub range: Option<Vec<FtRangeOption>>,
+    pub filter: Option<Vec<FtFilterOption>>,
+    pub page: Option<u16>,
+    pub per_page: Option<u8>,
 }
 
 impl<FCHC> FtClientSession<'_, FCHC>
@@ -20,12 +26,38 @@ where
 {
     pub async fn project_sessions_scale_teams(
         &self,
-        reqest: FtApiProjectSessionsScaleTeamsRequest,
+        request: FtApiProjectSessionsScaleTeamsRequest,
     ) -> ClientResult<FtApiProjectSessionsScaleTeamsResponse> {
-        let url = &format!("project_sessions/{}/scale_teams", reqest.project_session_id);
+        let url = &format!(
+            "project_sessions/{}/scale_teams",
+            request.project_session_id
+        );
+
+        let filters = convert_filter_option_to_tuple(request.filter.unwrap_or_default()).unwrap();
+        let range = convert_range_option_to_tuple(request.range.unwrap_or_default()).unwrap();
+
+        let params = vec![
+            to_param!(request, page),
+            to_param!(request, per_page),
+            (
+                "sort".to_string(),
+                request.sort.as_ref().map(|v| {
+                    v.iter()
+                        .map(|v| {
+                            format!(
+                                "{}{}",
+                                if v.descending { "-" } else { "" },
+                                serde_plain::to_string(&v.field).unwrap()
+                            )
+                        })
+                        .collect::<Vec<_>>()
+                        .join(",")
+                }),
+            ),
+        ];
 
         self.http_session_api
-            .http_get(url, &crate::common::FT_HTTP_EMPTY_GET_PARAMS.clone())
+            .http_get(url, &[filters, range, params].concat())
             .await
     }
 }
@@ -37,7 +69,7 @@ mod tests {
     use super::*;
 
     #[tokio::test]
-    async fn location_deserialize() {
+    async fn basic() {
         let token = FtApiToken::try_get(AuthInfo::build_from_env().unwrap())
             .await
             .unwrap();
@@ -46,7 +78,8 @@ mod tests {
             reqwest::Client::new(),
         ));
 
-        let req = FtApiProjectSessionsScaleTeamsRequest::new(FtProjectSessionId::new(LIBFT));
+        let req = FtApiProjectSessionsScaleTeamsRequest::new(FtProjectSessionId::new(LIBFT))
+            .with_per_page(1);
 
         let session = client.open_session(token);
         let res = session.project_sessions_scale_teams(req).await;

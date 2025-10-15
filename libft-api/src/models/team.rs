@@ -2221,7 +2221,7 @@ fn test_ft_team_deserialization() {
           }
         ],
         "corrector": {
-          "id": 51965,
+          "id": 51965
         },
         "truant": {},
         "filled_at": null,
@@ -2286,7 +2286,7 @@ fn test_ft_team_deserialization() {
           }
         ],
         "corrector": {
-          "id": 51965,
+          "id": 51965
         },
         "truant": {},
         "filled_at": null,
@@ -5491,7 +5491,7 @@ fn test_ft_team_deserialization() {
       {
         "id": 6502868,
         "scale_id": 32445,
-        "comment": "평가를 바로 할 수 있게끔 세팅해주셔서 덕분에 편하게 바로 평가를 할 수 있었습니다. norm를 돌려보았을때 잘 통과하였습니다. 다만 makefile에서 make bonus 할 경우 리링크가 나는 것으로 확인 됩니다. calloc 부분에서 nmemb*size가 overflow나오는 경우, ft_split와  ft_lstclear에서 free **를 해주어야 하는 것, ft_memcmp에서 반복을 i + 1 \u003c n만큼하는 부분이 문제가 될 수도 있어 보입니다. 그 밖에 다른 과제들은 잘 구현된 것으로 확인됩니다. 화이팅:)",
+        "comment": "평가를 바로 할 수 있게끔 세팅해주셔서 덕분에 편하게 바로 평가를 할 수 있었습니다. norm를 돌려보았을때 잘 통과하였습니다. 다만 makefile에서 make bonus 할 경우 리링크가 나는 것으로 확인 됩니다. calloc 부분에서 nmemb*size가 overflow나오는 경우, ft_split와  ft_lstclear에서 free **를 해주어야 하는 것, ft_memcmp에서 반복을 i + 1 < n만큼하는 부분이 문제가 될 수도 있어 보입니다. 그 밖에 다른 과제들은 잘 구현된 것으로 확인됩니다. 화이팅:)",
         "created_at": "2024-03-12T01:28:20.060Z",
         "updated_at": "2024-03-12T02:46:38.923Z",
         "feedback": "안녕하세요 junmin님! 우선 꼼꼼한 평가 감사드립니다!!\r\nmakefile에서 bonus 리링크 부분을 생각하지 못했었는데 알려주신 덕분에 알게되었어요. AR플래그나 if문을 사용해서 수정해봐야겠어요.\r\nmemcmp에서  i + 1이어야 하는 이유를 알았어요! 제 코드에서는 while문을 다 돈 후에 return 에서 두 문자의 차를 반환하는데, 만약에 인덱스 2까지 비교를 해야하는데 i + 1이 없는 경우에는 i가 2일 때 while문을 돌게 되고, 이후에 i가 2가 아닌 3이 된 후 return에서 문자의 차를 해주기 때문에 잘못된 결과가 나오게 되더라구요!\r\n이번에 평가 해주시면서 free 부분을 잘 짚어주셔서 감사했어요! 덕분에 ft_lstclear와 ft_split에서 첫번째로 할당한 부분에 대한 free를 놓치고 있었음을 알게되었어요! 감사합니다!\r\nft_calloc에서 man에 오버플로우에 대한 얘기가 있음을 알려주셔서 감사합니다. 다시 제대로 man을 봐야겠어요.... \r\n오늘 꼼꼼한 평가 정말 감사했습니다. printf 하고 계신다 하셨는데 잘 마무리 하시길 바랍니다!!!!",

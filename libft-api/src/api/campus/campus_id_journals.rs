@@ -109,11 +109,14 @@ mod tests {
 
         let session = client.open_session(token);
         let res = session
-            .campus_id_journals(FtApiCampusIdJournalsRequest::new(
-                FtCampusId::new(GYEONGSAN),
-                "2025-1-1".to_string(),
-                "2025-1-2".to_string(),
-            ))
+            .campus_id_journals(
+                FtApiCampusIdJournalsRequest::new(
+                    FtCampusId::new(GYEONGSAN),
+                    "2025-1-1".to_string(),
+                    "2025-1-2".to_string(),
+                )
+                .with_per_page(1),
+            )
             .await;
 
         assert!(res.is_ok());

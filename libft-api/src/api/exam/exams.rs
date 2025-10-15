@@ -157,7 +157,6 @@ where
 
 #[cfg(test)]
 mod tests {
-    
 
     use super::*;
 
@@ -173,6 +172,9 @@ mod tests {
 
         let session = client.open_session(token);
 
-        session.exams(FtApiExamsRequest::new()).await.unwrap();
+        session
+            .exams(FtApiExamsRequest::new().with_per_page(1))
+            .await
+            .unwrap();
     }
 }

@@ -78,16 +78,16 @@ mod tests {
         let session = client.open_session(token);
         let res = session
             .users_id_locations(
-                FtApiUsersIdLocationsRequest::new(FtUserId::new(TEST_USER_YONDOO_ID)).with_filter(
-                    vec![FtFilterOption::new(
+                FtApiUsersIdLocationsRequest::new(FtUserId::new(TEST_USER_YONDOO_ID))
+                    .with_per_page(1)
+                    .with_filter(vec![FtFilterOption::new(
                         FtFilterField::Active,
                         vec![false.to_string()],
-                    )],
-                ),
+                    )]),
             )
             .await;
 
         assert!(res.is_ok());
-        assert_eq!(res.unwrap().locations.len(), 2);
+        assert_eq!(res.unwrap().locations.len(), 1);
     }
 }

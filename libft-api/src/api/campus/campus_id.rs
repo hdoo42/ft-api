@@ -115,7 +115,9 @@ mod tests {
         ));
 
         let session = client.open_session(token);
-        let res = session.campus_id(FtApiCampusIdRequest::new()).await;
+        let res = session
+            .campus_id(FtApiCampusIdRequest::new().with_per_page(1))
+            .await;
 
         assert!(res.is_ok());
     }

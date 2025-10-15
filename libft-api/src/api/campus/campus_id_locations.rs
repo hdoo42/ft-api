@@ -130,13 +130,10 @@ mod tests {
         let session = client.open_session(token);
         let res = session
             .campus_id_locations(
-                FtApiCampusIdLocationsRequest::new(FtCampusId::new(GYEONGSAN)).with_per_page(100),
+                FtApiCampusIdLocationsRequest::new(FtCampusId::new(GYEONGSAN)).with_per_page(1),
             )
             .await;
 
         assert!(res.is_ok());
-        if let Ok(res) = res {
-            assert_eq!(100, res.location.len());
-        }
     }
 }

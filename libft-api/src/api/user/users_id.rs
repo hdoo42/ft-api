@@ -113,7 +113,6 @@ where
 mod tests {
 
     use super::*;
-    
 
     #[tokio::test]
     async fn basic() {
@@ -128,9 +127,12 @@ mod tests {
         let session = client.open_session(token);
         /* let res = */
         session
-            .users_id(FtApiUsersIdRequest::new(FtUserIdentifier::Login(
-                FtLoginId::new("taejikim".to_owned()),
-            )))
+            .users_id(
+                FtApiUsersIdRequest::new(FtUserIdentifier::Login(FtLoginId::new(
+                    "taejikim".to_owned(),
+                )))
+                .with_per_page(1),
+            )
             .await
             .unwrap();
 

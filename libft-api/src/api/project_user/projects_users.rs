@@ -108,10 +108,15 @@ mod tests {
             .map(|id| id.to_string())
             .collect();
         let res = session
-            .projects_uesrs(FtApiProjectsUsersRequest::new().with_filter(vec![
-                FtFilterOption::new(FtFilterField::UserId, vec!["174083".to_owned()]),
-                FtFilterOption::new(FtFilterField::ProjectId, project_ids),
-            ]))
+            .projects_uesrs(
+                FtApiProjectsUsersRequest::new()
+                    .with_per_page(1)
+                    .with_filter(vec![
+                        FtFilterOption::new(FtFilterField::UserId, vec!["174083".to_owned()]),
+                        FtFilterOption::new(FtFilterField::ProjectId, project_ids),
+                    ])
+                    .with_per_page(1),
+            )
             .await;
 
         assert!(res.is_ok());

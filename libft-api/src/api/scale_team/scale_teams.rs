@@ -93,8 +93,7 @@ mod tests {
     use super::*;
 
     #[tokio::test]
-    async fn basic() {
-        tracing_subscriber::fmt::init();
+    async fn with_filter() {
         let token = FtApiToken::try_get(AuthInfo::build_from_env().unwrap())
             .await
             .unwrap();
@@ -105,13 +104,17 @@ mod tests {
 
         let session = client.open_session(token);
         let _ = session
-            .scale_teams(FtApiScaleTeamsRequest::new().with_filter(vec![
-                FtFilterOption::new(FtFilterField::CampusId, vec![GYEONGSAN.to_string()]),
-                FtFilterOption::new(
-                    FtFilterField::CursusId,
-                    vec![FT_PISCINE_CURSUS_ID.to_string()],
-                ),
-            ]))
+            .scale_teams(
+                FtApiScaleTeamsRequest::new()
+                    .with_per_page(1)
+                    .with_filter(vec![
+                        FtFilterOption::new(FtFilterField::CampusId, vec![GYEONGSAN.to_string()]),
+                        FtFilterOption::new(
+                            FtFilterField::CursusId,
+                            vec![FT_PISCINE_CURSUS_ID.to_string()],
+                        ),
+                    ]),
+            )
             .await
             .unwrap();
     }

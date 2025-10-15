@@ -70,7 +70,6 @@ where
 mod tests {
 
     use super::*;
-    
 
     #[tokio::test]
     async fn basic() {
@@ -84,9 +83,9 @@ mod tests {
 
         let session = client.open_session(token);
         let _ = session
-            .users_id_teams(FtApiUsersIdTeamsRequest::new(FtUserId::new(
-                TEST_USER_YONDOO_ID,
-            )))
+            .users_id_teams(
+                FtApiUsersIdTeamsRequest::new(FtUserId::new(TEST_USER_YONDOO_ID)).with_per_page(1),
+            )
             .await
             .unwrap();
 

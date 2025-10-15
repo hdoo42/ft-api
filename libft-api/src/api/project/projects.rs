@@ -99,8 +99,6 @@ where
 #[cfg(test)]
 mod tests {
 
-    
-
     use super::*;
 
     #[tokio::test]
@@ -114,7 +112,9 @@ mod tests {
         ));
 
         let session = client.open_session(token);
-        let res = session.projects(FtApiProjectRequest::new()).await;
+        let res = session
+            .projects(FtApiProjectRequest::new().with_per_page(1))
+            .await;
 
         assert!(res.is_ok());
     }

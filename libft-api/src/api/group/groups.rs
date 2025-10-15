@@ -123,7 +123,6 @@ where
 
 #[cfg(test)]
 mod tests {
-    
 
     use super::*;
 
@@ -162,6 +161,9 @@ mod tests {
 
         let session = client.open_session(token);
 
-        session.groups(FtApiGroupsRequest::new()).await.unwrap();
+        session
+            .groups(FtApiGroupsRequest::new().with_per_page(1))
+            .await
+            .unwrap();
     }
 }

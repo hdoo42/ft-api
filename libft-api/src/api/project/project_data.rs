@@ -63,7 +63,6 @@ where
 
 #[cfg(test)]
 mod tests {
-    
 
     use super::*;
 
@@ -79,7 +78,9 @@ mod tests {
 
         let session = client.open_session(token);
 
-        let res = session.project_data(FtApiProjectDataRequest::new()).await;
+        let res = session
+            .project_data(FtApiProjectDataRequest::new().with_per_page(1))
+            .await;
 
         assert!(res.is_ok());
     }

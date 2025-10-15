@@ -67,7 +67,7 @@ mod tests {
     use super::*;
 
     #[tokio::test]
-    async fn location_deserialize() {
+    async fn basic() {
         let token = FtApiToken::try_get(AuthInfo::build_from_env().unwrap())
             .await
             .unwrap();
@@ -76,7 +76,8 @@ mod tests {
             reqwest::Client::new(),
         ));
 
-        let reqest = FtApiProjectSessionsTeamsRequest::new(FtProjectSessionId::new(LIBFT));
+        let reqest =
+            FtApiProjectSessionsTeamsRequest::new(FtProjectSessionId::new(LIBFT)).with_per_page(1);
 
         let session = client.open_session(token);
         let result = session.project_sessions_id_teams(reqest).await;
@@ -84,7 +85,7 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn location_deserialize_with_filter() {
+    async fn with_filter() {
         let token = FtApiToken::try_get(AuthInfo::build_from_env().unwrap())
             .await
             .unwrap();
@@ -96,12 +97,12 @@ mod tests {
         let session = client.open_session(token);
         let res = session
             .project_sessions_id_teams(
-                FtApiProjectSessionsTeamsRequest::new(FtProjectSessionId::new(LIBFT)).with_filter(
-                    vec![FtFilterOption::new(
+                FtApiProjectSessionsTeamsRequest::new(FtProjectSessionId::new(LIBFT))
+                    .with_per_page(1)
+                    .with_filter(vec![FtFilterOption::new(
                         FtFilterField::Campus,
                         vec!["69".to_owned()],
-                    )],
-                ),
+                    )]),
             )
             .await;
 

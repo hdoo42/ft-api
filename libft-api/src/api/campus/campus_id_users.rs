@@ -125,7 +125,9 @@ mod tests {
 
         let session = client.open_session(token);
         let res = session
-            .campus_id_users(FtApiCampusIdUsersRequest::new(FtCampusId::new(GYEONGSAN)))
+            .campus_id_users(
+                FtApiCampusIdUsersRequest::new(FtCampusId::new(GYEONGSAN)).with_per_page(1),
+            )
             .await;
 
         assert!(res.is_ok());

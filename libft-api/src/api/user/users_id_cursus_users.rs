@@ -212,7 +212,9 @@ mod tests {
 
         let session = client.open_session(token);
         let res = session
-            .users_id_cursus_users(FtApiUsersIdCursusUsersRequest::new(FtUserId::new(174_083)))
+            .users_id_cursus_users(
+                FtApiUsersIdCursusUsersRequest::new(FtUserId::new(174_083)).with_per_page(1),
+            )
             .await;
 
         assert!(res.is_ok(), "{:?}", res.unwrap());

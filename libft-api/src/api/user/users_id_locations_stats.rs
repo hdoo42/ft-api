@@ -81,6 +81,7 @@ mod tests {
         let res = session
             .users_id_locations_stats(
                 FtApiUsersIdLocationsStatsRequest::new(FtUserId::new(TEST_USER_YONDOO_ID))
+                    .with_per_page(1)
                     .with_begin_at(begin_at)
                     .with_end_at(end_at),
             )
