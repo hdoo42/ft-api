@@ -85,9 +85,9 @@ impl AuthInfo {
     /// // Requires FT_API_CLIENT_UID and FT_API_CLIENT_SECRET to be set in the environment
     /// let auth_info = AuthInfo::build_from_env().unwrap();
     /// ```
-    pub fn build_from_env() -> Result<AuthInfo, String> {
-        let uid = config_env_var("FT_API_CLIENT_UID")?;
-        let secret = config_env_var("FT_API_CLIENT_SECRET")?;
+    pub fn build_from_env() -> Result<AuthInfo, std::env::VarError> {
+        let uid = std::env::var("FT_API_CLIENT_UID")?;
+        let secret = std::env::var("FT_API_CLIENT_SECRET")?;
 
         Ok(AuthInfo { uid, secret })
     }
@@ -168,7 +168,7 @@ pub enum TokenError {
     /// The token lifetime could not be parsed.
     TokenLifeTimeParsingFailed,
     /// The temporary token was not found.
-    TempTokenNotFound,
+    NoTempToken,
     /// An error occurred while building the token.
     BuildError(String),
 }
@@ -194,7 +194,7 @@ impl FtApiToken {
         let tmpdir = Self::__get_tmp_path();
 
         if !tmpdir.is_file() {
-            return Err(TokenError::TempTokenNotFound);
+            return Err(TokenError::NoTempToken);
         }
 
         let file = File::open(tmpdir)?;

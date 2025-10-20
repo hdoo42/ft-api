@@ -63,13 +63,13 @@ where
     ///     let session = client.open_session(token);
     ///
     ///     // Get all groups with pagination
-    ///     let groups = session
+    ///     let res = session
     ///         .groups(
     ///             FtApiGroupsRequest::new()
-    ///                 .with_per_page(50)
+    ///                 .with_per_page(10)
     ///         )
     ///         .await?;
-    ///     println!("Found {} groups", groups.groups.len());
+    ///     println!("Found {} groups", res.groups.len());
     ///
     ///     Ok(())
     /// }
@@ -77,7 +77,11 @@ where
     pub async fn groups(&self, req: FtApiGroupsRequest) -> ClientResult<FtApiGroupsResponse> {
         let url = "groups";
 
-        let params = vec![to_param!(req, page), to_param!(req, per_page)];
+        let params = vec![
+            to_param!(req, page),
+            to_param!(req, per_page),
+            to_param!(req, user_id),
+        ];
 
         self.http_session_api.http_get(url, &params).await
     }
@@ -91,7 +95,7 @@ where
     /// - `ClientResult<FtApiGroupsUsersPostResponse>`: Contains the created association details
     ///
     /// # Example
-    /// ```rust
+    /// ```rust,no_run
     /// use libft_api::prelude::*;
     ///
     /// async fn example() -> ClientResult<()> {
@@ -162,7 +166,11 @@ mod tests {
         let session = client.open_session(token);
 
         session
-            .groups(FtApiGroupsRequest::new().with_per_page(1))
+            .groups(
+                FtApiGroupsRequest::new()
+                    .with_per_page(1)
+                    .with_user_id(FtUserId::new(212750)),
+            )
             .await
             .unwrap();
     }

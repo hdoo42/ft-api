@@ -44,25 +44,30 @@ where
     /// - `ClientResult<FtApiCursusIdProjectsResponse>`: Contains a vector of `FtProject` objects
     ///
     /// # Example
-    /// ```rust
-    /// use libft_api::prelude::*;
-    ///
-    /// async fn example() -> ClientResult<()> {
-    ///     let token = FtApiToken::try_get(AuthInfo::build_from_env().unwrap()).await.unwrap();
-    ///     let client = FtClient::new(FtClientReqwestConnector::new());
-    ///     let session = client.open_session(token);
-    ///
-    ///     // Get projects for the common core cursus
-    ///     let projects = session
-    ///         .cursus_id_projects(
-    ///             FtApiCursusIdProjectsRequest::new(FtCursusId::new(FT_CURSUS_ID))
-    ///         )
-    ///         .await?;
-    ///     println!("Found {} projects", projects.projects.len());
-    ///
-    ///     Ok(())
-    /// }
-    /// ```
+    /// ```rust                                                                                  
+    /// use libft_api::{prelude::*, info::ft_campus_id::GYEONGSAN};                              
+    ///                                                                                          
+    /// # async fn run() -> ClientResult<()> {                                                   
+    /// let token = FtApiToken::try_get(AuthInfo::build_from_env().unwrap())                       
+    ///     .await                                                                                 
+    ///     .unwrap();                                                                             
+    ///                                                                                            
+    /// let client = FtClient::new(FtClientReqwestConnector::with_connector(                       
+    ///     reqwest::Client::new(),                                                                
+    /// ));                                                                                        
+    ///                                                                                            
+    /// let session = client.open_session(token);                                                  
+    /// let res = session                                                                          
+    ///     .cursus_id_projects(                                                                   
+    ///         FtApiCursusIdProjectsRequest::new(FtCursusId::new(FT_CURSUS_ID)).with_per_page(1),
+    ///     )                                                                                      
+    ///     .await;                                                                                
+    ///                                                                                            
+    /// # assert!(res.is_ok());                                                                      
+    /// # Ok(())                                                                                 
+    /// # }                                                                                      
+    /// # tokio::runtime::Runtime::new().unwrap().block_on(run()).unwrap();                      
+    /// ```                                                                                      
     pub async fn cursus_id_projects(
         &self,
         req: FtApiCursusIdProjectsRequest,
