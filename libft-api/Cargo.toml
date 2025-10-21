@@ -10,6 +10,10 @@ exclude = ["src/main.rs"]
 [lib]
 path="src/lib.rs"
 
+[[bin]]
+name = "piscine_users"
+path = "bin/piscine_users.rs"
+
 [[example]]
 name = "scroll"
 
