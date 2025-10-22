@@ -2,10 +2,12 @@
 name = "libft-api"
 version = "0.2.0"
 edition = "2021"
-authors  = ["hdoo42 <tyeirdoo06@gmail.com>"]
-description="42api library for rust"
-readme="READEME.md"
+description="A Rust library for interacting with the 42 API."
+readme="README.md"
+license-file = "LICENSE"
 exclude = ["src/main.rs"]
+repository = "https://github.com/hdoo42/libft-api"
+categories = ["api-bindings"]
 
 [lib]
 path="src/lib.rs"
@@ -36,4 +38,4 @@ futures = { version = "0.3.31", features = ["alloc"] }
 lazy_static = "1.5.0"
 tracing = "0.1.41"
 tracing-subscriber = "0.3.20"
-libft-api-derive = {path = "../libft-api-derive"}
+libft-api-derive = "0.1.0"

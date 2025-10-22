@@ -761,7 +761,7 @@ dependencies = [
  "chrono",
  "futures",
  "lazy_static",
- "libft-api-derive",
+ "libft-api-derive 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "reqwest",
  "rsb_derive",
  "rvstruct",
@@ -778,6 +778,17 @@ dependencies = [
 [[package]]
 name = "libft-api-derive"
 version = "0.1.0"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.106",
+]
+
+[[package]]
+name = "libft-api-derive"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "24e302d79fab50b789584d09aa3926803c2a4e21602f6e008766de9d7ea153d7"
 dependencies = [
  "proc-macro2",
  "quote",
