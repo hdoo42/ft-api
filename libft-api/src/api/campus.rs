@@ -11,30 +11,6 @@
 //! * **campus_id_users**: Get users associated with a specific campus
 //! * **campus_id_journals**: Retrieve journal information for a specific campus
 //! * **campus_users**: Get campus user associations
-//!
-//! # Example
-//!
-//! ```rust
-//! use libft_api::prelude::*;
-//!
-//! async fn example() -> ClientResult<()> {
-//!     let token = FtApiToken::try_get(AuthInfo::build_from_env()?).await?;
-//!     let client = FtClient::new(FtClientReqwestConnector::new());
-//!     let session = client.open_session(token);
-//!
-//!     // Get all campuses
-//!     let response = session.campus_id(FtApiCampusIdRequest::new()).await?;
-//!     println!("Retrieved {} campuses", response.campus.len());
-//!
-//!     // Get specific campus (e.g., Paris campus)
-//!     let paris_response = session
-//!         .campus_id(FtApiCampusIdRequest::new().with_campus_id(FtCampusId::new(1)))
-//!         .await?;
-//!     println!("Paris campus: {:?}", paris_response.campus.first());
-//!
-//!     Ok(())
-//! }
-//! ```
 
 pub mod campus_id_journals;
 pub use campus_id_journals::*;

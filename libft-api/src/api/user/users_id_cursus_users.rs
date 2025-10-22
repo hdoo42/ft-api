@@ -87,27 +87,26 @@ where
     /// # Example
     ///
     /// ```rust
-    /// use libft_api::{prelude::*, TEST_USER_YONDOO06_ID};
+    /// use libft_api::{prelude::*, info::TEST_USER_YONDOO_ID};
     ///
-    /// #[tokio::main]
-    /// async fn main() {
-    ///     let token = FtApiToken::try_get(AuthInfo::build_from_env().unwrap())
-    ///         .await
-    ///         .unwrap();
+    /// # async fn run() -> ClientResult<()> {
+    /// let token = FtApiToken::try_get(AuthInfo::build_from_env().unwrap())
+    ///     .await
+    ///     .unwrap();
     ///
-    ///     let client = FtClient::new(FtClientReqwestConnector::with_connector(
-    ///         reqwest::Client::new(),
-    ///     ));
+    /// let client = FtClient::new(FtClientReqwestConnector::with_connector(
+    ///     reqwest::Client::new(),
+    /// ));
     ///
-    ///     let session = client.open_session(token);
+    /// let session = client.open_session(token);
     ///
-    ///     let req = FtApiUsersIdCursusUsersRequest::new(FtUserId::new(TEST_USER_YONDOO06_ID))
-    ///         .with_page(1)
-    ///         .with_per_page(30);
+    /// let req = FtApiUsersIdCursusUsersRequest::new(FtUserId::new(TEST_USER_YONDOO_ID));
     ///
-    ///     let response = session.users_id_cursus_users(req).await.unwrap();
+    /// let response = session.users_id_cursus_users(req).await.unwrap();
     ///
-    /// }
+    /// # Ok(())                                                                                 
+    /// # }
+    /// # tokio::runtime::Runtime::new().unwrap().block_on(run()).unwrap();                      
     /// ```
     ///
     /// # Panics

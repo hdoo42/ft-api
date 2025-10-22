@@ -61,32 +61,31 @@ where
     /// # Example
     /// ```rust
     /// use libft_api::prelude::*;
-    /// use crate::models::user::FtKind;
     ///
-    /// async fn example() -> ClientResult<()> {
-    ///     let token = FtApiToken::try_get(AuthInfo::build_from_env()?).await?;
-    ///     let client = FtClient::new(FtClientReqwestConnector::new());
-    ///     let session = client.open_session(token);
+    /// # async fn run() -> ClientResult<()> {
+    /// let token = FtApiToken::try_get(AuthInfo::build_from_env().unwrap()).await.unwrap();
+    /// let client = FtClient::new(FtClientReqwestConnector::new());
+    /// let session = client.open_session(token);
     ///
-    ///     // Create a new user (requires appropriate permissions)
-    ///     // let new_user_request = FtApiUsersPostRequest::new(
-    ///     //     FtApiUserPostBody {
-    ///     //         email: "newuser@example.com".to_string(),
-    ///     //         campus_id: FtCampusId::new(1),
-    ///     //         first_name: "First".to_string(),
-    ///     //         last_name: "Last".to_string(),
-    ///     //         login: "newuser".to_string(),
-    ///     //         password: "securepassword".to_string(),
-    ///     //         pool_month: "february".to_string(),
-    ///     //         pool_year: 2024,
-    ///     //         kind: FtKind::Student,
-    ///     //     }
-    ///     // );
-    ///     // let new_user_response = session.users_post(new_user_request).await?;
-    ///     // println!("Created user with ID: {:?}", new_user_response.user.id);
-    ///
-    ///     Ok(())
-    /// }
+    /// // Create a new user (requires appropriate permissions)
+    /// // let new_user_request = FtApiUsersPostRequest::new(
+    /// //     FtApiUserPostBody {
+    /// //         email: "newuser@example.com".to_string(),
+    /// //         campus_id: FtCampusId::new(1),
+    /// //         first_name: "First".to_string(),
+    /// //         last_name: "Last".to_string(),
+    /// //         login: "newuser".to_string(),
+    /// //         password: "securepassword".to_string(),
+    /// //         pool_month: "february".to_string(),
+    /// //         pool_year: 2024,
+    /// //         kind: FtKind::Student,
+    /// //     }
+    /// // );
+    /// // let new_user_response = session.users_post(new_user_request).await?;
+    /// // println!("Created user with ID: {:?}", new_user_response.user.id);
+    /// # Ok(())                                                                                 
+    /// # }                                                                                      
+    /// # tokio::runtime::Runtime::new().unwrap().block_on(run()).unwrap();                      
     /// ```
     pub async fn users_post(
         &self,
@@ -119,7 +118,7 @@ where
     /// use libft_api::prelude::*;
     ///
     /// async fn example() -> ClientResult<()> {
-    ///     let token = FtApiToken::try_get(AuthInfo::build_from_env()?).await?;
+    ///     let token = FtApiToken::try_get(AuthInfo::build_from_env().unwrap()).await.unwrap();
     ///     let client = FtClient::new(FtClientReqwestConnector::new());
     ///     let session = client.open_session(token);
     ///

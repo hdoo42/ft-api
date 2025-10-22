@@ -21,28 +21,29 @@
 //!
 //! ```rust
 //! use libft_api::prelude::*;
+//! use rvstruct::ValueStruct;
 //!
-//! async fn example() -> ClientResult<()> {
-//!     let token = FtApiToken::try_get(AuthInfo::build_from_env()?).await?;
-//!     let client = FtClient::new(FtClientReqwestConnector::new());
-//!     let session = client.open_session(token);
+//! # async fn run() -> ClientResult<()> {
+//! let token = FtApiToken::try_get(AuthInfo::build_from_env().unwrap()).await.unwrap();
+//! let client = FtClient::new(FtClientReqwestConnector::new());
+//! let session = client.open_session(token);
 //!
-//!     // Get all users (with appropriate permissions)
-//!     let users_response = session.users(FtApiUsersRequest::new()).await?;
-//!     println!("Found {} users", users_response.users.len());
+//! // Get all users (with appropriate permissions)
+//! let users_response = session.users(FtApiUsersRequest::new()).await?;
+//! println!("Found {} users", users_response.users.len());
 //!
-//!     // Get a specific user by ID
-//!     let user_response = session.users_id(FtUsersIdRequest::new(FtUserIdentifier::UserId(FtUserId::new(12345)))).await?;
-//!     if let Some(login) = &user_response.login {
-//!         println!("User login: {}", login.value());
-//!     }
-//!
-//!     // Get a user's location data
-//!     let location_response = session.users_id_locations(FtUsersIdLocationsRequest::new(FtUserIdentifier::UserId(FtUserId::new(12345)))).await?;
-//!     println!("Found {} location records", location_response.get_vec().len());
-//!
-//!     Ok(())
+//! // Get a specific user by ID
+//! let user_response = session.users_id(FtApiUsersIdRequest::new(FtUserIdentifier::UserId(FtUserId::new(12345)))).await?;
+//! if let Some(login) = &user_response.user.login {
+//!     println!("User login: {}", login.value());
 //! }
+//!
+//! // Get a user's location data
+//! let location_response = session.users_id_locations(FtApiUsersIdLocationsRequest::new(FtUserId::new(12345))).await?;
+//! println!("Found {} location records", location_response.get_vec().len());
+//! #     Ok(())
+//! # }
+//! # tokio::runtime::Runtime::new().unwrap().block_on(run()).unwrap();                      
 //! ```
 
 mod users;

@@ -9,27 +9,27 @@ use crate::common::*;
 use crate::connector::*;
 
 /// Type alias for client operation results.
-/// 
+///
 /// This is a convenience type alias that represents the result of API operations,
 /// returning either a success value of type T or an error of type FtClientError.
 pub type ClientResult<T> = std::result::Result<T, FtClientError>;
 
 /// Type alias for the default reqwest-based client implementation.
-/// 
+///
 /// This is a convenience type alias that represents an FtClient configured with the
 /// FtClientReqwestConnector, which uses the reqwest HTTP client library.
 pub type FtReqwestClient = FtClient<FtClientReqwestConnector>;
 
 /// The main client for interacting with the 42 Intra API.
-/// 
+///
 /// The FtClient is the primary entry point for making API requests to the 42 Intra API.
 /// It manages the HTTP connector, rate limiting, and provides methods to open sessions
 /// for making authenticated API calls.
-/// 
+///
 /// # Example
 /// ```rust
 /// use libft_api::prelude::*;
-/// 
+///
 /// async fn example() -> ClientResult<()> {
 ///     let client = FtClient::new(FtClientReqwestConnector::new());
 ///     let token = FtApiToken::try_get(AuthInfo::build_from_env()?).await?;
@@ -52,7 +52,7 @@ where
 }
 
 /// The HTTP API client.
-/// 
+///
 /// This structure wraps the HTTP connector and provides the core functionality
 /// for making HTTP requests to the 42 Intra API. It is contained within the FtClient
 /// and is responsible for managing the underlying HTTP connection.
@@ -66,38 +66,18 @@ where
 }
 
 /// URI utilities for the 42 API.
-/// 
+///
 /// This structure provides static methods for constructing URLs and handling
 /// API endpoints, ensuring consistent URL formatting for all API requests.
 pub struct FtClientHttpApiUri;
 
 /// A session for making authenticated API requests.
-/// 
+///
 /// An FtClientSession represents an authenticated session with a valid API token.
 /// It provides methods for making API calls that require authentication.
-/// 
+///
 /// The session is created by calling `FtClient::open_session` and holds a reference
 /// to the parent client and the authentication token.
-/// 
-/// # Example
-/// ```rust
-/// use libft_api::prelude::*;
-/// 
-/// async fn example() -> ClientResult<()> {
-///     let client = FtClient::new(FtClientReqwestConnector::new());
-///     let token = FtApiToken::try_get(AuthInfo::build_from_env()?).await?;
-///     let session = client.open_session(token);
-///     
-///     // Use the session to make authenticated API calls
-///     let user = session.users_id(FtUsersIdRequest::new(FtUserIdentifier::Login(
-///         FtLoginId::new("user_login".to_string())
-///     ))).await?;
-///     
-///     println!("User login: {:?}", user.login);
-///     
-///     Ok(())
-/// }
-/// ```
 #[derive(Debug)]
 pub struct FtClientSession<'a, FCHC>
 where
@@ -107,7 +87,7 @@ where
 }
 
 /// The HTTP session API for authenticated requests.
-/// 
+///
 /// This structure provides the underlying HTTP functionality for authenticated
 /// API requests. It holds the authentication token and a reference to the parent
 /// client, allowing for authenticated API calls.

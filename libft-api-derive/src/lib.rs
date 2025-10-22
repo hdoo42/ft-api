@@ -7,24 +7,6 @@
 //! # Available Macros
 //!
 //! * `HasVector` - Derives the `HasVec` trait for structs that contain exactly one `Vec<T>` field
-//!
-//! # Example
-//!
-//! ```rust
-//! use libft_api_derive::HasVector;
-//! use libft_api::api::HasVec;
-//!
-//! #[derive(HasVector)]
-//! struct FtApiUsersResponse {
-//!     users: Vec<String>,
-//! }
-//!
-//! // This generates an implementation of the HasVec trait automatically:
-//! // impl HasVec<String> for FtApiUsersResponse {
-//! //     fn get_vec(&self) -> &Vec<String> { &self.users }
-//! //     fn take_vec(self) -> Vec<String> { self.users }
-//! // }
-//! ```
 
 extern crate proc_macro;
 
@@ -45,24 +27,6 @@ use syn::{
 /// * The struct must have exactly one field of type `Vec<T>`
 /// * The struct must have named fields (not tuple or unit structs)
 /// * The field type must be exactly `Vec<T>`, not an alias or reference
-///
-/// # Example
-///
-/// ```rust
-/// use libft_api_derive::HasVector;
-/// use libft_api::api::HasVec;
-///
-/// #[derive(HasVector)]
-/// struct FtApiUsersResponse {
-///     users: Vec<String>,
-/// }
-///
-/// // This generates:
-/// // impl HasVec<String> for FtApiUsersResponse {
-/// //     fn get_vec(&self) -> &Vec<String> { &self.users }
-/// //     fn take_vec(self) -> Vec<String> { self.users }
-/// // }
-/// ```
 #[proc_macro_derive(HasVector)]
 pub fn has_vec_derive(input: TokenStream) -> TokenStream {
     let ast = parse_macro_input!(input as DeriveInput);

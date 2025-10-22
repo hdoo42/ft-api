@@ -11,26 +11,6 @@
 //! * The HTTP connector implementation from the `connector` module
 //! * Constants and information about 42 campuses and cursus from the `info` module
 //! * All model types from the `models` module
-//!
-//! # Example
-//!
-//! ```rust
-//! use libft_api::prelude::*;
-//!
-//! async fn example() -> ClientResult<()> {
-//!     // All necessary types are available through the prelude
-//!     let auth_info = AuthInfo::build_from_env()?;
-//!     let token = FtApiToken::try_get(auth_info).await?;
-//!     let client = FtClient::new(FtClientReqwestConnector::new());
-//!     let session = client.open_session(token);
-//!
-//!     // Now you can make API calls using the session
-//!     let user = session.users_id(FtUsersIdRequest::new(12345)).await?;
-//!     println!("User login: {}", user.login.unwrap_or_default());
-//!
-//!     Ok(())
-//! }
-//! ```
 
 pub use crate::api::prelude::*;
 pub use crate::auth::*;

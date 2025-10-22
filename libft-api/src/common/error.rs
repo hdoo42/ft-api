@@ -6,6 +6,8 @@ use url::ParseError;
 
 use reqwest::StatusCode;
 
+use crate::auth::TokenError;
+
 #[macro_export]
 macro_rules! enum_into {
 	($vis:vis $enum_ty:ident $($enum_item:ident $(,)?)*) => {
@@ -211,6 +213,31 @@ impl From<url::ParseError> for FtClientError {
         FtClientError::HttpProtocolError(
             FtHttpProtocolError::new().with_cause(Box::new(url_parse_error)),
         )
+    }
+}
+
+impl From<TokenError> for FtClientError {
+    fn from(token_error: TokenError) -> Self {
+        match token_error {
+            TokenError::IOError(error) => {
+                FtClientError::SystemError(FtSystemError::new().with_cause(Box::new(error)))
+            }
+            TokenError::SerdeError(error) => {
+                FtClientError::ProtocolError(FtProtocolError::new(error))
+            }
+            TokenError::TokenExpired
+            | TokenError::TokenLifeTimeParsingFailed
+            | TokenError::NoTempToken => {
+                FtClientError::ApiError(FtApiError::new("API token need to renew".to_string()))
+            }
+            TokenError::BuildError(error) => FtClientError::ApiError(FtApiError::new(error)),
+        }
+    }
+}
+
+impl From<std::env::VarError> for FtClientError {
+    fn from(value: std::env::VarError) -> Self {
+        FtClientError::SystemError(FtSystemError::new().with_cause(Box::new(value)))
     }
 }
 

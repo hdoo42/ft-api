@@ -41,27 +41,8 @@ where
     /// - `ClientResult<FtApiCampusIdResponse>`: Contains a vector of `FtCampus` objects
     ///
     /// # Example
-    /// ```rust
-    /// use libft_api::prelude::*;
     ///
-    /// async fn example() -> ClientResult<()> {
-    ///     let token = FtApiToken::try_get(AuthInfo::build_from_env()?).await?;
-    ///     let client = FtClient::new(FtClientReqwestConnector::new());
-    ///     let session = client.open_session(token);
-    ///
-    ///     // Get all campuses
-    ///     let response = session.campus_id(FtApiCampusIdRequest::new()).await?;
-    ///     println!("Total campuses: {}", response.campus.len());
-    ///
-    ///     // Get a specific campus (e.g., Paris campus with ID 1)
-    ///     let paris_response = session
-    ///         .campus_id(FtApiCampusIdRequest::new().with_campus_id(FtCampusId::new(1)))
-    ///         .await?;
-    ///     println!("Paris campus name: {:?}", paris_response.campus.first().unwrap().name);
-    ///
-    ///     Ok(())
-    /// }
-    /// ```
+    /// See Test code
     pub async fn campus_id(
         &self,
         req: FtApiCampusIdRequest,
@@ -105,20 +86,17 @@ mod tests {
     use super::*;
 
     #[tokio::test]
-    async fn basic() {
-        let token = FtApiToken::try_get(AuthInfo::build_from_env().unwrap())
-            .await
-            .unwrap();
-
+    async fn basic() -> ClientResult<()> {
+        let token = FtApiToken::try_get(AuthInfo::build_from_env()?).await?;
         let client = FtClient::new(FtClientReqwestConnector::with_connector(
             reqwest::Client::new(),
         ));
-
         let session = client.open_session(token);
-        let res = session
-            .campus_id(FtApiCampusIdRequest::new().with_per_page(1))
-            .await;
 
-        assert!(res.is_ok());
+        let _ = session
+            .campus_id(FtApiCampusIdRequest::new().with_per_page(1))
+            .await?;
+
+        Ok(())
     }
 }

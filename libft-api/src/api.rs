@@ -15,21 +15,26 @@
 //!
 //! # Example
 //!
-//! ```rust
-//! use libft_api::prelude::*;
-//!
-//! async fn example() -> ClientResult<()> {
-//!     let token = FtApiToken::try_get(AuthInfo::build_from_env().unwrap()).await?;
-//!     let client = FtClient::new(FtClientReqwestConnector::new());
-//!     let session = client.open_session(token);
-//!     
-//!     // Access user endpoint through the session
-//!     let user_response = session.users_id(FtUsersIdRequest::new(12345)).await?;
-//!     println!("User login: {}", user_response.login);
-//!     
-//!     Ok(())
-//! }
-//! ```
+//! # Example                                                                                
+//! ```rust                                                                                  
+//! use libft_api::{prelude::*, info::ft_campus_id::GYEONGSAN};                              
+//!                                                                                          
+//! # async fn run() -> ClientResult<()> {                                                   
+//! let token = FtApiToken::try_get(AuthInfo::build_from_env()?).await?;                     
+//! let client = FtClient::new(FtClientReqwestConnector::new());                             
+//! let session = client.open_session(token);                                                
+//! let response = session                                                                   
+//!     .campus_id_locations(                                                                
+//!         FtApiCampusIdLocationsRequest::new(FtCampusId::new(GYEONGSAN)).with_per_page(1),
+//!     )                                                                                    
+//!     .await?;                                                                             
+//! for location in response.location {                                                      
+//!     println!("{:?} @ {:?}", location.user.login, location.host);                         
+//! }                                                                                        
+//! # Ok(())                                                                                 
+//! # }                                                                                      
+//! # tokio::runtime::Runtime::new().unwrap().block_on(run()).unwrap();                      
+//! ```                                                                                      
 
 pub mod campus;
 pub mod cursus;
@@ -47,25 +52,6 @@ pub mod prelude;
 ///
 /// This trait simplifies access to vector fields in API response types.
 ///
-/// # Example
-///
-/// ```rust
-/// use libft_api::api::HasVec;
-///
-/// struct FtApiUsersResponse {
-///     users: Vec<String>,
-/// }
-///
-/// impl HasVec<String> for FtApiUsersResponse {
-///     fn get_vec(&self) -> &Vec<String> {
-///         &self.users
-///     }
-///     
-///     fn take_vec(self) -> Vec<String> {
-///         self.users
-///     }
-/// }
-/// ```
 pub trait HasVec<T> {
     /// Get a reference to the contained vector.
     fn get_vec(&self) -> &Vec<T>;
