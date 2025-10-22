@@ -7,9 +7,9 @@
 //!
 //! ## Quick start
 //! ```rust,no_run
-//! use libft_api::{prelude::*};
+//! use libft_api::prelude::{*, ft_campus_id::GYEONGSAN};
 //!
-//! # async fn run() -> libft_api::ClientResult<()> {
+//! # async fn run() -> ClientResult<()> {
 //! let token = FtApiToken::try_get(AuthInfo::build_from_env()?).await?;
 //! let client = FtClient::new(FtClientReqwestConnector::new());
 //! let session = client.open_session(token);
@@ -19,7 +19,7 @@
 //!     )
 //!     .await?;
 //! for location in response.location {
-//!     println!("{} @ {}", location.user.login, location.host);
+//!     println!("{:?} @ {}", location.user.login, location.host);
 //! }
 //! # Ok(())
 //! # }

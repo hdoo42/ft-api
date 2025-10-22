@@ -18,6 +18,7 @@
 //!
 //! ```rust
 //! use libft_api::models::user::{FtUser, FtUserId};
+//! use rvstruct::ValueStruct;
 //!
 //! // Example of how a user model might be used
 //! fn process_user(user: FtUser) {
