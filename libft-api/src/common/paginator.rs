@@ -1,6 +1,6 @@
 use std::{ops::ControlFlow, sync::Arc, time::Duration};
 
-use crate::prelude::*;
+use crate::{api::CollectMode, prelude::*};
 
 use futures::future::BoxFuture;
 use tokio::time::sleep;
@@ -10,14 +10,15 @@ pub type ReqFn<RS> = for<'a> fn(
     usize,
 ) -> BoxFuture<'a, ClientResult<RS>>;
 
-pub async fn scroller<'a, T, RS, RQ>(
+pub async fn scroller<'a, T, M, RS, RQ>(
     client: &'a FtClient<FtClientReqwestConnector>,
     thread_num: usize,
     initial_page: usize,
     request_builder: RQ,
 ) -> Vec<T>
 where
-    RS: for<'de> serde::de::Deserialize<'de> + HasVec<T>,
+    RS: for<'de> serde::de::Deserialize<'de> + HasItems<M, OwnedItem = T>,
+    M: CollectMode,
     RQ: Fn(
         Arc<FtClientSession<'a, FtClientReqwestConnector>>,
         usize,
@@ -43,12 +44,12 @@ where
                 match res {
                     Ok(res) => {
                         if *client.meta.total_page.lock().unwrap() as usize <= *page
-                            || res.get_vec().is_empty()
+                            || res.iter_items().next().is_none()
                         {
                             return ControlFlow::Break(());
                         }
 
-                        result.extend(res.take_vec());
+                        result.extend(res.into_items());
                         *page += thread_num;
                     }
                     Err(FtClientError::RateLimitError(_)) => {

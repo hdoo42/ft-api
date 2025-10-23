@@ -40,7 +40,7 @@
 //!
 //! // Get a user's location data
 //! let location_response = session.users_id_locations(FtApiUsersIdLocationsRequest::new(FtUserId::new(12345))).await?;
-//! println!("Found {} location records", location_response.get_vec().len());
+//! println!("Found {} location records", location_response.iter_items().len());
 //! #     Ok(())
 //! # }
 //! # tokio::runtime::Runtime::new().unwrap().block_on(run()).unwrap();                      

@@ -1,6 +1,6 @@
 [package]
 name = "libft-api"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 authors  = ["hdoo42 <tyeirdoo06@gmail.com>"]
 description="42api library for rust"
@@ -13,6 +13,10 @@ path="src/lib.rs"
 [[bin]]
 name = "piscine_users"
 path = "bin/piscine_users.rs"
+
+[[bin]]
+name = "locations"
+path = "bin/locations.rs"
 
 [[example]]
 name = "scroll"

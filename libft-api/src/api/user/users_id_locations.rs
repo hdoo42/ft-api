@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::prelude::*;
 use crate::to_param;
-use libft_api_derive::HasVector;
+use libft_api_derive::HasItems;
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
 pub struct FtApiUsersIdLocationsRequest {
@@ -15,7 +15,7 @@ pub struct FtApiUsersIdLocationsRequest {
     pub per_page: Option<u8>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Builder, HasVector)]
+#[derive(Debug, Serialize, Deserialize, Builder, HasItems)]
 #[serde(transparent)]
 pub struct FtApiUsersIdLocationsResponse {
     pub locations: Vec<FtLocation>,

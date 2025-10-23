@@ -3,9 +3,9 @@ use serde::{Deserialize, Serialize};
 
 use crate::prelude::*;
 use crate::to_param;
-use libft_api_derive::HasVector;
+use libft_api_derive::HasItems;
 
-#[derive(Debug, Serialize, Deserialize, Builder, HasVector)]
+#[derive(Debug, Serialize, Deserialize, Builder, HasItems)]
 #[serde(transparent)]
 pub struct FtApiProjectSessionsTeamsResponse {
     pub teams: Vec<FtTeam>,
