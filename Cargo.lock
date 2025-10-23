@@ -756,12 +756,12 @@ checksum = "2874a2af47a2325c2001a6e6fad9b16a53b802102b528163885171cf92b15976"
 
 [[package]]
 name = "libft-api"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "chrono",
  "futures",
  "lazy_static",
- "libft-api-derive",
+ "libft-api-derive 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "reqwest",
  "rsb_derive",
  "rvstruct",
@@ -777,7 +777,18 @@ dependencies = [
 
 [[package]]
 name = "libft-api-derive"
-version = "0.1.0"
+version = "0.2.0"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.106",
+]
+
+[[package]]
+name = "libft-api-derive"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "02a70586a40382d1a45bb85677436875bcd2d091db138b2042ed51557c337171"
 dependencies = [
  "proc-macro2",
  "quote",

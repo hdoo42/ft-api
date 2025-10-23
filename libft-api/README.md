@@ -39,7 +39,7 @@ tokio = { version = "1.0", features = ["full"] }
 Create a token -> Create a client -> Create a session -> Send API requests!
 
 ```rust
-use libft_api::prelude::*;
+use libft_api::prelude::{*, ft_campus_id::GYEONGSAN};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -61,7 +61,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .await?;
     
     for location in response.location {
-        println!("{} @ {}", location.user.login, location.host);
+        println!("{:?} @ {}", location.user.login, location.host);
     }
     
     Ok(())

@@ -1,7 +1,16 @@
 [package]
 name = "libft-api-derive"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
+description = "Procedural macros for the `libft-api` crate."
+license-file = "LICENSE"
+keywords = ["42", "http"]
+categories = ["development-tools::procedural-macro-helpers"]
+repository = "https://github.com/hdoo42/libft-api"
+
+[badges]
+maintenance = { status = "actively-developed" }
+
 
 [lib]
 proc-macro = true
