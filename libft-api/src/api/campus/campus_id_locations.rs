@@ -1,6 +1,6 @@
 use crate::prelude::*;
 use crate::to_param;
-use libft_api_derive::HasItems;
+use libft_api_derive::HasVector;
 use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
 use tracing::debug;
@@ -16,7 +16,7 @@ pub struct FtApiCampusIdLocationsRequest {
     pub per_page: Option<u8>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Builder, HasItems)]
+#[derive(Debug, Serialize, Deserialize, Builder, HasVector)]
 #[serde(transparent)]
 pub struct FtApiCampusIdLocationsResponse {
     pub location: Vec<FtLocation>,

@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::prelude::*;
 use crate::to_param;
-use libft_api_derive::HasItems;
+use libft_api_derive::HasVector;
 
 #[derive(Debug, Serialize, Deserialize, Builder)]
 pub struct FtApiExamsRequest {
@@ -24,7 +24,7 @@ pub struct FtApiExamsUsersPostBody {
     pub user_id: FtUserId,
 }
 
-#[derive(Debug, Serialize, Deserialize, Builder, HasItems)]
+#[derive(Debug, Serialize, Deserialize, Builder, HasVector)]
 #[serde(transparent)]
 pub struct FtApiExamsResponse {
     pub exams: Vec<FtExam>,

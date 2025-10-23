@@ -1,10 +1,10 @@
 use crate::prelude::*;
 use crate::to_param;
-use libft_api_derive::HasItems;
+use libft_api_derive::HasVector;
 use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Serialize, Deserialize, Builder, HasItems)]
+#[derive(Debug, Serialize, Deserialize, Builder, HasVector)]
 #[serde(transparent)]
 pub struct FtApiProjectSessionsScaleTeamsResponse {
     pub scale_teams: Vec<FtScaleTeam>,

@@ -1,6 +1,6 @@
 use crate::prelude::*;
 use crate::to_param;
-use libft_api_derive::HasItems;
+use libft_api_derive::HasVector;
 use rsb_derive::Builder;
 
 use serde::{Deserialize, Serialize};
@@ -14,7 +14,7 @@ pub struct FtApiScaleTeamsRequest {
     pub per_page: Option<u8>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Builder, HasItems)]
+#[derive(Debug, Serialize, Deserialize, Builder, HasVector)]
 #[serde(transparent)]
 pub struct FtApiScaleTeamsResponse {
     pub scale_teams: Vec<FtScaleTeam>,
@@ -31,7 +31,7 @@ pub struct FtApiScaleTeamsMultipleCreateBody {
     pub team_id: FtTeamId,
 }
 
-#[derive(Debug, Serialize, Deserialize, Builder, HasItems)]
+#[derive(Debug, Serialize, Deserialize, Builder, HasVector)]
 #[serde(transparent)]
 pub struct FtApiScaleTeamsMultipleCreateResponse {
     pub scale_teams: Vec<FtScaleTeam>,

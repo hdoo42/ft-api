@@ -41,7 +41,4 @@ pub use super::project_user::*;
 pub use super::scale_team::*;
 pub use super::user::*;
 
-pub use super::Entries;
-pub use super::HasItems;
-pub use super::Values;
-pub use libft_api_derive::HasItems;
+pub use super::HasVec;
