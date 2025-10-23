@@ -1,6 +1,6 @@
 use crate::prelude::*;
 use crate::to_param;
-use libft_api_derive::HasVector;
+use libft_api_derive::HasItems;
 use rsb_derive::Builder;
 use serde::{Deserialize, Serialize};
 
@@ -15,7 +15,7 @@ pub struct FtApiCampusIdUsersRequest {
     pub per_page: Option<u8>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Builder, HasVector)]
+#[derive(Debug, Serialize, Deserialize, Builder, HasItems)]
 #[serde(transparent)]
 pub struct FtApiCampusIdUsersResponse {
     pub users: Vec<FtUser>,

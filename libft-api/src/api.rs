@@ -48,14 +48,24 @@ pub mod user;
 
 pub mod prelude;
 
-/// Convenience abstraction for wrapper types that contain a `Vec<T>` under a single field.
-///
-/// This trait simplifies access to vector fields in API response types.
-///
-pub trait HasVec<T> {
-    /// Get a reference to the contained vector.
-    fn get_vec(&self) -> &Vec<T>;
+// 모드 마커
+pub trait CollectMode {}
+pub enum Values {}
+impl CollectMode for Values {}
+pub enum Entries {}
+impl CollectMode for Entries {}
 
-    /// Take ownership of the contained vector.
-    fn take_vec(self) -> Vec<T>;
+pub trait HasItems<M: CollectMode> {
+    type OwnedItem;
+    type BorrowedItem<'a>
+    where
+        Self: 'a;
+
+    type IntoItems: IntoIterator<Item = Self::OwnedItem>;
+    type IterItems<'a>: Iterator<Item = Self::BorrowedItem<'a>>
+    where
+        Self: 'a;
+
+    fn into_items(self) -> Self::IntoItems;
+    fn iter_items(&self) -> Self::IterItems<'_>;
 }
