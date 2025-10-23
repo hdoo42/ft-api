@@ -28,11 +28,10 @@ where
         .await
         .unwrap();
     let session = Arc::new(client.open_session(token));
-    // let total_page = *client.meta.total_page.lock().unwrap();
     let request = Arc::new(request_builder);
 
     let mut page = initial_page;
-    loop {
+    while *client.meta.total_page.lock().unwrap() as usize <= page {
         let page = &mut page;
         let request = Arc::clone(&request);
         if let ControlFlow::Break(()) = {
@@ -42,9 +41,7 @@ where
                 let res = request(session_clone, *page).await;
                 match res {
                     Ok(res) => {
-                        if *client.meta.total_page.lock().unwrap() as usize <= *page
-                            || res.get_vec().is_empty()
-                        {
+                        if res.get_vec().is_empty() {
                             return ControlFlow::Break(());
                         }
 
@@ -65,7 +62,8 @@ where
         }
         .await
         {
-            break result;
+            break;
         }
     }
+    result
 }

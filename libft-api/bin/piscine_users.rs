@@ -31,12 +31,19 @@ async fn main() {
     };
 
     let mut handles = JoinSet::new();
-    for i in 1..=8 {
+    let mut result = Vec::new();
+
+    let client_clone = Arc::clone(&client);
+    handles.spawn(async move { scroller(&client_clone, 8, 1, req).await });
+    if let Some(Ok(res)) = handles.join_next().await {
+        result.extend(res);
+    }
+
+    for i in 2..=8 {
         let client = Arc::clone(&client);
         handles.spawn(async move { scroller(&client, 8, i, req).await });
     }
 
-    let mut result = Vec::new();
     while let Some(res) = handles.join_next().await {
         match res {
             Ok(v) => result.extend(v),
