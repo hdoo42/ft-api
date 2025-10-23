@@ -5,8 +5,6 @@ use tracing::debug;
 use crate::prelude::*;
 use crate::to_param;
 
-use libft_api_derive::HasVector;
-
 #[derive(Debug, Serialize, Deserialize, Builder)]
 pub struct FtApiCampusIdJournalsRequest {
     pub user_id: Option<FtUserId>,
@@ -20,7 +18,7 @@ pub struct FtApiCampusIdJournalsRequest {
     pub per_page: Option<u8>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Builder, HasVector)]
+#[derive(Debug, Serialize, Deserialize, Builder, HasItems)]
 #[serde(transparent)]
 pub struct FtApiCampusIdJournalsResponse {
     pub journals: Vec<FtJournal>,
